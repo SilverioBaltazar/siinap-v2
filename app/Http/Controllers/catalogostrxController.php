@@ -59,7 +59,7 @@ class catalogostrxController extends Controller
         /* ALTA DEl proceso ****************************/
         $nuevaActividad = new regTrxModel();
         $nuevaActividad->TRX_ID   = $trx_id;
-        $nuevaActividad->TRX_DESC = $request->trx_desc;
+        $nuevaActividad->TRX_DESC = strtoupper($request->trx_desc);
         $nuevaActividad->save();
 
         if($nuevaActividad->save() == true){

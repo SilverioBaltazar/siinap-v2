@@ -185,12 +185,12 @@
                                 </div>                                
                             </div>
                             <div class="row">
-                                @if (isset($regiap->iap_foto1)||!empty($regiap->iap_foto1)||!is_null($regiap->iap_foto1))  
+                                @if (!empty($regiap->iap_foto1)||!is_null($regiap->iap_foto1))  
                                     <div class="col-sm">
                                         <div class="card" style="width: 18rem;">
                                            <label >Fotografía 1 </label>
                                            <img class="card-img-top" src="/images/{{$regiap->iap_foto1}}" alt="foto 1">
-                                           <!--<input type="hidden" name="iap_foto1" id="iap_foto1" value="{{$regiap->iap_foto1}}"> -->
+                                           <!--<input type="hidden" name="iap_foto1" id="iap_foto1" value="{{$regiap->iap_foto1}}">-->
                                         </div>
                                     </div>      
                                 @else     <!-- se captura foto 1 -->

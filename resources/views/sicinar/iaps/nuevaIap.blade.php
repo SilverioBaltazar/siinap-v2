@@ -67,7 +67,7 @@
                                     <label>Fecha de constitución:</label>
                                     <div class="input-group date">
                                         <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                        <input type="text" class="form-control pull-right" id="datepicker1"  name="iap_feccons" placeholder="* Fecha de constitución (dd/mm/aaaa)" required>
+                                        <input type="text" class="form-control pull-right" id="datepicker1"  name="iap_feccons" placeholder="Fecha de constitución (dd/mm/aaaa)" required>
                                     </div>
                                 </div>
                             </div>

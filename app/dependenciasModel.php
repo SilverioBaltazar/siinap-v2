@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class dependenciasModel extends Model
 {
-    protected $table = "LU_DEPENDENCIAS_AUX";
+    protected $table = "JP_CAT_DEPENDENCIAS";
     protected  $primaryKey = 'DEPEN_ID';
     public $timestamps = false;
     public $incrementing = false;
@@ -20,7 +20,6 @@ class dependenciasModel extends Model
     public static function Unidades($id){
         return dependenciasModel::select('DEPEN_ID','DEPEN_DESC')
         							->where('ESTRUCGOB_ID','like','%'.$id.'%')
-        							->where('CLASIFICGOB_ID','=',1)
                                     ->orderBy('DEPEN_ID','asc')
                                     ->get();
     }

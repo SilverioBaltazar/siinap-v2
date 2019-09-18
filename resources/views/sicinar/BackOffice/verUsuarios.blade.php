@@ -30,27 +30,47 @@
                     <div class="box box-danger">
                         <div class="box-header with-border">
                             <h3 class="box-title"><b>Catálogo de Usuarios del Sistema</b></h3>
-                            <a href="{{route('backUsuarios')}}" class="btn btn-info pull-right" title="Dar de alta un nuevo usuario"><i class="fa fa-user-plus"></i> Nuevo</a>
+                            <a href="{{route('nuevoUsuario')}}" class="btn btn-info pull-right" title="Dar de alta un nuevo usuario"><i class="fa fa-user-plus"></i> Nuevo</a>
                         </div>
                         <div class="box-body">
                             <table id="tabla1" border="1" style="border: 2px solid slategray;" class="table table-bordered table-sm">
                                 <thead style="border-color:brown;color: brown;" class="justify">
                                     <tr>
-                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">Nombre</b></th>
-                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">E-mail</b></th>
-                                        <th colspan="1" style="text-align:left; vertical-align: middle;border: 2px solid slategray;"><b style="color: orangered">Unidad Administrativa</b></th>
-                                        <th colspan="1" style="text-align:left; vertical-align: middle;border: 2px solid slategray;"><b style="color: dodgerblue">Usuario</b></th>
-                                        <th colspan="1" style="text-align:left; vertical-align: middle;border: 2px solid slategray;"><b style="color: dodgerblue">Contraseña</b></th>
-                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;">Rol</th>
-                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;">Status</th>
-                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;">Acciones</th>
+                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">Id.</b>
+                                        </th>
+                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">Nombre user</b>
+                                        </th>
+                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">IAP</b>
+                                        </th>
+                                        <th colspan="1" style="text-align:left; vertical-align: middle;border: 2px solid slategray;"><b style="color: orangered">Unidad Administrativa</b>
+                                        </th>
+                                        <th colspan="1" style="text-align:left; vertical-align: middle;border: 2px solid slategray;"><b style="color: dodgerblue">Usuario</b>
+                                        </th>
+                                        <th colspan="1" style="text-align:left; vertical-align: middle;border: 2px solid slategray;"><b style="color: dodgerblue">Contraseña</b>
+                                        </th>
+                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;">Rol
+                                        </th>
+                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;">Status
+                                        </th>
+                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;">Acciones
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($usuarios as $usuario)
                                     <tr>
-                                        <td style="text-align:center; vertical-align: middle;">{{$usuario->nombre_completo}}</td>
-                                        <td style="text-align:center; vertical-align: middle;">{{$usuario->email}}</td>
+                                        <td style="text-align:center; vertical-align: middle;">{{$usuario->folio}}
+                                        </td>
+                                        <td style="text-align:center; vertical-align: middle;">{{$usuario->nombre_completo}}
+                                        </td>
+                                        <td style="text-align:left; vertical-align: middle;">
+                                            @foreach($regiap as $iap)
+                                                @if($iap->iap_id == $iap->iap_id)
+                                                    {{$iap->iap_desc}}
+                                                    @break
+                                                @endif
+                                            @endforeach 
+                                        </td>
                                         @if($usuario->cve_dependencia == '0' OR $usuario->cve_dependencia == ' ')
                                             <td style="text-align:center; vertical-align: middle;">NO ASIGNADO</td>
                                         @else
@@ -76,7 +96,11 @@
                                                 @if($usuario->status_1 == 2)
                                                     <td style="text-align:center; vertical-align: middle;"><a class="btn btn-primary" title="Particular"><i class="fa fa-user"></i></a></td>
                                                 @else
-                                                    <td style="text-align:center; vertical-align: middle;"><a class="btn btn-info" title="Operativo"><i class="fa fa-male"></i></a></td>
+                                                    @if($usuario->status_1 == 1)
+                                                        <td style="text-align:center; vertical-align: middle;"><a class="btn btn-primary" title="Operativo"><i class="fa fa-user"></i></a></td>
+                                                    @else
+                                                        <td style="text-align:center; vertical-align: middle;"><a class="btn btn-info" title="IAP"><i class="fa fa-male"></i></a></td>
+                                                    @endif
                                                 @endif
                                             @endif
                                         @endif

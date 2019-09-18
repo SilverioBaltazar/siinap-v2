@@ -86,15 +86,12 @@ class catalogosmunicipiosController extends Controller
             else
                toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
         }else{                   
-            //****************************************
-            $reg = regBitacoraModel::select('NO_VECES')->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id]) 
-            ->first();
-            if($reg->count() <= 0) $xno_veces = 1;
-            else {
-                $xno_veces = $reg->NO_VECES; 
-                $xno_veces = ($xno_veces+1); 
-            }
-            //****************************************                    
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************         
+
             $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
                         ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
             ->update([
@@ -160,15 +157,12 @@ class catalogosmunicipiosController extends Controller
             else
                toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
         }else{                   
-            //****************************************
-            $reg = regBitacoraModel::select('NO_VECES')->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id]) 
-            ->first();
-            if($reg->count() <= 0) $xno_veces = 1;
-            else {
-                $xno_veces = $reg->NO_VECES; 
-                $xno_veces = ($xno_veces+1); 
-            }
-            //****************************************                    
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************         
+              
             $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
                         ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
             ->update([

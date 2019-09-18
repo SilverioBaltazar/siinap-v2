@@ -117,7 +117,11 @@
                   <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                  <li><a href="{{route('verIap')}}"><i class="fa fa-circle-o"></i> Constitución en Jurídico JAPEM</a></li>
+                  <li><a href="{{route('verIap')}}" ><i class="fa fa-circle-o"></i>Directorio             </a></li>
+                  <li><a href="{{route('verIapj')}}"><i class="fa fa-circle-o"></i>Información Jurídica   </a></li>
+                  <li><a href="{{route('verAsyc')}}"><i class="fa fa-circle-o"></i>Inf. de Asist. Soc. y Contable</a></li>
+                  <li><a href="{{route('verApor')}}"><i class="fa fa-circle-o"></i>Aportaciones monetarias</a></li>
+                  <li><a href="{{route('verCursos')}}"><i class="fa fa-circle-o"></i>Cursos</a></li>
                 </ul>
               </li>
 

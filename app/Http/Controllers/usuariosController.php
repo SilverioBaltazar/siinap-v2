@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\usuarioModel;
 use App\estructurasModel;
 use App\dependenciasModel;
+use App\regIapModel;
 
 class usuariosController extends Controller
 {
@@ -33,28 +34,28 @@ class usuariosController extends Controller
         }
         if($existe->count()>=1){
     		$estruc = estructurasModel::ObtEstruc($existe[0]->estrucgob_id);
-    		if($existe[0]->status_1 == '4'){  //DIOS
+    		if($existe[0]->status_1 == '4'){  //Super administrador
     			$usuario           = "Administrador";
     			$estructura        = "Particular";
                 $id_estructura     = $existe[0]->estrucgob_id;
                 $dependencia       = $existe[0]->cve_dependencia;
                 $nombre_dependencia= "Particular";
     		}else{
-                if($existe[0]->status_1 == '3'){ //ADMINISTRADOR
+                if($existe[0]->status_1 == '3'){ //Administrador
                     $usuario           = "General";
                     $estructura        = "Particular";
                     $id_estructura     = $existe[0]->estrucgob_id;
                     $dependencia       = $existe[0]->cve_dependencia;
                     $nombre_dependencia= "Particular";
                 }else{
-                    if($existe[0]->status_1 == '2'){ //SECRETARIAS
+                    if($existe[0]->status_1 == '2'){ //Particular
                         $usuario            = "Particular";
                         $estructura         = $estruc[0]->estrucgob_desc;
                         $id_estructura      = $existe[0]->estrucgob_id;
                         $dependencia        = $existe[0]->cve_dependencia;
                         $nombre_dependencia = "Particular";
                     }else{
-                        if($existe[0]->status_1 == '1'){ //UNIDADES ADMINISTRATIVAS
+                        if($existe[0]->status_1 == '1'){ //operativo UNIDADES ADMINISTRATIVAS
                             $usuario       = "Operativo";
                             $estructura    = $estruc[0]->estrucgob_desc;
                             $id_estructura = $existe[0]->estrucgob_id;
@@ -109,7 +110,7 @@ class usuariosController extends Controller
     	return view('sicinar.login.expirada');
     }
 
-    public function actionBackOffice(){
+    public function actionNuevoUsuario(){
         $nombre       = session()->get('userlog');
         $pass         = session()->get('passlog');
         if($nombre == NULL AND $pass == NULL){
@@ -121,11 +122,13 @@ class usuariosController extends Controller
         //$id_estructura = rtrim($id_estruc," ");
         $rango        = session()->get('rango');
         //$ip = session()->get('ip');
+        $regiap       = regIapModel::select('IAP_ID', 'IAP_DESC','IAP_STATUS')->get();
+        //  ->where('ESTRUCGOB_ID','like','%21500%')
+        //->where('CLASIFICGOB_ID','=',1)
         $dependencias = dependenciasModel::select('DEPEN_ID','DEPEN_DESC')
             ->where('ESTRUCGOB_ID','like','%21500%')
-            ->where('CLASIFICGOB_ID','=',1)
             ->get();
-        return view('sicinar.BackOffice.administracionUsuarios',compact('nombre','usuario','estructura','rango','dependencias'));
+        return view('sicinar.BackOffice.nuevoUsuario',compact('nombre','usuario','estructura','rango','dependencias','regiap'));
     }
 
     public function actionAltaUsuario(altaUsuarioRequest $request){
@@ -197,12 +200,14 @@ class usuariosController extends Controller
             ->orderBy('FOLIO','ASC')
             ->paginate(15);
             //->get();
+        $regiap       = regIapModel::select('IAP_ID','IAP_DESC','IAP_STATUS')->get();            
+            // ->where('ESTRUCGOB_ID','like','%21500%')
+            // ->where('CLASIFICGOB_ID','=',1)
         $dependencias = dependenciasModel::select('DEPEN_ID','DEPEN_DESC')
             ->where('ESTRUCGOB_ID','like','%21500%')
-            ->where('CLASIFICGOB_ID','=',1)
             ->get();
         //dd($usuarios->all());
-        return view('sicinar.BackOffice.verTodos',compact('nombre','usuario','estructura','rango','usuarios','dependencias'));
+        return view('sicinar.BackOffice.verUsuarios',compact('nombre','usuario','estructura','rango','usuarios','dependencias','regiap'));
         //dd($usuarios->all());
     }
 
@@ -220,11 +225,13 @@ class usuariosController extends Controller
         $user       = usuarioModel::select('FOLIO','NOMBRES','AP_PATERNO','AP_MATERNO','LOGIN','PASSWORD','STATUS_1','EMAIL','CVE_DEPENDENCIA')
             ->where('FOLIO',$id)
             ->first();
+            //            ->where('ESTRUCGOB_ID','like','%21500%')
+            //->where('CLASIFICGOB_ID','=',1)
         $dependencias = dependenciasModel::select('DEPEN_ID','DEPEN_DESC')
             ->where('ESTRUCGOB_ID','like','%21500%')
-            ->where('CLASIFICGOB_ID','=',1)
             ->get();
-        return view('sicinar.BackOffice.editarUsuario',compact('nombre','usuario','estructura','rango','user','dependencias'));
+        $regiap       = regIapModel::select('IAP_ID','IAP_DESC','IAP_STATUS')->get();            
+        return view('sicinar.BackOffice.editarUsuario',compact('nombre','usuario','estructura','rango','user','dependencias','regiap'));
     }
 
     public function actionActualizarUsuario(altaUsuarioRequest $request, $id){

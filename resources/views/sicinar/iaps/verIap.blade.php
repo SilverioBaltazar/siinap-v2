@@ -36,8 +36,8 @@
                     <div class="box">
                         <div class="box-header" style="text-align:right;">
                             <a href="{{route('downloadiap')}}" class="btn btn-success" title="Exportar catálogo de IAPS (formato Excel)"><i class="fa fa-file-excel-o"></i> Excel</a>                            
-                            <a href="{{route('catiapPDF')}}" class="btn btn-danger" title="Exportar catálogo de IAPS (formato PDF)"><i class="fa fa-file-pdf-o"></i> PDF</a>
-                            <a href="{{route('nuevaIap')}}"   class="btn btn-primary btn_xs" title="Alta de nueva IAP"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Nueva IAP</a>                             
+                           
+                            <a href="{{route('nuevaIap')}}"   class="btn btn-primary btn_xs" title="Alta de nueva IAP"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Nueva IAP</a>
                         </div>
                         <div class="box-body">
                             <table id="tabla1" class="table table-striped table-bordered table-sm">
@@ -48,7 +48,9 @@
                                         <th style="text-align:left;   vertical-align: middle;">Calle            </th>     
                                         <th style="text-align:left;   vertical-align: middle;">No. Ext./Int.    </th>
                                         <th style="text-align:left;   vertical-align: middle;">Colonia          </th>
-                                        <th style="text-align:center; vertical-align: middle;">Activa / Inactiva</th>
+                                        <th style="text-align:left;   vertical-align: middle;">Foto1            </th>
+                                        <th style="text-align:left;   vertical-align: middle;">Foto2            </th>
+                                        <th style="text-align:center; vertical-align: middle;">Activa <br>Inact.</th>
                                         <th style="text-align:center; vertical-align: middle;">Fecha registro   </th>
                                         <th style="text-align:center; vertical-align: middle; width:100px;">Acciones</th>
                                     </tr>
@@ -61,6 +63,25 @@
                                         <td style="text-align:left; vertical-align: middle;">{{$iap->iap_calle}}     </td>
                                         <td style="text-align:left; vertical-align: middle;">{{$iap->iap_num}}       </td>
                                         <td style="text-align:left; vertical-align: middle;">{{$iap->iap_colonia}}   </td>
+                                        
+                                        @if(isset($iap->iap_foto1))
+                                            <td style="color:darkgreen;text-align:center; vertical-align: middle;" title="Fotografía 1">
+                                                <a href="/images/{{$iap->iap_foto1}}" class="btn btn-success" title="Fotografía 1"><i class="fa-file-image-o"></i>gif, jpeg o png</a>
+                                                <a href="{{route('editarIap1',$iap->iap_id)}}" class="btn badge-warning" title="Editar Fotografía 1"><i class="fa fa-edit"></i></a>
+                                            </td>
+                                        @else
+                                            <td style="color:darkred; text-align:center; vertical-align: middle;" title="Sin Fotografía 1"><i class="fa fa-times">{{$iap->iap_foto1}} </i>
+                                        @endif   
+                                        @if(isset($iap->iap_foto2))
+                                            <td style="color:darkgreen;text-align:center; vertical-align: middle;" title="Fotografía 2">
+                                                <a href="/images/{{$iap->iap_foto2}}" class="btn btn-success" title="Fotografía 2"><i class="fa-file-image-o"></i>gif, jpeg o png</a>
+                                                <a href="{{route('editarIap2',$iap->iap_id)}}" class="btn badge-warning" title="Editar Fotografía 2"><i class="fa fa-edit"></i></a>
+                                            </td>
+                                        @else
+                                            <td style="color:darkred; text-align:center; vertical-align: middle;" title="Sin Fotografía 2"><i class="fa fa-times"> </i>
+                                            </td>   
+                                        @endif
+
                                         @if($iap->iap_status == 'S')
                                             <td style="color:darkgreen;text-align:center; vertical-align: middle;" title="Activo"><i class="fa fa-check"></i>
                                             </td>                                            

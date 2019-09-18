@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests\iapsRequest;
+use App\Http\Requests\iapsjuridicoRequest;
 use App\regIapModel;
+use App\regIapJuridicoModel;
 use App\regBitacoraModel;
 use App\regMunicipioModel;
 use App\regRubroModel;
@@ -19,6 +21,7 @@ use PDF;
 
 class iapsController extends Controller
 {
+
     public function actionNuevaIap(){
         $nombre       = session()->get('userlog');
         $pass         = session()->get('passlog');
@@ -54,11 +57,14 @@ class iapsController extends Controller
         $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
                             ->orderBy('RUBRO_ID','asc')
                             ->get();  
+        $regiapjuridico =regIapJuridicoModel::select('IAP_ID','IAP_ACT_CONST','IAP_RFC','IAP_RPP','ANIO_ID','IAP_FVP','INM_ID','FECREG','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+                         ->get();                             
 
-        $regiap       = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_CALLE','IAP_NUM','IAP_COLONIA','MUNICIPIO_ID',          'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC', 'GRUPO_ID', 'IAP_STATUS', 'IAP_FECCERTIFIC', 'IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+        $regiap       = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_CALLE','IAP_NUM','IAP_COLONIA','MUNICIPIO_ID',          'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC', 'GRUPO_ID', 'IAP_STATUS', 'IAP_FECCERTIFIC','IAP_FOTO1','IAP_FOTO2','IAP_GEOREF_LATITUD','IAP_GEOREF_LONGITUD','IP',
+            'LOGIN','FECHA_M','IP_M','LOGIN_M')
                                      ->orderBy('IAP_ID','asc')->get();
         //dd($unidades);
-        return view('sicinar.iaps.nuevaIap',compact('regrubro','regmunicipio','regentidades','regiap','nombre','usuario','estructura','id_estructura'));
+        return view('sicinar.iaps.nuevaIap',compact('regrubro','regmunicipio','regentidades','regiap','nombre','usuario','estructura','id_estructura','regiapjuridico'));
     }
 
     public function actionAltaNuevaIap(Request $request){
@@ -119,7 +125,7 @@ class iapsController extends Controller
         $iap_id = $iap_id+1;
 
         $nuevaiap = new regIapModel();
-        $name1 ='';
+        $name1 =null;
         //Comprobar  si el campo foto1 tiene un archivo asignado:
         if($request->hasFile('iap_foto1')){
            $name1 = $iap_id.'_'.$request->file('iap_foto1')->getClientOriginalName(); 
@@ -127,7 +133,7 @@ class iapsController extends Controller
            //sube el archivo a la carpeta del servidor public/images/
            $request->file('iap_foto1')->move(public_path().'/images/', $name1);
         }
-        $name2 ='';
+        $name2 =null;
         //Comprobar  si el campo foto2 tiene un archivo asignado:        
         if($request->hasFile('iap_foto2')){
            $name2 = $iap_id.'_'.$request->file('iap_foto2')->getClientOriginalName(); 
@@ -146,7 +152,7 @@ class iapsController extends Controller
         $nuevaiap->IAP_REGCONS = strtoupper($request->iap_regcons);
         $nuevaiap->IAP_RFC     = strtoupper($request->iap_rfc);
         $nuevaiap->IAP_CP      = $request->iap_cp;
-        $nuevaiap->IAP_FECCONS = $request->iap_feccons;
+        $nuevaiap->IAP_FECCONS = date('Y/m/d', strtotime($request->iap_feccons));
         $nuevaiap->IAP_TELEFONO= strtoupper($request->iap_telefono);
         $nuevaiap->IAP_EMAIL   = strtolower($request->iap_email);
         $nuevaiap->IAP_SWEB    = strtolower($request->iap_sweb);
@@ -156,7 +162,7 @@ class iapsController extends Controller
         $nuevaiap->IAP_TESORERO= strtoupper($request->iap_tesorero);
         $nuevaiap->IAP_OBJSOC  = strtoupper($request->iap_objsoc);
         //$nuevaiap->IAP_GEOREF_LATITUD  = $latitud; 
-        $nuevaiap->IAP_GEOREF_LATITUD  = bcdiv($request->iap_iap_georef_latitud, '1',10);
+        //$nuevaiap->IAP_GEOREF_LATITUD  = bcdiv($request->iap_iap_georef_latitud, '1',10);
         $nuevaiap->IAP_GEOREF_LONGITUD = number_format($request->iap_iap_georef_longitud,10);
         //$nuevaiap->IAP_FOTO1   = $request->iap_foto1;
         $nuevaiap->IAP_FOTO1   = $name1;
@@ -181,8 +187,8 @@ class iapsController extends Controller
         $xperiodo_id  = (int)date('Y');
         $xprograma_id = 1;
         $xmes_id      = (int)date('m');
-        $xproceso_id  =         7;
-        $xfuncion_id  =      7009;
+        $xproceso_id  =         9;
+        $xfuncion_id  =      9001;
         $xtrx_id      =       145;    //Alta de IAP
 
         $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
@@ -207,15 +213,12 @@ class iapsController extends Controller
             else
                toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
         }else{                   
-            //****************************************
-            $reg = regBitacoraModel::select('NO_VECES')->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $iap_id]) 
-            ->first();
-            if($reg->count() <= 0) $xno_veces = 1;
-            else {
-                $xno_veces = $reg->NO_VECES; 
-                $xno_veces = ($xno_veces+1); 
-            }
-            //****************************************                    
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $iap_id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************         
+
             $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
                         ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id,'TRX_ID' => $xtrx_id,'FOLIO' => $iap_id])
             ->update([
@@ -261,7 +264,9 @@ class iapsController extends Controller
                             ->orderBy('RUBRO_ID','asc')
                             ->get();                         
 
-        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_CALLE','IAP_NUM','IAP_COLONIA','MUNICIPIO_ID',          'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','GRUPO_ID','IAP_STATUS','IAP_FECCERTIFIC','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_CALLE','IAP_NUM','IAP_COLONIA','MUNICIPIO_ID',          'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','GRUPO_ID',
+            'IAP_FOTO1','IAP_FOTO2','IAP_GEOREF_LATITUD','IAP_GEOREF_LONGITUD','IAP_STATUS',
+            'IAP_FECCERTIFIC','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
             ->orderBy('IAP_ID','ASC')
             ->paginate(30);
         if($regiap->count() <= 0){
@@ -330,8 +335,8 @@ class iapsController extends Controller
         $xperiodo_id  = (int)date('Y');
         $xprograma_id = 1;
         $xmes_id      = (int)date('m');
-        $xproceso_id  =         7;
-        $xfuncion_id  =      7009;
+        $xproceso_id  =         9;
+        $xfuncion_id  =      9001;
         $xtrx_id      =       146;    //Actualizar IAPS        
 
         $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
@@ -356,15 +361,11 @@ class iapsController extends Controller
             else
                toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
         }else{                   
-            //****************************************
-            $reg = regBitacoraModel::select('NO_VECES')->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id]) 
-            ->first();
-            if($reg->count() <= 0) $xno_veces = 1;
-            else {
-                $xno_veces = $reg->NO_VECES; 
-                $xno_veces = ($xno_veces+1); 
-            }
-            //****************************************                    
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************         
             $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
                         ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
             ->update([
@@ -386,21 +387,26 @@ class iapsController extends Controller
             //    'IAP_GEOREF_LONGITUD'=> $request->iap_georef_longitud, 
             //    'IAP_FOTO1'   => $request->iap_foto1, 
             //    'IAP_FOTO2'   => $request->iap_foto2,
-
-            if (isset($request->iap_foto1)||empty($request->iap_foto1)||is_null($reques->iap_foto1)) {
-               $name1 ='';
-               //Comprobar  si el campo foto1 tiene un archivo asignado:
-               if($request->hasFile('iap_foto1')){
-                   $name1 = $id.'_'.$request->file('iap_foto1')->getClientOriginalName(); 
-                   //sube el archivo a la carpeta del servidor public/images/
-                   $request->file('iap_foto1')->move(public_path().'/images/', $name1);
+            $name1 =null;
+            //if (isset($request->iap_foto1)||empty($request->iap_foto1)||is_null($reques->iap_foto1)) {
+            //if (isset($request->iap_foto1)||empty($request->iap_foto1)||is_null($reques->iap_foto1)) {
+            //if(isset($_PUT['submit'])){
+            //   if(!empty($_PUT['iap_foto1'])){
+            if(isset($request->iap_foto1)){
+                if(!empty($request->iap_foto1)){
+                    //Comprobar  si el campo foto1 tiene un archivo asignado:
+                    if($request->hasFile('iap_foto1')){
+                      $name1 = $id.'_'.$request->file('iap_foto1')->getClientOriginalName(); 
+                      //sube el archivo a la carpeta del servidor public/images/
+                      $request->file('iap_foto1')->move(public_path().'/images/', $name1);
+                    }
                 }
             }
-            //else
-            //    $name1 = $request->iap_foto1;
-        
+            else
+                $name1 = $request->iap_foto1;
+
+            $name2 =null;
             if (isset($request->iap_foto2)||empty($request->iap_foto2)||is_null($reques->iap_foto2)) {
-               $name2 ='';
                //Comprobar  si el campo foto2 tiene un archivo asignado:        
                if($request->hasFile('iap_foto2')){
                    $name2 = $id.'_'.$request->file('iap_foto2')->getClientOriginalName(); 
@@ -433,7 +439,7 @@ class iapsController extends Controller
                 'IAP_SRIO'    => strtoupper($request->iap_srio),        
                 'IAP_TESORERO'=> strtoupper($request->iap_tesorero),
                 'IAP_OBJSOC'  => strtoupper($request->iap_objsoc),
-                'IAP_FOTO1'   => $name1,
+                //'IAP_FOTO1'   => $name1,
                 //'IAP_FOTO2'   => $name2,
                 'IAP_STATUS'  => $request->iap_status,                
                 'IP_M'        => $ip,
@@ -467,8 +473,8 @@ public function actionBorrarIap($id){
         $xperiodo_id  = (int)date('Y');
         $xprograma_id = 1;
         $xmes_id      = (int)date('m');
-        $xproceso_id  =         7;
-        $xfuncion_id  =      7009;
+        $xproceso_id  =         9;
+        $xfuncion_id  =      9001;
         $xtrx_id      =       147;     // Baja de IAP
 
         $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
@@ -493,15 +499,12 @@ public function actionBorrarIap($id){
             else
                toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
         }else{                   
-            //****************************************
-            $reg = regBitacoraModel::select('NO_VECES')->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id]) 
-            ->first();
-            if($reg->count() <= 0) $xno_veces = 1;
-            else {
-                $xno_veces = $reg->NO_VECES; 
-                $xno_veces = ($xno_veces+1); 
-            }
-            //****************************************                    
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************         
+
             $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
                         ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
             ->update([
@@ -512,9 +515,9 @@ public function actionBorrarIap($id){
             ]);
             toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
         }
-        /************ Bitacora termina *************************************/          
-
-        $regiap = regIapModel::select('IAP_ID','IAP_DESC','IAP_CALLE','IAP_NUM','IAP_COLONIA','MUNICIPIO_ID', 'ESTADO_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','GRUPO_ID','IAP_STATUS','IAP_FECCERTIFIC','IAP_GEOREF_LATITUD', 'IAP_GEOREF_LONGITUD', 'IAP_FOTO1', 'IAP_FOTO2', 'IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+        /************ Bitacora termina *************************************/     
+        /************ Elimina la IAP **************************************/
+        $regiap = regIapModel::select('IAP_ID','IAP_DESC','IAP_CALLE','IAP_NUM','IAP_COLONIA','MUNICIPIO_ID', 'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','GRUPO_ID','IAP_STATUS','IAP_FECCERTIFIC','IAP_GEOREF_LATITUD', 'IAP_GEOREF_LONGITUD', 'IAP_FOTO1', 'IAP_FOTO2', 'IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
                               ->where('IAP_ID',$id);
         //                    ->find('RUBRO_ID',$id);
         if($regiap->count() <= 0)
@@ -523,6 +526,7 @@ public function actionBorrarIap($id){
             $regiap->delete();
             toastr()->success('IAP ha sido eliminado.','¡Ok!',['positionClass' => 'toast-bottom-right']);
         }
+        /************* Termina de eliminar  la IAP **********************************/
         return redirect()->route('verIap');
     }    
 
@@ -546,8 +550,8 @@ public function actionBorrarIap($id){
         $xperiodo_id  = (int)date('Y');
         $xprograma_id = 1;
         $xmes_id      = (int)date('m');
-        $xproceso_id  =         7;
-        $xfuncion_id  =      7009;
+        $xproceso_id  =         9;
+        $xfuncion_id  =      9001;
         $xtrx_id      =       148;            // Exportar a formato Excel
         $id           =         0;
 
@@ -573,15 +577,11 @@ public function actionBorrarIap($id){
             else
                toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
         }else{                   
-            //****************************************
-            $reg = regBitacoraModel::select('NO_VECES')->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id]) 
-            ->first();
-            if($reg->count() <= 0) $xno_veces = 1;
-            else {
-                $xno_veces = $reg->NO_VECES; 
-                $xno_veces = ($xno_veces+1); 
-            }
-            //****************************************                    
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************                
             $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
                         ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
             ->update([
@@ -621,8 +621,8 @@ public function actionBorrarIap($id){
         $xperiodo_id  = (int)date('Y');
         $xprograma_id = 1;
         $xmes_id      = (int)date('m');
-        $xproceso_id  =         7;
-        $xfuncion_id  =      7009;
+        $xproceso_id  =         9;
+        $xfuncion_id  =      9001;
         $xtrx_id      =       149;       //Exportar a formato PDF
         $id           =         0;
 
@@ -648,15 +648,12 @@ public function actionBorrarIap($id){
             else
                toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
         }else{                   
-            //****************************************
-            $reg = regBitacoraModel::select('NO_VECES')->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id]) 
-            ->first();
-            if($reg->count() <= 0) $xno_veces = 1;
-            else {
-                $xno_veces = $reg->NO_VECES; 
-                $xno_veces = ($xno_veces+1); 
-            }
-            //****************************************                    
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************         
+
             $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
                         ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
             ->update([
@@ -669,35 +666,38 @@ public function actionBorrarIap($id){
         }
         /************ Bitacora termina *************************************/ 
 
-       $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')                            
-                           ->orderBy('ENTIDADFEDERATIVA_ID','asc')
-                           ->get();
-
-        $regmunicipio = regMunicipioModel::join('CAT_ENTIDADES_FEDERATIVAS','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID', '=', 'CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
-                        ->select('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC','CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
-                        ->wherein('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
-                        ->get();
-
-        //$regrubro     = regRubroModel::obtCatRubros();
+        $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')                            
+                                           ->get();
+        $regmunicipio = regMunicipioModel::select('ENTIDADFEDERATIVAID', 'MUNICIPIOID', 'MUNICIPIONOMBRE')
+                                         ->wherein('ENTIDADFEDERATIVAID',[9,15,22])
+                                         ->get();                           
         $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
-                            ->orderBy('RUBRO_ID','asc')
-                            ->get();                         
-
-        $regiap = regIapModel::select('IAP_ID',      'IAP_DESC',    'IAP_CALLE',   'IAP_NUM',     'IAP_COLONIA', 
-                                      'MUNICIPIO_ID','ESTADO_ID',   'RUBRO_ID',    'IAP_REGCONS', 'IAP_RFC', 'IAP_CP',    
-                                      'IAP_FECCONS', 'IAP_TELEFONO','IAP_EMAIL',   'IAP_SWEB',    'IAP_PRES',
-                                      'IAP_REPLEGAL','IAP_SRIO',    'IAP_TESORERO','IAP_OBJSOC',
-                                      'GRUPO_ID',    'IAP_STATUS',  'IAP_GEOREF_LATITUD', 'IAP_GEOREF_LONGITUD', 'IAP_FOTO1', 
-                                      'IAP_FOTO2',   'IAP_FECREG',  'IP', 'LOGIN', 'FECHA_M',     'IP_M', 'LOGIN_M')
+                                     ->get();                         
+        $regiap = regIapModel::select('IAP_ID','IAP_DESC','IAP_CALLE','IAP_NUM', 'IAP_COLONIA','IAP_TELEFONO',
+                                      'IAP_STATUS', 'IAP_FECREG')
                                 ->orderBy('IAP_ID','ASC')
                                 ->get();
+        //$regiap = regIapModel::join('CAT_MUNICIPIOS_SEDESEM','CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','=','JP_IAPS.MUNICIPIO_ID')
+        //                      ->wherein('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
+        //                ->join('CAT_ENTIDADES_FEDERATIVAS','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID', '=', 
+        //                                                                 'CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
+        //              ->join('JP_CAT_RUBROS'         ,'JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
+        //              ->select('JP_IAPS.IAP_ID', 'JP_IAPS.IAP_DESC',    'JP_IAPS.IAP_CALLE', 'JP_IAPS.IAP_NUM',
+        //                  'JP_IAPS.IAP_COLONIA', 
+        //                  'JP_IAPS.ENTIDADFEDERATIVA_ID','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC',
+        //                  'JP_IAPS.MUNICIPIO_ID','CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE',         
+        //                  'JP_IAPS.RUBRO_ID',    'JP_CAT_RUBROS.RUBRO_DESC', 'JP_IAPS.IAP_REGCONS', 'JP_IAPS.IAP_RFC',    
+        //                  'JP_IAPS.IAP_CP',      'JP_IAPS.IAP_FECCONS',      'JP_IAPS.IAP_TELEFONO','JP_IAPS.IAP_EMAIL',   
+        //                  'JP_IAPS.IAP_SWEB',    'JP_IAPS.IAP_PRES',         'JP_IAPS.IAP_REPLEGAL','JP_IAPS.IAP_SRIO',    
+        //                  'JP_IAPS.IAP_TESORERO','JP_IAPS.IAP_OBJSOC',       'JP_IAPS.IAP_STATUS',  
+        //                  'JP_IAPS.IAP_FECCERTIFIC','JP_IAPS.IAP_FECREG')
+        //                  ->orderBy('JP_IAPS.IAP_ID','ASC')
+        //                  ->get();                                 
         if($regiap->count() <= 0){
             toastr()->error('No existen registros en el catalogo de IAPS.','Uppss!',['positionClass' => 'toast-bottom-right']);
             return redirect()->route('verIap');
         }
-        $pdf = PDF::loadView('sicinar.pdf.catiapsPDF', compact('nombre','usuario','estructura','id_estructura','regiap','regmunicipio','regentidades','regrubro'));
+        $pdf = PDF::loadView('sicinar.pdf.catiapsPDF', compact('nombre','usuario','regentidades','regmunicipio','regrubro','regiap'));
         //$options = new Options();
         //$options->set('defaultFont', 'Courier');
         //$pdf->set_option('defaultFont', 'Courier');

@@ -87,7 +87,7 @@ Route::get('/', function () {
     Route::get('plan-de-trabajo/{id}/ver/pdf','estrategiasController@actionVerPDF')->name('planPDF');
    
     // BACK OFFICE DEL SISTEMA
-    Route::get('BackOffice/usuarios'      ,'usuariosController@actionBackOffice')->name('backUsuarios');
+    Route::get('BackOffice/usuarios'      ,'usuariosController@actionNuevoUsuario')->name('nuevoUsuario');
     Route::post('BackOffice/usuarios/alta','usuariosController@actionAltaUsuario')->name('altaUsuario');
     Route::get('BackOffice/usuarios/todos','usuariosController@actionVerUsuario')->name('verUsuarios');
     Route::get('BackOffice/usuarios/{id}/editar'    ,'usuariosController@actionEditarUsuario')->name('editarUsuario');
@@ -144,8 +144,9 @@ Route::get('/', function () {
     Route::get('municipio/ver/todos','catalogosmunicipiosController@actionVermunicipios')->name('verMunicipios');
     Route::get('municipio/excel'    ,'catalogosmunicipiosController@exportCatmunicipiosExcel')->name('downloadmunicipios');
     Route::get('municipio/pdf'      ,'catalogosmunicipiosController@exportCatmunicipiosPdf')->name('catmunicipiosPDF');
+    
     //Instituciones de Asistencia Privada (IAPS)
-    //IAPS
+    //IAPS Directorio
     Route::get('iaps/nueva'           ,'iapsController@actionNuevaIap')->name('nuevaIap');
     Route::post('iaps/nueva/alta'     ,'iapsController@actionAltaNuevaIap')->name('AltaNuevaIap');
     Route::get('iaps/ver/todas'       ,'iapsController@actionVerIap')->name('verIap');
@@ -155,11 +156,79 @@ Route::get('/', function () {
     Route::get('iaps/excel'           ,'iapsController@exportCatIapsExcel')->name('downloadiap');
     Route::get('iaps/pdf'             ,'iapsController@exportCatIapsPdf')->name('catiapPDF');
 
+    Route::get('iaps/{id}/editar/iaps1','iapsController1@actionEditarIap1')->name('editarIap1');
+    Route::put('iaps/{id}/actualizar1' ,'iapsController1@actionActualizarIap1')->name('actualizarIap1'); 
+    Route::get('iaps/{id}/editar/iaps2','iapsController2@actionEditarIap2')->name('editarIap2');
+    Route::put('iaps/{id}/actualizar2' ,'iapsController2@actionActualizarIap2')->name('actualizarIap2');        
+
+    //Numeralia
     Route::get('numeralia/ver/graficaxmpio'  ,'iapsController@IapxMpio')->name('verGraficaxmpio');
     Route::get('numeralia/ver/graficaxrubro' ,'iapsController@IapxRubro')->name('verGraficaxrubro');    
     Route::get('numeralia/ver/graficaxrubro2','iapsController@IapxRubro2')->name('verGraficaxrubro2'); 
     Route::get('numeralia/ver/mapas'         ,'iapsController@Mapas')->name('verMapas');        
     Route::get('numeralia/ver/mapas2'        ,'iapsController@Mapas2')->name('verMapas2');        
     Route::get('numeralia/ver/mapas3'        ,'iapsController@Mapas3')->name('verMapas3');        
+    
+    //IAPS datos Juridicos
+    Route::get('iapsjuridico/nueva'             ,'iapsjuridicoController@actionNuevaIapj')->name('nuevaIapj');
+    Route::post('iapsjuridico/nueva/alta'       ,'iapsjuridicoController@actionAltaNuevaIapj')->name('AltaNuevaIapj');    
+    Route::get('iapsjuridico/ver/todasj'        ,'iapsjuridicoController@actionVerIapj')->name('verIapj');
+    Route::get('iapsjuridico/{id}/editar/iapsj' ,'iapsjuridicoController@actionEditarIapj')->name('editarIapj');
+    Route::put('iapsjuridico/{id}/actualizarj'  ,'iapsjuridicoController@actionActualizarIapj')->name('actualizarIapj');    
+    Route::get('iapsjuridico/{id}/editar/iapsj1','iapsjuridicoController@actionEditarIapj1')->name('editarIapj1');
+    Route::put('iapsjuridico/{id}/actualizarj1' ,'iapsjuridicoController@actionActualizarIapj1')->name('actualizarIapj1');    
+    Route::get('iapsjuridico/{id}/editar/iapsj2','iapsjuridicoController@actionEditarIapj2')->name('editarIapj2');
+    Route::put('iapsjuridico/{id}/actualizarj2' ,'iapsjuridicoController@actionActualizarIapj2')->name('actualizarIapj2');    
+    Route::get('iapsjuridico/{id}/Borrarj'      ,'iapsjuridicoController@actionBorrarIapj')->name('borrarIapj');
+    //Route::get('iapsjuridico/excel'           ,'iapsjuridicoController@exportCatIapsExcel')->name('downloadiap');
+    //Route::get('iapsjuridico/{id, file}/pdfj'   ,'iapsjuridicoController@exportAct_ConstPDF')->name('acta_constPDF');
+
+    //IAPS Aportaciones monetarias
+    Route::get('aportaciones/nueva'            ,'aportacionesController@actionNuevaApor')->name('nuevaApor');
+    Route::post('aportaciones/nueva/alta'      ,'aportacionesController@actionAltaNuevaApor')->name('AltaNuevaApor');
+    Route::get('aportaciones/ver/todas'        ,'aportacionesController@actionVerApor')->name('verApor');
+    Route::get('aportaciones/{id}/editar/iaps' ,'aportacionesController@actionEditarApor')->name('editarApor');
+    Route::put('aportaciones/{id}/actualizar'  ,'aportacionesController@actionActualizarApor')->name('actualizarApor');
+    Route::get('aportaciones/{id}/editar/iaps1','aportacionesController1@actionEditarApor1')->name('editarApor1');
+    Route::put('aportaciones/{id}/actualizar1' ,'aportacionesController1@actionActualizarApor1')->name('actualizarApor1');    
+    Route::get('aportaciones/{id}/Borrar'      ,'aportacionesController@actionBorrarApor')->name('borrarApor');
+    //Route::get('aportaciones/excel'           ,'aportacionesController@exportAporExcel')->name('aporExcel');
+    //Route::get('aportaciones/pdf'             ,'aportacionesController@exportAporPdf')->name('aporPDF');    
+
+    //IAPS Informacion de asistencia social y contable
+    Route::get('asistsocycont/nueva'           ,'asycController@actionNuevaAsyc')->name('nuevaAsyc');
+    Route::post('asistsocycont/nueva/alta'     ,'asycController@actionAltaNuevaAsyc')->name('AltaNuevaAsyc');
+    Route::get('asistsocycont/ver/todas'       ,'asycController@actionVerAsyc')->name('verAsyc');
+    Route::get('asistsocycont/{id}/editar/asyc','asycController@actionEditarAsyc')->name('editarAsyc');
+    Route::put('asistsocycont/{id}/actualizar' ,'asycController@actionActualizarAsyc')->name('actualizarAsyc');
+    Route::get('asistsocycont/{id}/editar/asyc2','asycController@actionEditarAsyc2')->name('editarAsyc2');
+    Route::put('asistsocycont/{id}/actualizar2' ,'asycController@actionActualizarAsyc2')->name('actualizarAsyc2');
+    Route::get('asistsocycont/{id}/editar/asyc3','asycController@actionEditarAsyc3')->name('editarAsyc3');
+    Route::put('asistsocycont/{id}/actualizar3' ,'asycController@actionActualizarAsyc3')->name('actualizarAsyc3');
+    Route::get('asistsocycont/{id}/editar/asyc4','asycController@actionEditarAsyc4')->name('editarAsyc4');
+    Route::put('asistsocycont/{id}/actualizar4' ,'asycController@actionActualizarAsyc4')->name('actualizarAsyc4');
+    Route::get('asistsocycont/{id}/editar/asyc5','asycController@actionEditarAsyc5')->name('editarAsyc5');
+    Route::put('asistsocycont/{id}/actualizar5' ,'asycController@actionActualizarAsyc5')->name('actualizarAsyc5');    
+    Route::get('asistsocycont/{id}/editar/asyc6','asycController@actionEditarAsyc6')->name('editarAsyc6');
+    Route::put('asistsocycont/{id}/actualizar6' ,'asycController@actionActualizarAsyc6')->name('actualizarAsyc6');
+    Route::get('asistsocycont/{id}/editar/asyc7','asycController@actionEditarAsyc7')->name('editarAsyc7');
+    Route::put('asistsocycont/{id}/actualizar7' ,'asycController@actionActualizarAsyc7')->name('actualizarAsyc7');
+    Route::get('asistsocycont/{id}/editar/asyc8','asycController@actionEditarAsyc8')->name('editarAsyc8');
+    Route::put('asistsocycont/{id}/actualizar8' ,'asycController@actionActualizarAsyc8')->name('actualizarAsyc8');
+    Route::get('asistconycont/{id}/Borrar'     ,'asycController@actionBorrarAsyc')->name('borrarAsyc');
+    //Route::get('aportaciones/excel'           ,'aportacionesController@exportAporExcel')->name('aporExcel');
+    //Route::get('aportaciones/pdf'             ,'aportacionesController@exportAporPdf')->name('aporPDF');        
+
+    //Cursos de capacitación
+    Route::get('cursos/nuevo'            ,'cursosController@actionNuevoCurso')->name('nuevoCurso');
+    Route::post('cursos/nuevo/alta'      ,'cursosController@actionAltaNuevoCurso')->name('AltaNuevoCurso');
+    Route::get('cursos/ver/todos'        ,'cursosController@actionVerCursos')->name('verCursos');
+    Route::get('cursos/{id}/editar/curso','cursosController@actionEditarCurso')->name('editarCurso');
+    Route::put('cursos/{id}/actualizar'  ,'cursosController@actionActualizarCurso')->name('actualizarCurso');
+    Route::get('cursos/{id}/Borrar'      ,'cursosController@actionBorrarCurso')->name('borrarCurso');
+    //Route::get('aportaciones/excel'           ,'aportacionesController@exportAporExcel')->name('aporExcel');
+    //Route::get('aportaciones/pdf'             ,'aportacionesController@exportAporPdf')->name('aporPDF');    
+
+
 });
 

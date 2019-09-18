@@ -55,6 +55,7 @@
                                 <div class="col-xs-4 form-group">
                                     <select class="form-control m-bot15" name="perfil" id="perfil" onchange="dis(this);" required>
                                         <option selected="true" disabled="disabled">Selecciona un Rol</option>
+                                        <option value="0">IAP</option>
                                         <option value="1">Operativo</option>
                                         <!--<option value="2">Particular</option>-->
                                         <option value="3">Administrador</option>
