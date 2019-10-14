@@ -3,7 +3,7 @@
 <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <title>@yield('title','Inicio') | SIINAP V.2</title>
+      <title>@yield('title','Inicio') | SIINAP v.2</title>
       <link rel="shortcut icon" type="image/png" href="{{ asset('images/Edomex.png') }}"/>
       <!-- Tell the browser to be responsive to screen width -->
       <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">

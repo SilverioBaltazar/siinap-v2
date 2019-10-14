@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>@yield('title','BackOffice') | SIINAP V.2</title>
+    <title>@yield('title','BackOffice') | SIINAP v.2</title>
     <link rel="shortcut icon" type="image/png" href="{{ asset('images/Edomex.png') }}"/>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -48,7 +48,7 @@
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>S</b></span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b> SIINAP V.2</b></span>
+            <span class="logo-lg"><b> SIINAP v.2</b></span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top">
@@ -120,7 +120,7 @@
     </aside>
     <section>@yield('content')</section>
     <footer class="main-footer">
-        <div class="pull-right hidden-xs"><b>Version 2.0</b> JAPEM-UDITI.</div>
+        <div class="pull-right hidden-xs"><b>Versión 2.0</b> JAPEM-UDITI.</div>
         <strong>Copyright &copy; 2019. Derechos reservados. Secretaría de Desarrollo Social - Junta de Asistencia del Estado de México (JAPEM). 
         </strong>
     </footer>

@@ -30,4 +30,26 @@ class regAportacionesModel extends Model
         'IP_M',
         'LOGIN_M'
     ];
+
+    //***************************************//
+    // *** Como se usa el query scope  ******//
+    //***************************************//
+    public function scopePer($query, $per)
+    {
+        if($per)
+            return $query->where('PERIODO_ID', '=', "$per");
+    }
+
+    public function scopeIapp($query, $iapp)
+    {
+        if($iapp)
+            return $query->where('IAP_ID', '=', "$iapp");
+    }
+
+    public function scopeBio($query, $bio)
+    {
+        if($bio)
+            return $query->where('IAP_OBJSOC', 'LIKE', "%$bio%");
+    } 
+
 }

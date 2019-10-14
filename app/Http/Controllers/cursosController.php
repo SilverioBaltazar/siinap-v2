@@ -45,7 +45,7 @@ class cursosController extends Controller
             ->paginate(30);
         if($regcursos->count() <= 0){
             toastr()->error('No existen registros de cursos dadas de alta.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevoCurso');
+            //return redirect()->route('nuevoCurso');
         }
         return view('sicinar.cursos.verCursos',compact('nombre','usuario','estructura','id_estructura','regiap','regmeses', 'regperiodos', 'regcursos'));
     }

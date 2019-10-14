@@ -230,7 +230,7 @@
                                     <input type="file" class="text-md-center" style="color:red" name="iap_d06" id="iap_d06" placeholder="Subir archivo de programa de trabajo en formato excel">
                                 </div>   
                             </div>
-                            <div class="row">                                                                                  
+                            <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Periodicidad de entrega de información </label>
                                     <select class="form-control m-bot15" name="per06_id" id="per06_id" required>
@@ -264,7 +264,7 @@
                                     <input type="file" class="text-md-center" style="color:red" name="iap_d07" id="iap_d07" placeholder="Subir archivo de Constancia de autorización para recibir donativos en formato PDF">
                                 </div>   
                             </div>
-                            <div class="row">                                                                                  
+                            <div class="row">        
                                 <div class="col-xs-4 form-group">
                                     <label >Periodicidad de entrega de información </label>
                                     <select class="form-control m-bot15" name="per07_id" id="per07_id" required>
@@ -325,6 +325,75 @@
                                     </select>
                                 </div>                                                                  
                             </div>
+
+                            <div class="row">               
+                                <div class="col-xs-4 form-group">
+                                    <label >Reporte de cuotas 5 al millar en formato excel</label>
+                                    <input type="file" class="text-md-center" style="color:red" name="iap_d09" id="iap_d09" placeholder="Subir archivo de Reporte de cuotas 5 al millar en formato excel">
+                                </div>   
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4 form-group">
+                                    <label >Periodicidad de entrega de información </label>
+                                    <select class="form-control m-bot15" name="per09_id" id="per09_id" required>
+                                        <option selected="true" disabled="disabled">Seleccionar periodicidad de entrega</option>
+                                        @foreach($regperiodicidad as $periodicidad)
+                                            <option value="{{$periodicidad->per_id}}">{{$periodicidad->per_desc}}</option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>   
+                                <div class="col-xs-4 form-group">
+                                    <label >Periodo de entrega  </label>
+                                    <select class="form-control m-bot15" name="num09_id" id="num09_id" required>
+                                        <option selected="true" disabled="disabled">Seleccionar periodo de entrega</option>
+                                        @foreach($regnumeros as $numero)
+                                            <option value="{{$numero->num_id}}">{{$numero->num_desc}}</option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>                                   
+                                <div class="col-xs-4 form-group">                        
+                                    <label>¿Está actualizada la información? </label>
+                                    <select class="form-control m-bot15" name="iap_edo09" id="iap_edo09" required>
+                                        <option value="S">         Si</option>
+                                        <option value="N" selected>No</option>
+                                    </select>
+                                </div>                                                                  
+                            </div>
+
+                            <div class="row">               
+                                <div class="col-xs-4 form-group">
+                                    <label >Estados financieros en formato excel</label>
+                                    <input type="file" class="text-md-center" style="color:red" name="iap_d10" id="iap_d10" placeholder="Subir archivo de Estados financieros en formato excel">
+                                </div>   
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4 form-group">
+                                    <label >Periodicidad de entrega de información </label>
+                                    <select class="form-control m-bot15" name="per10_id" id="per10_id" required>
+                                        <option selected="true" disabled="disabled">Seleccionar periodicidad de entrega</option>
+                                        @foreach($regperiodicidad as $periodicidad)
+                                            <option value="{{$periodicidad->per_id}}">{{$periodicidad->per_desc}}</option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>   
+                                <div class="col-xs-4 form-group">
+                                    <label >Periodo de entrega  </label>
+                                    <select class="form-control m-bot15" name="num10_id" id="num10_id" required>
+                                        <option selected="true" disabled="disabled">Seleccionar periodo de entrega</option>
+                                        @foreach($regnumeros as $numero)
+                                            <option value="{{$numero->num_id}}">{{$numero->num_desc}}</option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>                                   
+                                <div class="col-xs-4 form-group">                        
+                                    <label>¿Está actualizada la información? </label>
+                                    <select class="form-control m-bot15" name="iap_edo10" id="iap_edo10" required>
+                                        <option value="S">         Si</option>
+                                        <option value="N" selected>No</option>
+                                    </select>
+                                </div>                                                                  
+                            </div>
+
 
 
                             <div class="row">

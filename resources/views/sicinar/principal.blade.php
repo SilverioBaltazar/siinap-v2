@@ -3,7 +3,7 @@
 <head>
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <title>@yield('title','Inicio') | SIINAP V.2</title>
+      <title>@yield('title','Inicio') | SIINAP v.2</title>
       <link rel="shortcut icon" type="image/png" href="{{ asset('images/Edomex.png') }}"/>
       <!-- Tell the browser to be responsive to screen width -->
       <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -43,13 +43,35 @@
         @jquery
         @toastr_js
         @toastr_render
+
+        $nombre       = session()->get('userlog');
+        $pass         = session()->get('passlog');
+        $rango        = session()->get('rango');        
+        if($nombre == NULL AND $pass == NULL AND $rango == NULL){
+            return view('sicinar.login.expirada');
+        }
+   
+        if(isset($rango))
+            return view('sicinar.login.expirada');
+        }
+        
+        @if(count($errors) > 0)
+            <div class="alert alert-danger" role="alert">
+                <ul>
+                  @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                </ul>
+            </div>
+        @endif
+
         <header class="main-header">
           <!-- Logo -->
           <a href="#" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>S</b></span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b> SIINAP V.2</b></span>
+            <span class="logo-lg"><b> SIINAP v.2</b></span>
           </a>
 
           <!-- Header Navbar: style can be found in header.less -->
@@ -103,17 +125,20 @@
             <ul class="sidebar-menu" data-widget="tree">
               <li class="header">Menú principal</li>
 
+              
               <li class="header">Catálogos     </li>    
               <li><a href="{{route('verProceso')}}"><i class="fa fa-circle-o-notch"></i><span>Procesos         </span></a></li>
               <li><a href="{{route('verFuncion')}}"><i class="fa fa-th"       ></i> <span>Funciones de procesos</span></a></li>  
               <li><a href="{{route('verTrx')}}"    ><i class="fa fa-gears"    ></i> <span>Actividades          </span></a></li>  
-              <li><a href="{{route('verRubro')}}"><i class="fa fa-inbox fa-fw"></i> <span>Rubros sociales      </span></a></li>
-              <li><a href="{{ route('verInmuebleedo') }}"><i class="fa fa-dashboard"></i> <span>Estados de Inmuebles sociales</span></a></li>
+              <li><a href="{{route('verRubro')}}"><i class="fa fa-blind"></i> <span>Rubros sociales      </span></a></li>
+              <li><a href="{{ route('verInmuebleedo') }}"><i class="fa fa-university"></i> <span>Estados de Inmuebles sociales</span></a></li>
+              <li><a href="{{route('verFormatos')}}"><i class="fa fa-book"></i> <span>Tipos de archivos</span></a></li>
+              <li><a href="{{route('verDoctos')}}"><i class="fa fa-clone"></i> <span>Documentos</span></a></li>
               <li><a href="{{ route('verMunicipios') }}"><i class="fa fa-th-large"></i> <span>Municipios SEDESEM</span></a></li>
-
+              
               <li class="header">Instituciones de Asistencia Privada (IAPS)</li> 
               <li  class="treeview">
-                <a href="#"><i class="fa fa-book"></i> <span>IAPS</span>
+                <a href="#"><i class="fa fa-cubes"></i> <span>IAPS</span>
                   <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
@@ -123,6 +148,15 @@
                   <li><a href="{{route('verApor')}}"><i class="fa fa-circle-o"></i>Aportaciones monetarias</a></li>
                   <li><a href="{{route('verCursos')}}"><i class="fa fa-circle-o"></i>Cursos</a></li>
                 </ul>
+
+                <a href="#"><i class="fa fa-gavel"></i> <span>Agenda de diligencias</span>
+                  <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="{{route('verProgdil')}}"><i class="fa fa-circle-o"></i>Programar diligencias</a></li>
+                  <li><a href=""><i class="fa fa-circle-o"></i>Diligencias en las IAPS </a></li>
+                  <li><a href=""><i class="fa fa-circle-o"></i>Tablero de control      </a></li>
+                </ul>                
               </li>
 
               <li class="header">Numeralia</li> 
@@ -131,18 +165,20 @@
                   <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{{route('verGraficaxmpio')}}"><i class="fa fa-circle-o"> </i>IAPS por municipios  </a></li>
+                    <li><a href="{{route('verGraficaxedo')}}"><i class="fa fa-circle-o"> </i>IAPS por estado  </a></li> 
+                    <li><a href="{{route('verGraficaxmpio')}}"><i class="fa fa-circle-o"> </i>IAPS por municipio </a></li>
                     <li><a href="{{route('verGraficaxrubro')}}"><i class="fa fa-circle-o"></i>IAPS por Rubro social</a></li>
+                    <li><a href="{{route('verGraficabitacora')}}"><i class="fa fa-circle-o"></i>Bitacora del sistema</a></li>
                 </ul>
               </li>
-
+              
               <li class="header">BackOffice</li>              
-              <li><a href="{{route('verUsuarios')}}"><i class="fa fa-users"></i> <span>Usuarios</span></a></li>              
+              <li><a href="{{route('verUsuarios')}}"><i class="fa fa-users"></i> <span>Usuarios</span></a></li>
               <li>
                 <a href="{{route('terminada')}}" class="btn btn-danger btn-flat"><i class="fa fa-sign-out"></i><span> 
                 Cerrar Sesión</a>
               </li>
-
+              
             </ul>
           </section>
           <!-- /.sidebar -->

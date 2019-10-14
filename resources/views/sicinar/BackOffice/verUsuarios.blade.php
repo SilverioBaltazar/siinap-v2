@@ -38,7 +38,7 @@
                                     <tr>
                                         <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">Id.</b>
                                         </th>
-                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">Nombre user</b>
+                                        <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">Nombre</b>
                                         </th>
                                         <th colspan="1" style="text-align:center; vertical-align: middle;border: 2px solid slategray;"><b style="color: green">IAP</b>
                                         </th>
@@ -59,32 +59,25 @@
                                 <tbody>
                                 @foreach($usuarios as $usuario)
                                     <tr>
-                                        <td style="text-align:center; vertical-align: middle;">{{$usuario->folio}}
+                                        <td style="text-align:center; vertical-align:middle;">{{$usuario->folio}} </td>
+                                        <td style="text-align:left; vertical-align:middle;">{{$usuario->nombre_completo}}
                                         </td>
-                                        <td style="text-align:center; vertical-align: middle;">{{$usuario->nombre_completo}}
-                                        </td>
-                                        <td style="text-align:left; vertical-align: middle;">
+                                        <td style="text-align:left; vertical-align:middle;">{{$usuario->cve_arbol}}
                                             @foreach($regiap as $iap)
-                                                @if($iap->iap_id == $iap->iap_id)
+                                                @if($iap->iap_id == $usuario->cve_arbol)
                                                     {{$iap->iap_desc}}
                                                     @break
                                                 @endif
                                             @endforeach 
                                         </td>
-                                        @if($usuario->cve_dependencia == '0' OR $usuario->cve_dependencia == ' ')
-                                            <td style="text-align:center; vertical-align: middle;">NO ASIGNADO</td>
-                                        @else
-                                            @foreach($dependencias as $dependencia)
-                                                @if(strpos($dependencia->depen_id,$usuario->cve_dependencia)!==false)
-                                                    <td style="text-align:left; vertical-align: middle;">{{$dependencia->depen_desc}}
-                                                    </td>
+                                        <td style="text-align:left; vertical-align: middle;">{{$usuario->cve_dependencia}}
+                                           @foreach($dependencias as $dependencia)
+                                                @if(rtrim($dependencia->depen_id," ") == $usuario->cve_dependencia)
+                                                    {{$dependencia->depen_desc}}
                                                     @break
                                                 @endif
-                                                @if($loop->last)
-                                                    <td style="text-align:left; vertical-align: middle;">NO ASIGNADO</td>
-                                                @endif
                                             @endforeach
-                                        @endif
+                                        </td>
                                         <td style="text-align:left; vertical-align: middle;">{{$usuario->login}}</td>
                                         <td style="text-align:left; vertical-align: middle;">{{$usuario->password}}</td>
                                         @if($usuario->status_1 == 4)
@@ -105,11 +98,22 @@
                                             @endif
                                         @endif
                                         @if($usuario->status_2 == 1)
-                                            <td style="text-align:center; vertical-align: middle;"><a href="{{route('desactivarUsuario',$usuario->folio)}}" class="btn btn-success" title="Activo"><i class="fa fa-unlock"></i></a></td>
+                                            <td style="color:darkred; text-align:center; vertical-align: middle;">
+                                                <a href="{{route('desactivarUsuario',$usuario->folio)}}" title="Activo"><i class="fa fa-check"></i>
+                                                </a>
+                                            </td>
                                         @else
-                                            <td style="text-align:center; vertical-align: middle;"><a href="{{route('activarUsuario',$usuario->folio)}}" class="btn btn-danger" title="Inactivo"><i class="fa  fa-lock"></i></a></td>
+                                            <td style="color:darkgreen;text-align:center; vertical-align: middle;">
+                                                <a href="{{route('activarUsuario',$usuario->folio)}}" title="Inactivo"><i class="fa  fa-times"></i>
+                                                </a>
+                                            </td>
                                         @endif
-                                        <td style="text-align:center; vertical-align: middle;"><a href="{{route('editarUsuario',$usuario->folio)}}" class="btn btn-primary" title="Editar"><i class="fa fa-pencil"></i></a></td>
+                                        <td style="text-align:center; vertical-align: middle;">
+                                            <a href="{{route('editarUsuario',$usuario->folio)}}" class="btn badge-warning" title="Editar"><i class="fa fa-edit"></i>
+                                            </a>
+                                            <a href="{{route('borrarUsuario',$usuario->folio)}}" class="btn badge-danger" title="Borrar usuario" onclick="return confirm('¿Seguro que desea borrar el usuario?')"><i class="fa fa-times"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

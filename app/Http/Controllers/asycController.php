@@ -230,8 +230,28 @@ class asycController extends Controller
                 }
             }
         }
-        //else
-        //    $iap_d08 = $request->iap_d08;
+        $file09 =null;
+        if(isset($request->iap_d09)){
+            if(!empty($request->iap_d09)){
+                //Comprobar  si el campo act_const tiene un archivo asignado:
+                if($request->hasFile('iap_d09')){
+                    $file09=$iap_folio.'_'.$request->file('iap_d09')->getClientOriginalName();
+                    //sube el archivo a la carpeta del servidor public/images/
+                    $request->file('iap_d09')->move(public_path().'/images/', $file09);
+                }
+            }
+        }
+        $file10 =null;
+        if(isset($request->iap_d10)){
+            if(!empty($request->iap_d10)){
+                //Comprobar  si el campo act_const tiene un archivo asignado:
+                if($request->hasFile('iap_d10')){
+                    $file10=$iap_folio.'_'.$request->file('iap_d10')->getClientOriginalName();
+                    //sube el archivo a la carpeta del servidor public/images/
+                    $request->file('iap_d10')->move(public_path().'/images/', $file10);
+                }
+            }
+        }
 
         $nuevaasyc->IAP_FOLIO    = $iap_folio;
         $nuevaasyc->PERIODO_ID   = $request->periodo_id;
@@ -275,7 +295,17 @@ class asycController extends Controller
         $nuevaasyc->IAP_D08      = $file08;        
         $nuevaasyc->NUM08_ID     = $request->num08_id;
         $nuevaasyc->PER08_ID     = $request->per08_id;        
-        $nuevaasyc->IAP_EDO08    = $request->iap_edo08;                 
+        $nuevaasyc->IAP_EDO08    = $request->iap_edo08;
+
+        $nuevaasyc->IAP_D09      = $file09;        
+        $nuevaasyc->NUM09_ID     = $request->num09_id;
+        $nuevaasyc->PER09_ID     = $request->per09_id;        
+        $nuevaasyc->IAP_EDO09    = $request->iap_edo09;         
+
+        $nuevaasyc->IAP_D10      = $file10;        
+        $nuevaasyc->NUM10_ID     = $request->num10_id;
+        $nuevaasyc->PER10_ID     = $request->per10_id;        
+        $nuevaasyc->IAP_EDO10    = $request->iap_edo10;                         
 
         $nuevaasyc->IP            = $ip;
         $nuevaasyc->LOGIN         = $nombre;         // Usuario ;
@@ -383,7 +413,7 @@ class asycController extends Controller
                     ->first();
         if($regasyc->count() <= 0){
             toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaAsyc');
+            //return redirect()->route('nuevaAsyc');
         }
         return view('sicinar.asyc.editarAsyc',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
 
@@ -463,7 +493,7 @@ class asycController extends Controller
             //echo "Escribió en el campo de texto 1: " . $request->iap_d01 . "<br><br>"; 
             //Comprobar  si el campo foto1 tiene un archivo asignado:
             if($request->hasFile('iap_d01')){
-                echo "Escribió en el campo de texto 3: " .'-'. $request->iap_d01 .'-'. "<br><br>"; 
+                echo "Escribió en el campo de texto 1: " .'-'. $request->iap_d01 .'-'. "<br><br>"; 
                 $name01 = $id.'_'.$request->file('iap_d01')->getClientOriginalName(); 
                 //sube el archivo a la carpeta del servidor public/images/
                 $request->file('iap_d01')->move(public_path().'/images/', $name01);
@@ -552,7 +582,7 @@ class asycController extends Controller
                     ->first();
         if($regasyc->count() <= 0){
             toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaAsyc');
+            //return redirect()->route('nuevaAsyc');
         }
         return view('sicinar.asyc.editarAsyc2',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
     }
@@ -719,7 +749,7 @@ class asycController extends Controller
                     ->first();
         if($regasyc->count() <= 0){
             toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaAsyc');
+            //return redirect()->route('nuevaAsyc');
         }
         return view('sicinar.asyc.editarAsyc3',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
     }
@@ -878,7 +908,7 @@ class asycController extends Controller
                     ->first();
         if($regasyc->count() <= 0){
             toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaAsyc');
+            //return redirect()->route('nuevaAsyc');
         }
         return view('sicinar.asyc.editarAsyc4',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
     }
@@ -1037,7 +1067,7 @@ class asycController extends Controller
                     ->first();
         if($regasyc->count() <= 0){
             toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaAsyc');
+            //return redirect()->route('nuevaAsyc');
         }
         return view('sicinar.asyc.editarAsyc5',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
     }
@@ -1195,7 +1225,7 @@ class asycController extends Controller
                     ->first();
         if($regasyc->count() <= 0){
             toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaAsyc');
+            //return redirect()->route('nuevaAsyc');
         }
         return view('sicinar.asyc.editarAsyc6',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
     }
@@ -1353,7 +1383,7 @@ class asycController extends Controller
                     ->first();
         if($regasyc->count() <= 0){
             toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaAsyc');
+            //return redirect()->route('nuevaAsyc');
         }
         return view('sicinar.asyc.editarAsyc7',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
     }
@@ -1511,7 +1541,7 @@ class asycController extends Controller
                     ->first();
         if($regasyc->count() <= 0){
             toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaAsyc');
+            //return redirect()->route('nuevaAsyc');
         }
         return view('sicinar.asyc.editarAsyc8',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
     }
@@ -1627,6 +1657,322 @@ class asycController extends Controller
         }
         return redirect()->route('verAsyc');
     }    
+
+/****************** Editar inf. de Reporte 5 cuotas al millar **********/
+    public function actionEditarAsyc9($id){
+        $nombre        = session()->get('userlog');
+        $pass          = session()->get('passlog');
+        if($nombre == NULL AND $pass == NULL){
+            return view('sicinar.login.expirada');
+        }
+        $usuario       = session()->get('usuario');
+        $estructura    = session()->get('estructura');
+        $id_estruc     = session()->get('id_estructura');
+        $id_estructura = rtrim($id_estruc," ");
+        $rango         = session()->get('rango');
+
+
+        $regper       = regPerModel::select('PER_ID', 'PER_DESC')
+                        ->orderBy('PER_ID','asc')
+                        ->get();
+        $regnumeros   = regNumerosModel::select('NUM_ID', 'NUM_DESC')
+                        ->orderBy('NUM_ID','asc')
+                        ->get();
+        $regperiodos  = regPfiscalesModel::select('PERIODO_ID', 'PERIODO_DESC')
+                        ->orderBy('PERIODO_ID','asc')
+                        ->get();        
+       $regperiodicidad= regPerModel::select('PER_ID', 'PER_DESC')
+                        ->orderBy('PER_ID','asc')
+                        ->get();                                
+        $regiap       = regIapModel::select('IAP_ID', 'IAP_DESC','IAP_STATUS')
+                        ->orderBy('IAP_DESC','asc')
+                        ->get();
+
+        $regasyc = regAsistContableModel::select('IAP_FOLIO','IAP_ID','PERIODO_ID',
+            'IAP_D01','PER01_ID','NUM01_ID','IAP_EDO01','IAP_D02','PER02_ID','NUM02_ID','IAP_EDO02',
+            'IAP_D03','PER03_ID','NUM03_ID','IAP_EDO03','IAP_D04','PER04_ID','NUM04_ID','IAP_EDO04',
+            'IAP_D05','PER05_ID','NUM05_ID','IAP_EDO05','IAP_D06','PER06_ID','NUM06_ID','IAP_EDO06',
+            'IAP_D07','PER07_ID','NUM07_ID','IAP_EDO07','IAP_D08','PER08_ID','NUM08_ID','IAP_EDO08',
+            'IAP_D09','PER09_ID','NUM09_ID','IAP_EDO09','IAP_D10','PER10_ID','NUM10_ID','IAP_EDO10',
+            'IAP_STATUS','FECREG','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+                    ->where('IAP_FOLIO', $id)
+                    ->first();
+        if($regasyc->count() <= 0){
+            toastr()->error('No existe registro de información de reporte cuotas 5 al millar.','Lo siento!',['positionClass' => 'toast-bottom-right']);
+            //return redirect()->route('nuevaAsyc');
+        }
+        return view('sicinar.asyc.editarAsyc9',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
+    }
+
+    public function actionActualizarAsyc9(asycRequest $request, $id){
+        $nombre        = session()->get('userlog');
+        $pass          = session()->get('passlog');
+        if($nombre == NULL AND $pass == NULL){
+            return view('sicinar.login.expirada');
+        }
+        $usuario       = session()->get('usuario');
+        $estructura    = session()->get('estructura');
+        $id_estruc     = session()->get('id_estructura');
+        $id_estructura = rtrim($id_estruc," ");
+        $rango         = session()->get('rango');
+        $ip            = session()->get('ip');
+
+        /************ Bitacora inicia *************************************/ 
+        setlocale(LC_TIME, "spanish");        
+        $xip          = session()->get('ip');
+        $xperiodo_id  = (int)date('Y');
+        $xprograma_id = 1;
+        $xmes_id      = (int)date('m');
+        $xproceso_id  =         9;
+        $xfuncion_id  =      9003;
+        $xtrx_id      =       161;    //Actualizar aportacion monetaria        
+
+        $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
+                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->get();
+        if($regbitacora->count() <= 0){              // Alta
+            $nuevoregBitacora = new regBitacoraModel();              
+            $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
+            $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
+            $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
+            $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
+            $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
+            $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
+            $nuevoregBitacora->FOLIO      = $id;             // Folio    
+            $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
+            $nuevoregBitacora->IP         = $ip;             // IP
+            $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
+
+            $nuevoregBitacora->save();
+            if($nuevoregBitacora->save() == true)
+               toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            else
+               toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
+        }else{                   
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************         
+
+            $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
+                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+            ->update([
+                'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
+                'IP_M' => $regbitacora->IP           = $ip,
+                'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
+                'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
+            ]);
+            toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+        }
+        /************ Bitacora termina *************************************/         
+
+        // **************** actualizar ******************************
+        $regasyc = regAsistContableModel::where('IAP_FOLIO',$id);
+        if($regasyc->count() <= 0)
+            toastr()->error('No existe llave de datos de asistencia social y contable.','¡Por favor volver a intentar!',['positionClass' => 'toast-bottom-right']);
+        else{        
+
+            $name09 =null;
+            //echo "Escribió en el campo de texto 1: " .'-'. $request->iap_d01 .'-'. "<br><br>"; 
+            //echo "Escribió en el campo de texto 1: " . $request->iap_d01 . "<br><br>"; 
+            //Comprobar  si el campo foto1 tiene un archivo asignado:
+            if($request->hasFile('iap_d09')){
+                echo "Escribió en el campo de texto 9: " .'-'. $request->iap_d09 .'-'. "<br><br>"; 
+                $name09 = $id.'_'.$request->file('iap_d09')->getClientOriginalName(); 
+                //sube el archivo a la carpeta del servidor public/images/
+                $request->file('iap_d09')->move(public_path().'/images/', $name09);
+
+                // ************* Actualizamos registro **********************************
+                $regasyc = regAsistContableModel::where('IAP_FOLIO',$id)        
+                            ->update([                
+                            'IAP_ID'        => $request->iap_id,
+                            'PERIODO_ID'    => $request->periodo_id,                                 
+                            'IAP_D09'       => $name09,                  
+                            'PER09_ID'      => $request->per09_id,
+                            'NUM09_ID'      => $request->num09_id,                
+                            'IAP_EDO09'     => $request->iap_edo09,
+                            'IP_M'          => $ip,
+                            'LOGIN_M'       => $nombre,
+                            'FECHA_M'       => date('Y/m/d')    //date('d/m/Y')                                
+                            ]);
+                toastr()->success('Datos de asistencia social y contable actualizada correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            }else{
+                // ************* Actualizamos registro sin foto **********************************
+                $regasyc = regAsistContableModel::where('IAP_FOLIO',$id)        
+                            ->update([                 
+                            'IAP_ID'        => $request->iap_id,
+                            'PERIODO_ID'    => $request->periodo_id,                                 
+                            'PER09_ID'      => $request->per09_id,
+                            'NUM09_ID'      => $request->num09_id,                
+                            'IAP_EDO09'     => $request->iap_edo09,
+                            'IP_M'          => $ip,
+                            'LOGIN_M'       => $nombre,
+                            'FECHA_M'       => date('Y/m/d')    //date('d/m/Y')                                
+                             ]);
+                toastr()->success('Datos de asistencia social y contable actualizada correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            }    
+        }
+        return redirect()->route('verAsyc');
+    } 
+
+/****************** Editar inf. de Estados financieros **********/
+    public function actionEditarAsyc10($id){
+        $nombre        = session()->get('userlog');
+        $pass          = session()->get('passlog');
+        if($nombre == NULL AND $pass == NULL){
+            return view('sicinar.login.expirada');
+        }
+        $usuario       = session()->get('usuario');
+        $estructura    = session()->get('estructura');
+        $id_estruc     = session()->get('id_estructura');
+        $id_estructura = rtrim($id_estruc," ");
+        $rango         = session()->get('rango');
+
+
+        $regper       = regPerModel::select('PER_ID', 'PER_DESC')
+                        ->orderBy('PER_ID','asc')
+                        ->get();
+        $regnumeros   = regNumerosModel::select('NUM_ID', 'NUM_DESC')
+                        ->orderBy('NUM_ID','asc')
+                        ->get();
+        $regperiodos  = regPfiscalesModel::select('PERIODO_ID', 'PERIODO_DESC')
+                        ->orderBy('PERIODO_ID','asc')
+                        ->get();        
+       $regperiodicidad= regPerModel::select('PER_ID', 'PER_DESC')
+                        ->orderBy('PER_ID','asc')
+                        ->get();                                
+        $regiap       = regIapModel::select('IAP_ID', 'IAP_DESC','IAP_STATUS')
+                        ->orderBy('IAP_DESC','asc')
+                        ->get();
+
+        $regasyc = regAsistContableModel::select('IAP_FOLIO','IAP_ID','PERIODO_ID',
+            'IAP_D01','PER01_ID','NUM01_ID','IAP_EDO01','IAP_D02','PER02_ID','NUM02_ID','IAP_EDO02',
+            'IAP_D03','PER03_ID','NUM03_ID','IAP_EDO03','IAP_D04','PER04_ID','NUM04_ID','IAP_EDO04',
+            'IAP_D05','PER05_ID','NUM05_ID','IAP_EDO05','IAP_D06','PER06_ID','NUM06_ID','IAP_EDO06',
+            'IAP_D07','PER07_ID','NUM07_ID','IAP_EDO07','IAP_D08','PER08_ID','NUM08_ID','IAP_EDO08',
+            'IAP_D09','PER09_ID','NUM09_ID','IAP_EDO09','IAP_D10','PER10_ID','NUM10_ID','IAP_EDO10',
+            'IAP_STATUS','FECREG','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+                    ->where('IAP_FOLIO', $id)
+                    ->first();
+        if($regasyc->count() <= 0){
+            toastr()->error('No existe registro de información de asistencia social y contable.','Lo siento!',['positionClass' => 'toast-bottom-right']);
+            //return redirect()->route('nuevaAsyc');
+        }
+        return view('sicinar.asyc.editarAsyc10',compact('nombre','usuario','estructura','id_estructura','regiap','regasyc','regper','regnumeros', 'regperiodos','regperiodicidad'));
+    }
+
+    public function actionActualizarAsyc10(asycRequest $request, $id){
+        $nombre        = session()->get('userlog');
+        $pass          = session()->get('passlog');
+        if($nombre == NULL AND $pass == NULL){
+            return view('sicinar.login.expirada');
+        }
+        $usuario       = session()->get('usuario');
+        $estructura    = session()->get('estructura');
+        $id_estruc     = session()->get('id_estructura');
+        $id_estructura = rtrim($id_estruc," ");
+        $rango         = session()->get('rango');
+        $ip            = session()->get('ip');
+
+        /************ Bitacora inicia *************************************/ 
+        setlocale(LC_TIME, "spanish");        
+        $xip          = session()->get('ip');
+        $xperiodo_id  = (int)date('Y');
+        $xprograma_id = 1;
+        $xmes_id      = (int)date('m');
+        $xproceso_id  =         9;
+        $xfuncion_id  =      9003;
+        $xtrx_id      =       161;    //Actualizar aportacion monetaria        
+
+        $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
+                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->get();
+        if($regbitacora->count() <= 0){              // Alta
+            $nuevoregBitacora = new regBitacoraModel();              
+            $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
+            $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
+            $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
+            $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
+            $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
+            $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
+            $nuevoregBitacora->FOLIO      = $id;             // Folio    
+            $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
+            $nuevoregBitacora->IP         = $ip;             // IP
+            $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
+
+            $nuevoregBitacora->save();
+            if($nuevoregBitacora->save() == true)
+               toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            else
+               toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
+        }else{                   
+            //*********** Obtine el no. de veces *****************************
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+            $xno_veces = $xno_veces+1;                        
+            //*********** Termina de obtener el no de veces *****************************         
+
+            $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
+                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+            ->update([
+                'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
+                'IP_M' => $regbitacora->IP           = $ip,
+                'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
+                'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
+            ]);
+            toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+        }
+        /************ Bitacora termina *************************************/         
+
+        // **************** actualizar ******************************
+        $regasyc = regAsistContableModel::where('IAP_FOLIO',$id);
+        if($regasyc->count() <= 0)
+            toastr()->error('No existe llave de datos de asistencia social y contable.','¡Por favor volver a intentar!',['positionClass' => 'toast-bottom-right']);
+        else{        
+
+            $name10 =null;
+            //echo "Escribió en el campo de texto 1: " .'-'. $request->iap_d01 .'-'. "<br><br>"; 
+            //echo "Escribió en el campo de texto 1: " . $request->iap_d01 . "<br><br>"; 
+            //Comprobar  si el campo foto1 tiene un archivo asignado:
+            if($request->hasFile('iap_d10')){
+                echo "Escribió en el campo de texto 10: " .'-'. $request->iap_d10 .'-'. "<br><br>"; 
+                $name10 = $id.'_'.$request->file('iap_d10')->getClientOriginalName(); 
+                //sube el archivo a la carpeta del servidor public/images/
+                $request->file('iap_d10')->move(public_path().'/images/', $name10);
+
+                // ************* Actualizamos registro **********************************
+                $regasyc = regAsistContableModel::where('IAP_FOLIO',$id)        
+                            ->update([                
+                            'IAP_ID'        => $request->iap_id,
+                            'PERIODO_ID'    => $request->periodo_id,                                 
+                            'IAP_D10'       => $name10,                  
+                            'PER10_ID'      => $request->per10_id,
+                            'NUM10_ID'      => $request->num10_id,                
+                            'IAP_EDO10'     => $request->iap_edo10,
+                            'IP_M'          => $ip,
+                            'LOGIN_M'       => $nombre,
+                            'FECHA_M'       => date('Y/m/d')    //date('d/m/Y')                                
+                            ]);
+                toastr()->success('Datos de asistencia social y contable actualizada correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            }else{
+                // ************* Actualizamos registro sin foto **********************************
+                $regasyc = regAsistContableModel::where('IAP_FOLIO',$id)        
+                            ->update([                 
+                            'IAP_ID'        => $request->iap_id,
+                            'PERIODO_ID'    => $request->periodo_id,                                 
+                            'PER10_ID'      => $request->per10_id,
+                            'NUM10_ID'      => $request->num10_id,                
+                            'IAP_EDO10'     => $request->iap_edo10,
+                            'IP_M'          => $ip,
+                            'LOGIN_M'       => $nombre,
+                            'FECHA_M'       => date('Y/m/d')    //date('d/m/Y')                                
+                             ]);
+                toastr()->success('Datos de asistencia social y contable actualizada correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            }    
+        }
+        return redirect()->route('verAsyc');
+    } 
 
     //***** Borrar registro completo ***********************
     public function actionBorrarAsyc($id){

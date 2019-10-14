@@ -33,6 +33,47 @@ use PDF;
 class aportacionesController extends Controller
 {
 
+    public function actionBuscarApor(Request $request)
+    {
+        $nombre       = session()->get('userlog');
+        $pass         = session()->get('passlog');
+        if($nombre == NULL AND $pass == NULL){
+            return view('sicinar.login.expirada');
+        }
+        $usuario      = session()->get('usuario');
+        $estructura   = session()->get('estructura');
+        $id_estruc    = session()->get('id_estructura');
+        $id_estructura= rtrim($id_estruc," ");
+        $rango        = session()->get('rango');
+        $ip           = session()->get('ip');
+
+        $regbancos  = regBancosModel::select('BANCO_ID','BANCO_DESC')->get();
+        $regmeses   = regMesesModel::select('MES_ID','MES_DESC')->get();
+        $regperiodos= regPfiscalesModel::select('PERIODO_ID', 'PERIODO_DESC')->orderBy('PERIODO_ID','asc')
+                      ->get();  
+        $regiap     = regIapModel::select('IAP_ID','IAP_DESC','IAP_CALLE')->orderBy('IAP_DESC','asc')->get();
+
+        //**************************************************************//
+        // ***** busqueda https://github.com/rimorsoft/Search-simple ***//
+        // ***** video https://www.youtube.com/watch?v=bmtD9GUaszw   ***//
+        //**************************************************************//
+        $per     = $request->get('per');   
+        $iapp    = $request->get('iapp');  
+        $bio     = $request->get('bio');    
+        $regapor = regAportacionesModel::orderBy('APOR_FOLIO', 'ASC')
+                   ->per($per)           //Metodos personalizados es equvalente a ->where('IAP_DESC', 'LIKE', "%$name%");
+                   ->iapp($iapp)         //Metodos personalizados
+                   //->bio($bio)           //Metodos personalizados
+                   ->paginate(30);
+        if($regapor->count() <= 0){
+            toastr()->error('No existen registros de aportaciones monetarias.','Lo siento!',['positionClass' => 'toast-bottom-right']);
+            //return redirect()->route('nuevaIap');
+        }       
+        return view('sicinar.aportaciones.verApor',compact('nombre','usuario','estructura','id_estructura','regiap','regapor', 'regbancos', 'regmeses','regperiodos'));     
+        //return view('sicinar.aportaciones.verApor',compact('nombre','usuario','estructura','id_estructura','regapor'));         
+    }
+
+
     //*********** Mostrar las aportaciones ***************//
     public function actionVerApor(){
         $nombre       = session()->get('userlog');
@@ -49,10 +90,9 @@ class aportacionesController extends Controller
 
         $regbancos = regBancosModel::select('BANCO_ID', 'BANCO_DESC')->get();
         $regmeses  = regMesesModel::select('MES_ID', 'MES_DESC')->get();
-
-        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_CALLE','IAP_NUM','IAP_COLONIA','MUNICIPIO_ID',          'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','IAP_STATUS','IAP_FECCERTIFIC','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
-                  ->get();
-
+        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC')->orderBy('IAP_DESC','asc')->get();
+        $regperiodos= regPfiscalesModel::select('PERIODO_ID', 'PERIODO_DESC')->orderBy('PERIODO_ID','asc')
+                      ->get();  
         $regapor = regAportacionesModel::select('APOR_FOLIO','PERIODO_ID','IAP_ID','MES_ID','BANCO_ID','APOR_NOCHEQUE','APOR_CONCEPTO','APOR_MONTO','APOR_ENTREGA','APOR_RECIBE','APOR_COMPDEPO','APOR_STATUS','FECREG','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
                         ->orderBy('APOR_FOLIO','ASC')
                         ->paginate(30);
@@ -60,7 +100,7 @@ class aportacionesController extends Controller
             toastr()->error('No existen registros de aportaciones monetarias.','Lo siento!',['positionClass' => 'toast-bottom-right']);
             //return redirect()->route('nuevaApor');
         }
-        return view('sicinar.aportaciones.verApor',compact('nombre','usuario','estructura','id_estructura','regiap','regapor', 'regbancos', 'regmeses'));
+        return view('sicinar.aportaciones.verApor',compact('nombre','usuario','estructura','id_estructura','regapor','regiap','regmeses','regbancos','regperiodos'));
     }
 
     public function actionNuevaApor(){

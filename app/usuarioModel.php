@@ -24,7 +24,7 @@ class usuarioModel extends Model
 	    'LOGIN',
 	    'PASSWORD',
 	    'TIPO_USUARIO',
-        'CVE_ARBOL'
+        'CVE_ARBOL',
       	'STATUS_1', //TIPO DE USUARIO [3 => ADMIN, 2 => GENERAL, 3 => PARTICULAR]
       	'STATUS_2', //1 ACTIVO      0 INACTIVO
 	    'FECHA_REGISTRO'

@@ -34,24 +34,45 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="box">
-                        <div class="box-header" style="text-align:right;">
-                            <a href="{{route('downloadiap')}}" class="btn btn-success" title="Exportar catálogo de IAPS (formato Excel)"><i class="fa fa-file-excel-o"></i> Excel</a>                            
-                           
-                            <a href="{{route('nuevaIap')}}"   class="btn btn-primary btn_xs" title="Alta de nueva IAP"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Nueva IAP</a>
+
+                        <div class="page-header" style="text-align:right;">
+                            Busqueda  
+                            {{ Form::open(['route' => 'buscarIap', 'method' => 'GET', 'class' => 'form-inline pull-right']) }}
+                                <div class="form-group">
+                                    {{ Form::text('name', null, ['class' => 'form-control', 'placeholder' => 'Nombre IAP']) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ Form::text('email', null, ['class' => 'form-control', 'placeholder' => 'Email']) }}
+                                </div>
+                                <div class="form-group">
+                                    {{ Form::text('bio', null, ['class' => 'form-control', 'placeholder' => 'Objeto social']) }}
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                <a href="{{route('downloadiap')}}" class="btn btn-success" title="Exportar catálogo de IAPS (formato Excel)"><i class="fa fa-file-excel-o"></i> Excel</a>                            
+
+                                <a href="{{route('nuevaIap')}}"   class="btn btn-primary btn_xs" title="Alta de nueva IAP"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Nueva IAP</a>
+                                </div>                                
+                            {{ Form::close() }}
+
                         </div>
+
                         <div class="box-body">
-                            <table id="tabla1" class="table table-striped table-bordered table-sm">
+                            <table id="tabla1" class="table table-hover table-striped">
                                 <thead style="color: brown;" class="justify">
                                     <tr>
                                         <th style="text-align:left;   vertical-align: middle;">Id.              </th>
                                         <th style="text-align:left;   vertical-align: middle;">Nombre de la IAP </th>
-                                        <th style="text-align:left;   vertical-align: middle;">Calle            </th>     
-                                        <th style="text-align:left;   vertical-align: middle;">No. Ext./Int.    </th>
+                                        <th style="text-align:left;   vertical-align: middle;">Domicilio Legal  </th>     
                                         <th style="text-align:left;   vertical-align: middle;">Colonia          </th>
                                         <th style="text-align:left;   vertical-align: middle;">Foto1            </th>
                                         <th style="text-align:left;   vertical-align: middle;">Foto2            </th>
                                         <th style="text-align:center; vertical-align: middle;">Activa <br>Inact.</th>
-                                        <th style="text-align:center; vertical-align: middle;">Fecha registro   </th>
+                                        
                                         <th style="text-align:center; vertical-align: middle; width:100px;">Acciones</th>
                                     </tr>
                                 </thead>
@@ -60,8 +81,7 @@
                                     <tr>
                                         <td style="text-align:left; vertical-align: middle;">{{$iap->iap_id}}        </td>
                                         <td style="text-align:left; vertical-align: middle;">{{Trim($iap->iap_desc)}}</td>
-                                        <td style="text-align:left; vertical-align: middle;">{{$iap->iap_calle}}     </td>
-                                        <td style="text-align:left; vertical-align: middle;">{{$iap->iap_num}}       </td>
+                                        <td style="text-align:left; vertical-align: middle;">{{$iap->iap_dom1}}     </td>
                                         <td style="text-align:left; vertical-align: middle;">{{$iap->iap_colonia}}   </td>
                                         
                                         @if(isset($iap->iap_foto1))
@@ -89,7 +109,7 @@
                                             <td style="color:darkred; text-align:center; vertical-align: middle;" title="Inactivo"><i class="fa fa-times"></i>
                                             </td>                                            
                                         @endif
-                                        <td style="text-align:center; vertical-align: middle;">{{date("d/m/Y", strtotime($iap->iap_fecreg))}}</td>
+                                        
                                         <td style="text-align:center;">
                                             <a href="{{route('editarIap',$iap->iap_id)}}" class="btn badge-warning" title="Editar IAP"><i class="fa fa-edit"></i></a>
                                             <a href="{{route('borrarIap',$iap->iap_id)}}" class="btn badge-danger" title="Borrar IAP" onclick="return confirm('¿Seguro que desea borrar la IAP?')"><i class="fa fa-times"></i></a>

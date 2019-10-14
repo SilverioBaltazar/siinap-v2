@@ -19,6 +19,7 @@
 @endsection
 
 @section('content')
+    <meta charset="utf-8">
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
@@ -73,36 +74,42 @@
                                     <input type="text" class="form-control" name="iap_regcons" id="iap_regcons" placeholder="* Registro de constitución de la IAP" value="{{Trim($regiap->iap_regcons)}}" required>
                                 </div>
  
-
                                 <div class="col-xs-4 form-group">
                                     <label>Fecha de constitución </label>
                                     <div class="input-group date">
                                         <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                        <input type="text" class="form-control pull-right" id="datepicker1"  name="iap_feccons" placeholder="* Fecha de constitución (dd/mm/aaaa)" value="{!! date('d/m/Y',strtotime($regiap->iap_feccons)) !!}" required>
+                                        <input type="text" class="form-control datepicker" id="iap_feccons" name="iap_feccons" placeholder="Fecha de constitución (dd/mm/aaaa)" value="{!! date('d/m/Y',strtotime($regiap->iap_feccons)) !!}" required>
                                     </div>
                                 </div>                                                            
                             </div>
 
                             <div class="row">
                                 <div class="col-xs-4 form-group">
-                                    <label >Calle </label>
-                                    <input type="text" class="form-control" name="iap_calle" id="iap_calle" placeholder="* Calle de la IAP" value="{{Trim($regiap->iap_calle)}}" required>
+                                    <label >Domicilio Legal (Calle, no.ext/int., colonia) </label>
+                                    <input type="text" class="form-control" name="iap_dom1" id="iap_dom1" placeholder="Domicilio Legal" value="{{Trim($regiap->iap_dom1)}}" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
-                                    <label >Número ext./int.</label>
-                                    <input type="text" class="form-control" name="iap_num" id="iap_num" placeholder="* Número exterior y/o interior" value="{{Trim($regiap->iap_num)}}" required>
+                                    <label >Domicilio Fiscal (Calle, no.ext/int., colonia)</label>
+                                    <input type="text" class="form-control" name="iap_dom2" id="iap_dom2" placeholder="Domicilio Fiscal" value="{{Trim($regiap->iap_dom2)}}" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
-                                    <label >Colonia </label>
-                                    <input type="text" class="form-control" name="iap_colonia" id="iap_colonia" placeholder="* Calle de la IAP" value="{{Trim($regiap->iap_colonia)}}" required>
+                                    <label >Domicilio Asistencial (Calle, no.ext/int., colonia) </label>
+                                    <input type="text" class="form-control" name="iap_dom3" id="iap_dom3" placeholder="Domicilio Asistencial" value="{{Trim($regiap->iap_dom3)}}" required>
                                 </div>                                
                             </div>
 
                             <div class="row">
                                 <div class="col-xs-4 form-group">
+                                    <label >Colonia </label>
+                                    <input type="text" class="form-control" name="iap_colonia" id="iap_colonia" placeholder="* Calle de la IAP" value="{{Trim($regiap->iap_colonia)}}" required>
+                                </div>       
+                                <div class="col-xs-4 form-group">
                                     <label >Código postal </label>
                                     <input type="text" class="form-control" name="iap_cp" id="iap_cp" placeholder="* Código postal" value="{{Trim($regiap->iap_cp)}}" required>
-                                </div>          
+                                </div>                                                           
+                            </div>                            
+
+                            <div class="row">        
                                 <div class="col-xs-4 form-group">
                                     <label >Entidad federativa</label>
                                     <select class="form-control m-bot15" name="entidadfederativa_id" id="entidadfederativa_id" required>
@@ -146,15 +153,15 @@
                             <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Presidente </label>
-                                    <input type="text" class="form-control" name="iap_pres" id="iap_pres" placeholder="* Presidente" value="{{Trim($regiap->iap_pres)}}" required>
+                                    <input type="text" class="form-control" name="iap_pres" id="iap_pres" placeholder=" Presidente" value="{{Trim($regiap->iap_pres)}}" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
                                     <label >Representante legal </label>
-                                    <input type="text" class="form-control" name="iap_replegal" id="iap_replegal" placeholder="* Representante legal" value="{{Trim($regiap->iap_replegal)}}" required>
+                                    <input type="text" class="form-control" name="iap_replegal" id="iap_replegal" placeholder="Representante legal" value="{{Trim($regiap->iap_replegal)}}" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
                                     <label >Secretario </label>
-                                    <input type="text" class="form-control" name="iap_srio" id="iap_srio" placeholder="* Secretario" value="{{Trim($regiap->iap_srio)}}" required>
+                                    <input type="text" class="form-control" name="iap_srio" id="iap_srio" placeholder="Secretario" value="{{Trim($regiap->iap_srio)}}" required>
                                 </div>                          
                             </div>
 
@@ -177,10 +184,21 @@
                                 </div>                                                                  
                             </div>
 
+                            <div class="row">
+                                <div class="col-xs-4 form-group">
+                                    <label >Georeferenciación latitud (google maps) </label>
+                                    <input type="text" class="form-control" name="iap_georef_latitud" id="iap_georef_latitud" placeholder="Georeferenciación latitud (google maps)" value="{{$regiap->iap_georef_latitud}}" required>
+                                </div>                                                                
+                                <div class="col-xs-4 form-group">
+                                    <label >Georeferenciación longitud (google maps) </label>
+                                    <input type="text" class="form-control" name="iap_georef_longitud" id="iap_georef_longitud" placeholder="Georeferenciación longitud (google maps)" value="{{$regiap->iap_georef_longitud}}" required>
+                                </div>                                           
+                            </div>                            
+
                             <div class="row">                                
                                 <div class="col-xs-12 form-group">
-                                    <label >Objeto social (800 caracteres)</label>
-                                    <textarea class="form-control" name="iap_objsoc" id="iap_objsoc" rows="6" cols="120" placeholder="* Objeto social de la IAP" required>{{Trim($regiap->iap_objsoc)}}
+                                    <label >Objeto social (800 carácteres)</label>
+                                    <textarea class="form-control" name="iap_objsoc" id="iap_objsoc" rows="6" cols="120" placeholder="Objeto social de la IAP" required>{{Trim($regiap->iap_objsoc)}}
                                     </textarea>
                                 </div>                                
                             </div>
@@ -247,4 +265,17 @@
 @endsection
 
 @section('javascrpt')
+<script>
+    $('.datepicker').datepicker({
+        format: "dd/mm/yyyy",
+        startDate: '-29y',
+        endDate: '-18y',
+        startView: 2,
+        maxViewMode: 2,
+        clearBtn: true,        
+        language: "es",
+        autoclose: true
+    });
+</script>
+
 @endsection

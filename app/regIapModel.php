@@ -15,6 +15,9 @@ class regIapModel extends Model
             'IAP_DESC',
             'IAP_CALLE',
             'IAP_NUM',
+            'IAP_DOM1',
+            'IAP_DOM2',
+            'IAP_DOM3',
             'IAP_COLONIA',
             'MUNICIPIO_ID',
             'ESTADO_ID',
@@ -46,6 +49,11 @@ class regIapModel extends Model
             'LOGIN_M'
     ];
 
+    public static function ObtIap($id){
+        return (regIapModel::select('IAP_ID')->where('IAP_ID','=',$id)
+                             ->get());
+    }
+
     public static function obtCatMunicipios(){
         return regIapModel::select('ENTIDADFEDERATIVAID','MUNICIPIOID','MUNICIPIONOMBRE')
                            ->where('ENTIDADFEDERATIVAID','=', 15)
@@ -75,5 +83,26 @@ class regIapModel extends Model
                            ->where('RUBRO_ID','=',$id )
                            ->get();
     }    
+
+    //***************************************//
+    // *** Como se usa el query scope  ******//
+    //***************************************//
+    public function scopeName($query, $name)
+    {
+        if($name)
+            return $query->where('IAP_DESC', 'LIKE', "%$name%");
+    }
+
+    public function scopeEmail($query, $email)
+    {
+        if($email)
+            return $query->where('IAP_EMAIL', 'LIKE', "%$email%");
+    }
+
+    public function scopeBio($query, $bio)
+    {
+        if($bio)
+            return $query->where('IAP_OBJSOC', 'LIKE', "%$bio%");
+    } 
 
 }

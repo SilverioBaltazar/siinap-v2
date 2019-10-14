@@ -19,6 +19,7 @@
 @endsection
 
 @section('content')
+    <meta charset="utf-8">
     <div class="content-wrapper">
         <section class="content-header">
             <h1>Menú
@@ -56,42 +57,50 @@
                             <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Teléfono </label>
-                                    <input type="text" class="form-control" name="iap_telefono" id="iap_telefono" placeholder="* Teléfono" required>
+                                    <input type="text" class="form-control" name="iap_telefono" id="iap_telefono" placeholder="Teléfono" required>
                                 </div>                                
                                 <div class="col-xs-4 form-group">
                                     <label >Registro de constitución </label>
-                                    <input type="text" class="form-control" name="iap_regcons" id="iap_regcons" placeholder="* Registro de constitución de la IAP" required>
+                                    <input type="text" class="form-control" name="iap_regcons" id="iap_regcons" placeholder="Registro de constitución de la IAP" required>
                                 </div>
 
                                 <div class="col-xs-4 form-group">
-                                    <label>Fecha de constitución:</label>
+                                    <label>Fecha de constitución</label>
                                     <div class="input-group date">
                                         <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                        <input type="text" class="form-control pull-right" id="datepicker1"  name="iap_feccons" placeholder="Fecha de constitución (dd/mm/aaaa)" required>
+                                        <input type="text" class="form-control datepicker" id="iap_feccons" name="iap_feccons" placeholder="Fecha de constitución (dd/mm/aaaa)" required>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-xs-4 form-group">
-                                    <label >Calle </label>
-                                    <input type="text" class="form-control" name="iap_calle" id="iap_calle" placeholder="* Calle de la IAP" required>
+                                    <label >Domicilio legal (Calle, no.ext/int., colonia) </label>
+                                    <input type="text" class="form-control" name="iap_dom1" id="iap_dom2" placeholder="Domicilio legal" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
-                                    <label >Número ext./int.</label>
-                                    <input type="text" class="form-control" name="iap_num" id="iap_num" placeholder="* Número exterior y/o interior" required>
+                                    <label >Domicilio fiscal (Calle, no.ext/int., colonia)</label>
+                                    <input type="text" class="form-control" name="iap_dom2" id="iap_dom2" placeholder="Domicilio fiscal" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
-                                    <label >Colonia </label>
-                                    <input type="text" class="form-control" name="iap_colonia" id="iap_colonia" placeholder="* Calle de la IAP" required>
+                                    <label >Domicilio asistencial (Calle, no.ext/int., colonia) </label>
+                                    <input type="text" class="form-control" name="iap_dom3" id="iap_dom3" placeholder="Domicilio asistencial" required>
                                 </div>                                
                             </div>
 
+
                             <div class="row">
+                                <div class="col-xs-4 form-group">
+                                    <label >Colonia </label>
+                                    <input type="text" class="form-control" name="iap_colonia" id="iap_colonia" placeholder="Colonia" required>
+                                </div> 
                                 <div class="col-xs-4 form-group">
                                     <label >Código postal </label>
                                     <input type="text" class="form-control" name="iap_cp" id="iap_cp" placeholder="* Código postal" required>
-                                </div>                                                                
+                                </div>                                      
+                            </div>                            
+
+                            <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Entidad federativa</label>
                                     <select class="form-control m-bot15" name="entidadfederativa_id" id="entidadfederativa_id" required>
@@ -146,6 +155,17 @@
                                     <input type="text" class="form-control" name="iap_tesorero" id="iap_tesorero" placeholder="* Tesorero" required>
                                 </div>   
                             </div>
+
+                            <div class="row">
+                                <div class="col-xs-4 form-group">
+                                    <label >Georeferenciación latitud (google maps) </label>
+                                    <input type="text" class="form-control" name="iap_georef_latitud" id="iap_georef_latitud" placeholder="Georeferenciación latitud (google maps)" required>
+                                </div>                                                          
+                                <div class="col-xs-4 form-group">
+                                    <label >Georeferenciación longitud (google maps) </label>
+                                    <input type="text" class="form-control" name="iap_georef_longitud" id="iap_georef_longitud" placeholder="Georeferenciación longitud (google maps)" required>
+                                </div>   
+                            </div>                            
                             
                             <div class="row">
                                 <div class="col-xs-12 form-group">
@@ -227,4 +247,18 @@
         }
     }
 </script>
+
+<script>
+    $('.datepicker').datepicker({
+        format: "dd/mm/yyyy",
+        startDate: '-29y',
+        endDate: '-18y',
+        startView: 2,
+        maxViewMode: 2,
+        clearBtn: true,        
+        language: "es",
+        autoclose: true
+    });
+</script>
+
 @endsection

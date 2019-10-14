@@ -44,7 +44,8 @@
                                 <div class="col-xs-4 form-group">
                                     <input type="text" class="form-control" name="materno" id="materno" placeholder="Apellido Materno" required>
                                 </div>
-                            </div><br>
+                            </div>
+
                             <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuario" required>
@@ -53,30 +54,36 @@
                                     <input type="text" class="form-control" name="password" id="password" placeholder="Contraseña" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
-                                    <select class="form-control m-bot15" name="perfil" id="perfil" onchange="dis(this);" required>
+                                    <select class="form-control m-bot15" name="perfil" id="perfil" required>
                                         <option selected="true" disabled="disabled">Selecciona un Rol</option>
-                                        <option value="0">IAP</option>
-                                        <option value="1">Operativo</option>
+                                        <option value="0">IAP        </option>
+                                        <option value="1">Operativo  </option>
                                         <!--<option value="2">Particular</option>-->
                                         <option value="3">Administrador</option>
                                         <option value="4">Super Administrador</option>
                                     </select>
                                 </div>
-                            </div><br>
+                            </div>
+
                             <div class="row">
                                 <div class="col-xs-4 form-group">
-                                    <input type="text" class="form-control" name="correo" id="correo" placeholder="Correo Electrónico" required>
-                                </div>
-                                <div class="col-xs-4 form-group">
                                     <select class="form-control m-bot15" name="unidad" id="unidad" required>
-                                        <option selected="true" value="0" disabled="disabled">Selecciona una Unidad Administrativa</option>
-                                        <option value="0">ADMINISTRADOR</option>
+                                        <option selected="true" disabled="disabled">Seleccionar Unidad Administrativa</option>
                                         @foreach($dependencias as $dependencia)
-                                            <option value="{{$dependencia->depen_id}}">{{$dependencia->depen_desc}}</option>
+                                            <option value="{{$dependencia->depen_id}}">{{$dependencia->depen_id.' '.$dependencia->depen_desc}}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                            </div><br>
+                                <div class="col-xs-4 form-group">
+                                    <select class="form-control m-bot15" name="iap_id" id="iap_id" required>
+                                        <option selected="true" disabled="disabled">Seleccionar IAP</option>
+                                        @foreach($regiap as $iap)
+                                            <option value="{{$iap->iap_id}}">{{$iap->iap_desc}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>                                
+                            </div>
+
                             @if(count($errors) > 0)
                                 <div class="alert alert-danger" role="alert">
                                     <ul>

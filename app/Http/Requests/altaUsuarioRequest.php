@@ -21,14 +21,18 @@ class altaUsuarioRequest extends FormRequest
             'materno.max'         => 'El Apellido Materno debe ser de mínimo 80 caracteres.',
             'materno.required'    => 'El Apellido Materno es obligatorio.',
             'materno.regex'       => 'El Apellido Materno contiene campos inválidos.',
-            'correo.email'        => 'Formato incorrecto (ejemplo@ejemplo.ejemplo).',
-            'correo.required'     => 'El e-mail es obligatorio.',
+            //'correo.email'        => 'Formato incorrecto (ejemplo@ejemplo.ejemplo).',
+            //'correo.required'     => 'El e-mail es obligatorio.',
+            'usuario.email'       => 'Formato incorrecto (ejemplo@ejemplo.ejemplo).',
+            'usuario.required'    => 'El e-mail es obligatorio para accesar al sistema.',
             'usuario.min'         => 'El usuario debe ser de mínimo 5 caracteres.',
             'usuario.max'         => 'El usuario debe ser de máximo 40 caracteres.',
-            'usuario.required'    => 'El usuario es necesario para entrar al sistema.',
+            //'usuario.required'    => 'El usuario es necesario para entrar al sistema.',
             'password.min'        => 'La contraseña debe ser de mínimo 6 caracteres.',
             'password.max'        => 'La contraseña debe ser de máximo 30 caracteres.',
             'password.required'   => 'La contraseña es necesaria para registrarse.',
+            //'cve_arbol.required'  => 'Seleccionar la IAP a la que pertenece.',            
+            //'cve_dependencia.required'=> 'Seleccionar la Unidad administrativa.',                        
             //'unidad.required'     => 'La Unidad Administrativa es obligatoria.',
             'perfil.required'     => 'La Unidad Administrativa es obligatoria.'
         ];
@@ -51,14 +55,15 @@ class altaUsuarioRequest extends FormRequest
     public function rules()
     {
         return [
-            'nombre' => 'min:4|max:80|required|regex:/(^([a-zA-z\s]+)?$)/i',
-            'paterno' => 'min:4|max:80|required|regex:/(^([a-zA-z\s]+)?$)/i',
-            'materno' => 'min:4|max:80|required|regex:/(^([a-zA-z\s]+)?$)/i',
-            'correo' => 'email|required',
-            'usuario' =>  'min:5|max:40|required',
-            'password' =>  'min:6|max:30|required',
-            //'unidad' => 'required',
-            'perfil' => 'required'
+            'nombre'    => 'min:4|max:80|required|regex:/(^([a-zA-z\s]+)?$)/i',
+            'paterno'   => 'min:4|max:80|required',   //|regex:/(^([a-zA-z\s]+)?$)/i',
+            'materno'   => 'min:4|max:80|required|regex:/(^([a-zA-z\s]+)?$)/i',
+            //'correo' => 'email|required',
+            'usuario'   =>  'email|min:5|max:40|required',
+            'password'  =>  'min:6|max:30|required',
+            //'cve_arbol' => 'required',
+            //'cve_dependencia' => 'required',
+            'perfil'    => 'required'
         ];
     }
 }

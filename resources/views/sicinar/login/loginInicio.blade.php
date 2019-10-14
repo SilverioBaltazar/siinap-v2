@@ -25,7 +25,7 @@
     <!--<img src="{{ asset('images/Logo-Gobierno.png') }}" border="1" width="200" height="60" style="margin-right: 20px;">
     <img src="{{ asset('images/Edomex.png') }}" border="1" width="80" height="60">-->
     <div class="login-logo">
-      <h5 style="color:orange;"><b>SISTEMA INTEGRAL DE INTITUCIONES PRIVADAS <br>(SIINAP V.2)</b></h5>
+      <h5 style="color:orange;"><b>SISTEMA INTEGRAL DE INSTITUCIONES PRIVADAS <br>(SIINAP v.2)</b></h5>
       <!--<h4 style="color:orange;">SISTEMA INTEGRAL DE INTITUCIONES PRIVADAS <br><b>(SIINAP V.2)</b></h4>-->
     </div>
     <!-- /.login-logo -->

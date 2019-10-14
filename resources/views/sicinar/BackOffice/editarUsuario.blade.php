@@ -49,61 +49,102 @@
                                     <label>Apellido Materno</label>
                                     <input type="text" class="form-control" name="materno" id="materno" placeholder="Apellido Materno" value="{{$user->ap_materno}}" required>
                                 </div>
-                            </div><br>
+                            </div>
                             <div class="row">
                                 <div class="col-xs-4 form-group">
-                                    <label>Usuario</label>
-                                    <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuario" value="{{$user->login}}" required>
+                                    <label>Correo Electrónico</label>
+                                    <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuario Correo Electrónico" value="{{$user->login}}" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
                                     <label>Contraseña</label>
                                     <input type="text" class="form-control" name="password" id="password" placeholder="Contraseña" value="{{$user->password}}" required>
                                 </div>
-                                <div class="col-xs-4 form-group">
-                                    <label>Rol</label>
-                                    <select class="form-control m-bot15" name="perfil" id="perfil" onchange="dis(this);" required>
-                                        <option selected="true" disabled="disabled">Selecciona un Rol
-                                        @if($user->status_1 == '1')
-                                            <option value="1" selected>Operativo</option>
+                                <div class="col-xs-4 form-group">                        
+                                    <label>Activo o inactivo </label>
+                                    <select class="form-control m-bot15" name="status_2" id="status_2" required>
+                                        @if($user->status_2 == '1')
+                                            <option value="1" selected>Si</option>
+                                            <option value="0">         No</option>
                                         @else
-                                            <option value="1">Operativo</option>
+                                            <option value="1">         Si</option>
+                                            <option value="0" selected>No</option>
                                         @endif
-                                        @if($user->status_1 == '3')
-                                            <option value="3" selected>Administrador</option>
-                                        @else
-                                            <option value="3">Administrador</option>
-                                        @endif
+                                    </select>
+                                </div>                                                                  
+                               
+                            </div>
+
+                            <div class="row">                            
+                                <div class="col-xs-4 form-group">                        
+                                    <label>Rol </label>
+                                    <select class="form-control m-bot15" name="perfil" id="perfil" required>
                                         @if($user->status_1 == '4')
-                                            <option value="4" selected>Super Administrador</option>
+                                            <option value="0"         >IAP          </option>
+                                            <option value="1"         >Operativo    </option>
+                                            <option value="2"         >Particular   </option>
+                                            <option value="3"         >Administrador</option>
+                                            <option value="4" selected>Super Admon. </option>
                                         @else
-                                            <option value="4">Super Administrador</option>
-                                        @endif
-                                    </select>
-                                </div>
-                            </div><br>
-                            <div class="row">
-                                <div class="col-xs-4 form-group">
-                                    <label>Correo Electrónico</label>
-                                    <input type="text" class="form-control" name="correo" id="correo" placeholder="Correo Electrónico" value="{{$user->email}}" required>
-                                </div>
-                                <div class="col-xs-4 form-group">
-                                    <label>Unidad Administrativa</label>
-                                    <select class="form-control m-bot15" name="unidad" id="unidad" required>
-                                        <option selected="true" value="0" disabled="disabled">Selecciona una Unidad Administrativa</option>
-                                        @if($user->cve_dependencia == '0')
-                                            <option value="0">ADMINISTRADOR</option>
-                                        @else
-                                            @foreach($dependencias as $dependencia)
-                                                @if(strpos($dependencia->depen_id,$user->cve_dependencia)!==false)
-                                                    <option value="{{$dependencia->depen_id}}" selected>{{$dependencia->depen_desc}}</option>
+                                            @if($user->status_1 == '3')
+                                                <option value="0"         >IAP          </option>
+                                                <option value="1"         >Operativo    </option>
+                                                <option value="2"         >Particular   </option>
+                                                <option value="3" selected>Administrador</option>
+                                                <option value="4"         >Super Admon. </option>
+                                            @else
+                                                @if($user->status_1 == '2')
+                                                    <option value="0"         >IAP          </option>
+                                                    <option value="1"         >Operativo    </option>
+                                                    <option value="2" selected>Particular   </option>
+                                                    <option value="3"         >Administrador</option>
+                                                    <option value="4"         >Super Admon. </option>
                                                 @else
-                                                    <option value="{{$dependencia->depen_id}}">{{$dependencia->depen_desc}}</option>
+                                                    @if($user->status_1 == '1')
+                                                        <option value="0"         >IAP          </option>
+                                                        <option value="1" selected>Operativo    </option>
+                                                        <option value="2"         >Particular   </option>
+                                                        <option value="3"         >Administrador</option>
+                                                        <option value="4"         >Super Admon. </option>
+                                                    @else
+                                                        <option value="0" selected>IAP          </option>
+                                                        <option value="1"         >Operativo    </option>
+                                                        <option value="2"         >Particular   </option>
+                                                        <option value="3"         >Administrador</option>
+                                                        <option value="4"         >Super Admon. </option>
+                                                    @endif
                                                 @endif
-                                            @endforeach
+                                            @endif
                                         @endif
                                     </select>
+                                </div>                                  
+                                <div class="col-xs-4 form-group">
+                                    <label>Unidad Administrativa: {{$user->cve_dependencia}}</label>
+                                    <select class="form-control m-bot15" name="unidad" id="unidad" required>
+                                    <option selected="true" disabled="disabled">Selecciona Unidad Administrativa</option>
+                                    @foreach($dependencias as $dependencia)
+                                        @if(rtrim($dependencia->depen_id," ") == $user->cve_dependencia)
+                                            <option value="{{$dependencia->depen_id}}" selected>{{$dependencia->depen_id.' '.$dependencia->depen_desc}}</option>
+                                        @else
+                                            <option value="{{$dependencia->depen_id}}">{{$dependencia->depen_id.' '.$dependencia->depen_desc}}</option>
+                                        @endif
+                                    @endforeach
+                                    </select>
+                                </div>                                
+                                <div class="col-xs-4 form-group">
+                                    <label >IAP </label>
+                                    <select class="form-control m-bot15" name="iap_id" id="iap_id" required>
+                                    <option selected="true" disabled="disabled">Seleccionar IAP </option>
+                                    @foreach($regiap as $iap)
+                                        @if($iap->iap_id == $user->cve_arbol)
+                                            <option value="{{$iap->iap_id}}" selected>{{$iap->iap_desc}}</option>
+                                        @else 
+                                            <option value="{{$iap->iap_id}}">{{$iap->iap_desc}}</option>
+                                        @endif                                    
+                                    @endforeach
+                                    </select>                           
                                 </div>
-                            </div><br>
+                            </div>
+
                             @if(count($errors) > 0)
                                 <div class="alert alert-danger" role="alert">
                                     <ul>
@@ -130,7 +171,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
-    {!! JsValidator::formRequest('App\Http\Requests\altaUsuarioRequest','#altaUsuario') !!}
+    {!! JsValidator::formRequest('App\Http\Requests\altaUsuarioRequest','#actualizarUsuario') !!}
 @endsection
 
 @section('javascrpt')

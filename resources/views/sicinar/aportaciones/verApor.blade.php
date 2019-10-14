@@ -35,8 +35,44 @@
                 <div class="col-md-12">
                     <div class="box">
                         <div class="box-header" style="text-align:right;">
-                            <a href="{{route('nuevaApor')}}" class="btn btn-primary btn_xs" title="Registrar nueva aportación"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Registrar aportación monetaria</a> 
+                            Busqueda  
+                            {{ Form::open(['route' => 'buscarApor', 'method' => 'GET', 'class' => 'form-inline pull-right']) }}
+                                <div class="form-group">
+                                    {{ Form::text('per', null, ['class' => 'form-control', 'placeholder' => 'Periodo','maxlength' => '10']) }}
+                                    <!--<option value=""> --Seleccionar periodo-- </option> -->
+                                    <select class="form-control m-bot15" name="per" class="form-control">
+                                        <option value=""> </option> 
+                                        @foreach($regperiodos as $periodo)
+                                            <option value="{{$periodo->periodo_id}}">{{trim($periodo->periodo_desc)}}</option>
+                                        @endforeach   
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    {{ Form::text('iapp', null, ['class' => 'form-control', 'placeholder' => 'IAP','maxlength' => '20']) }}
+                                    <select class="form-control m-bot15" name="iapp" class="form-control">
+                                        <option value=""> </option>
+                                        @foreach($regiap as $iap)
+                                            <option value="{{$iap->iap_id}}">{{substr($iap->iap_desc,1,20)}}</option>
+                                        @endforeach   
+                                    </select>
+                                </div>
+                                <!--
+                                <div class="form-group">
+                                    {{ Form::text('bio', null, ['class' => 'form-control', 'placeholder' => 'Concepto']) }}
+                                </div>
+                                -->
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <a href="{{route('nuevaApor')}}" class="btn btn-primary btn_xs" title="Registrar nueva aportación"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Registrar aportación</a> 
+                                </div>                                
+                            {{ Form::close() }}
                         </div>
+
                         <div class="box-body">
                             <table id="tabla1" class="table table-striped table-bordered table-sm">
                                 <thead style="color: brown;" class="justify">

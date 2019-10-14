@@ -113,10 +113,11 @@ class catalogosfuncionesController extends Controller
         $regfuncion = regFuncionModel::join('JP_CAT_PROCESOS','JP_CAT_PROCESOS.PROCESO_ID','=','JP_CAT_FUNCIONES.PROCESO_ID')
                                    ->select('JP_CAT_FUNCIONES.PROCESO_ID','JP_CAT_PROCESOS.PROCESO_DESC','JP_CAT_FUNCIONES.FUNCION_ID','JP_CAT_FUNCIONES.FUNCION_DESC','JP_CAT_FUNCIONES.FUNCION_STATUS','JP_CAT_FUNCIONES.FUNCION_FECREG')
                                    ->orderBy('JP_CAT_FUNCIONES.PROCESO_ID','DESC')
-                                   ->paginate(15);
+                                   ->orderBy('JP_CAT_FUNCIONES.FUNCION_ID','DESC')
+                                   ->paginate(30);
         if($regfuncion->count() <= 0){
             toastr()->error('No existen registros de funciones de Procesos dados de alta.','Lo siento!',['positionClass' => 'toast-bottom-right']);
-            return redirect()->route('nuevaFuncion');
+            //return redirect()->route('nuevaFuncion');
         }
         return view('sicinar.catalogos.verFuncion',compact('nombre','usuario','estructura','id_estructura','regfuncion'));
 
