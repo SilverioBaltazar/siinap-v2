@@ -262,7 +262,7 @@ Route::get('/', function () {
     //Route::get('aportaciones/excel'           ,'aportacionesController@exportAporExcel')->name('aporExcel');
     //Route::get('aportaciones/pdf'             ,'aportacionesController@exportAporPdf')->name('aporPDF');    
 
-    //IAPS Diigencias
+    //Programar diligencias
     Route::get('progdil/nuevo'           ,'progdilController@actionNuevoProgdil')->name('nuevoProgdil');
     Route::post('progdil/nuevo/alta'     ,'progdilController@actionAltaNuevoProgdil')->name('AltaNuevoProgdil');
     Route::get('progdil/ver/todas'       ,'progdilController@actionVerProgdil')->name('verProgdil');
@@ -272,6 +272,20 @@ Route::get('/', function () {
     Route::get('progdil/{id}/Borrar'     ,'progdilController@actionBorrarProgdil')->name('borrarProgdil');
     //Route::get('progdil/excel'           ,'progdilController@exportProgdilExcel')->name('ProgdilExcel');
     Route::get('progdil/{id}/pdf'        ,'progdilController@actionMandamientoPDF')->name('mandamientoPDF');
+
+    //Visitas de diligencia
+    //Route::get('visitas/nueva'           ,'visitasController@actionNuevaVisita')->name('nuevoProgdil');
+    //Route::post('visitas/nueva/alta'     ,'visitasController@actionAltaNuevaVisita')->name('AltaNuevaVisita');
+    Route::get('visitas/ver/todas'       ,'visitasController@actionVerVisitas')->name('verVisitas');
+    Route::get('visitas/buscar/todas'    ,'visitasController@actionBuscarVisita')->name('buscarVisita');    
+    Route::get('visitas/{id}/editar/visita','visitasController@actionEditarVisita')->name('editarVisita');
+    Route::put('visitas/{id}/actualizar' ,'visitasController@actionActualizarVisita')->name('actualizarVisita');
+    Route::get('visitas/{id}/Borrar'     ,'visitasController@actionBorrarVisita')->name('borrarVisita');
+    //Route::get('visitas/excel'           ,'visitasController@exportVisitasExcel')->name('VisitasExcel');
+    Route::get('visitas/{id}/pdf'        ,'visitasController@actionActaVisitaPDF')->name('actavisitaPDF');    
+    Route::get('visitas/{id}/editar/visitaq','visitasController@actionEditarQuestionVisita')->name('editarquestionVisita');
+    Route::put('visitas/{id}/actualizarq' ,'visitasController@actionActualizarQuestionVisita')->name('actualizarQuestionVisita');
+
 
 });
 

@@ -142,10 +142,10 @@
                   <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                  <li><a href="{{route('verIap')}}" ><i class="fa fa-circle-o"></i>Directorio             </a></li>
-                  <li><a href="{{route('verIapj')}}"><i class="fa fa-circle-o"></i>Información Jurídica   </a></li>
-                  <li><a href="{{route('verAsyc')}}"><i class="fa fa-circle-o"></i>Inf. de Asist. Soc. y Contable</a></li>
-                  <li><a href="{{route('verApor')}}"><i class="fa fa-circle-o"></i>Aportaciones monetarias</a></li>
+                  <li><a href="{{route('verIap')}}" > <i class="fa fa-circle-o"></i>Directorio             </a></li>
+                  <li><a href="{{route('verIapj')}}"> <i class="fa fa-circle-o"></i>Información Jurídica   </a></li>
+                  <li><a href="{{route('verAsyc')}}"> <i class="fa fa-circle-o"></i>Inf. de Asist. Soc. y Contable</a></li>
+                  <li><a href="{{route('verApor')}}"> <i class="fa fa-circle-o"></i>Aportaciones monetarias</a></li>
                   <li><a href="{{route('verCursos')}}"><i class="fa fa-circle-o"></i>Cursos</a></li>
                 </ul>
 
@@ -153,8 +153,8 @@
                   <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                  <li><a href="{{route('verProgdil')}}"><i class="fa fa-circle-o"></i>Programar diligencias</a></li>
-                  <li><a href=""><i class="fa fa-circle-o"></i>Diligencias en las IAPS </a></li>
+                  <li><a href="{{route('verProgdil')}}"><i class="fa fa-circle-o"></i>Programar diligencias </a></li>
+                  <li><a href="{{route('verVisitas')}}"><i class="fa fa-circle-o"></i>Visitas de diligencia </a></li>
                   <li><a href=""><i class="fa fa-circle-o"></i>Tablero de control      </a></li>
                 </ul>                
               </li>
@@ -162,11 +162,11 @@
               <li class="header">Numeralia</li> 
               <li  class="treeview">
                 <a href="#"><i class="fa fa-pie-chart"></i> <span>Estadisticas</span>
-                  <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{{route('verGraficaxedo')}}"><i class="fa fa-circle-o"> </i>IAPS por estado  </a></li> 
-                    <li><a href="{{route('verGraficaxmpio')}}"><i class="fa fa-circle-o"> </i>IAPS por municipio </a></li>
+                    <li><a href="{{route('verGraficaxedo')}}">  <i class="fa fa-circle-o"> </i>IAPS por estado  </a></li> 
+                    <li><a href="{{route('verGraficaxmpio')}}"> <i class="fa fa-circle-o"> </i>IAPS por municipio </a></li>
                     <li><a href="{{route('verGraficaxrubro')}}"><i class="fa fa-circle-o"></i>IAPS por Rubro social</a></li>
                     <li><a href="{{route('verGraficabitacora')}}"><i class="fa fa-circle-o"></i>Bitacora del sistema</a></li>
                 </ul>

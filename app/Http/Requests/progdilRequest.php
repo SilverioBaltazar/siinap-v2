@@ -12,6 +12,7 @@ class progdilRequest extends FormRequest
             'periodo_id.required'     => 'El periodo fiscal es obligatorio.',
             'mes_id.required'         => 'El mes es obligatorio.',
             'dia_id.requered'         => 'El dia es obligatorio.',            
+            'hora_id.requered'         => 'La hora es obligatoria.',            
             'iap_id.required'         => 'Id de la IAP es obligatorio.',
             'visita_contacto.min'     => 'El contacto de la IAP es de mínimo 1 caracter.',
             'visita_contacto.max'     => 'El contacto de la IAP es de máximo 100 caracteres.',
@@ -27,7 +28,10 @@ class progdilRequest extends FormRequest
             'visita_obj.required'     => 'El objetivo de la visita es obligatorio.', 
             'visita_spub.min'         => 'El servidor público que programo visita es de mínimo 1 caracter.',
             'visita_spub.max'         => 'El servidor público que programo visita es de máximo 60 caracteres.',
-            'visita_spub.required'    => 'El servidor público que programo visita es obligatorio.'
+            'visita_spub.required'    => 'El servidor público que programo visita es obligatorio.',
+            'visita_spub2.min'        => 'Personal programado en la diligencia es de mínimo 1 caracter.',
+            'visita_spub2.max'        => 'Personal programado en la diligencia es de máximo 200 caracteres.',
+            'visita_spub2.required'   => 'Personal programado en la diligencia es obligatorio.'            
             //'iap_foto1.required' => 'La imagen es obligatoria'
         ];
     }
@@ -54,12 +58,13 @@ class progdilRequest extends FormRequest
             'periodo_id'     => 'required',
             'mes_id'         => 'required',
             'dia_id'         => 'required',            
+            'hora_id'        => 'required',                        
             'visita_contacto'=> 'required|min:1|max:80',
             'visita_dom'     => 'required|min:1|max:100',
             'visita_tel'     => 'required|min:1|max:60',
             'visita_obj'     => 'required|min:1|max:300',
-            'visita_spub'    => 'required|min:1|max:80'
-            //'apor_recibe'  => 'required|min:1|max:100'
+            'visita_spub'    => 'required|min:1|max:80',
+            'visita_spub2'   => 'required|min:1|max:200'
             //'accion'        => 'required|regex:/(^([a-zA-z%()=.\s\d]+)?$)/i',
             //'medios'        => 'required|regex:/(^([a-zA-z\s\d]+)?$)/i'
             //'rubro_desc' => 'min:1|max:80|required|regex:/(^([a-zA-zñÑ%()=.\s\d]+)?$)/iñÑ'

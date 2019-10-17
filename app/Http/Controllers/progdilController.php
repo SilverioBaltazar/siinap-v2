@@ -597,9 +597,13 @@ public function actionNuevoProgdil(){
         //$options = new Options();
         //$options->set('defaultFont', 'Courier');
         //$pdf->set_option('defaultFont', 'Courier');
-        $pdf->setPaper('A4', 'landscape');      
-        //$pdf->set('defaultFont', 'Courier');          
-        //$pdf->setPaper('A4','portrait');
+        //******** Horizontal ***************
+        //$pdf->setPaper('A4', 'landscape');      
+        //$pdf->set('defaultFont', 'Courier');
+        //$pdf->set_options('isPhpEnabled', true);
+        //$pdf->setOptions(['isPhpEnabled' => true]);
+        //******** vertical ***************          
+        $pdf->setPaper('A4','portrait');
 
         // Output the generated PDF to Browser
         return $pdf->stream('DocumentoDeMandamientoEscrito');
