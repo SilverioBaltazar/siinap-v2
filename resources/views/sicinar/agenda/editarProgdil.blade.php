@@ -14,11 +14,8 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
@@ -36,6 +33,11 @@
                         {!! Form::open(['route' => ['actualizarProgdil',$regprogdil->visita_folio], 'method' => 'PUT', 'id' => 'actualizarProgdil', 'enctype' => 'multipart/form-data']) !!}
                         <div class="box-body">
 
+                            <div class="row">   
+                                <div class="col-xs-12 form-group" style="color:green;font-size:12px; text-align:right; vertical-align: middle;">
+                                    <label ><b>Folio:{{Trim($regprogdil->visita_folio)}}</label></b>
+                                </div>                                        
+                           </div> 
                             <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Periodo fiscal </label>
@@ -121,16 +123,18 @@
                                     <input type="text" class="form-control" name="visita_contacto" id="visita_contacto" placeholder="Nombre del contacto del personal de la IAP" value="{{Trim($regprogdil->visita_contacto)}}" required>
                                 </div>                                
                                 <div class="col-xs-4 form-group">
-                                    <label >Teléfono </label>
-                                    <input type="text" class="form-control" name="visita_tel" id="visita_tel" placeholder="Teléfono" value="{{$regprogdil->visita_tel}}" required>
-                                </div>          
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-4 form-group">
-                                    <label >e-mail </label>
-                                    <input type="text" class="form-control" name="visita_email" id="visita_email" placeholder="e-mail de contacto" value="{{Trim($regprogdil->visita_email)}}" required>
-                                </div>
+                                    <label >Entidad </label>
+                                    <select class="form-control m-bot15" name="entidad_id" id="entidad_id" required>
+                                        <option selected="true" disabled="disabled">Seleccionar entidad</option>
+                                        @foreach($regentidades as $entidad)
+                                            @if($entidad->entidadfederativa_id == $regprogdil->entidad_id)
+                                                <option value="{{$entidad->entidadfederativa_id}}" selected>{{$entidad->entidadfederativa_desc}}</option>
+                                            @else 
+                                                <option value="{{$entidad->entidadfederativa_id}}">{{$entidad->entidadfederativa_desc}}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>                                  
+                                </div>                  
                                 <div class="col-xs-4 form-group">
                                     <label >Municipio</label>
                                     <select class="form-control m-bot15" name="municipio_id" id="municipio_id" required>
@@ -144,21 +148,53 @@
                                             @endif
                                         @endforeach
                                     </select>                                  
-                                </div>                                    
+                                </div>                                                                    
                             </div>
 
                             <div class="row">
+                               <div class="col-xs-4 form-group">
+                                    <label >Responsable a realizar la diligencia</label>
+                                    <input type="text" class="form-control" name="visita_auditor2" id="visita_auditor2" placeholder="Responsable a realizar la diligencia" value="{{$regprogdil->visita_auditor2}}" required>
+                                </div>                                 
                                 <div class="col-xs-4 form-group">
-                                    <label >Personal de JAPEM asigando a la diligencia </label>
-                                    <input type="text" class="form-control" name="visita_spub2" id="visita_spub2" placeholder="Personal de JAPEM aignado a la diligencia" value="{{Trim($regprogdil->visita_spub2)}}" required>
+                                    <label >Personal adicional asigando a la diligencia </label>
+                                    <input type="text" class="form-control" name="visita_spub2" id="visita_spub2" placeholder="Personal adicional aignado a la diligencia" value="{{Trim($regprogdil->visita_spub2)}}" required>
                                 </div>
+                                
+                            </div>
+
+                            <div class="row">     
+                                <div class="col-xs-4 form-group">
+                                    <label >Secretario Ejecutivo del JAPEM </label>
+                                    <input type="text" class="form-control" name="visita_auditor4" id="visita_auditor4" placeholder="Secretario Ejecutivo del JAPEM" value="{{Trim($regprogdil->visita_auditor4)}}" required>
+                                </div>  
                                 <div class="col-xs-4 form-group">
                                     <label >Servidor público que programa diligencia </label>
                                     <input type="text" class="form-control" name="visita_spub" id="visita_spub" placeholder="Servidor público que programa diligencia" value="{{Trim($regprogdil->visita_spub)}}" required>
                                 </div>
                             </div>
 
-                            <div class="row">                                                             
+                            <div class="row">  
+                                <div class="col-xs-4 form-group">                        
+                                    <label>Tipo de diligencia arealizar </label>
+                                    <select class="form-control m-bot15" name="visita_tipo1" required>
+                                        @if($regprogdil->visita_tipo1 == 'A')
+                                            <option value="A" selected>Asistencial</option>
+                                            <option value="J"         >Jurídica   </option>
+                                            <option value="C"         >Contable   </option>
+                                        @else
+                                            @if($regprogdil->visita_tipo1 == 'J')
+                                               <option value="A"         >Asistencial</option>
+                                               <option value="J" selected>Jurídica   </option>
+                                               <option value="C"         >Contable   </option>
+                                            @else
+                                               <option value="A"         >Asistencial</option>
+                                               <option value="J"         >Jurídica   </option>
+                                               <option value="C" selected>Contable   </option>
+                                            @endif
+                                        @endif
+                                    </select>                                
+                                </div>       
                                 <div class="col-xs-4 form-group">                        
                                     <label>Estado de la diligencia (en proceso, cerrada o cancelada </label>
                                     <select class="form-control m-bot15" name="visita_edo" required>
@@ -183,11 +219,19 @@
 
                             <div class="row">                                
                                 <div class="col-xs-12 form-group">
-                                    <label >Objetivo de la diligencia (500 carácteres)</label>
-                                    <textarea class="form-control" name="visita_obj" id="visita_obj" rows="6" cols="120" placeholder="Objetivo de la diligencia" required>{{Trim($regprogdil->visita_obj)}}
+                                    <label >Objetivo de la diligencia parte 1 (4,000 carácteres)</label>
+                                    <textarea class="form-control" name="visita_obj" id="visita_obj" rows="6" cols="120" placeholder="Objetivo de la diligencia parte 1 (4,000 carácteres)" required>{{Trim($regprogdil->visita_obj)}}
                                     </textarea>
                                 </div>                                
                             </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 form-group">
+                                    <label >Objetivo de la diligencia parte 2 (4,000 carácteres) </label>
+                                    <textarea class="form-control" name="visita_obs3" id="visita_obs3" rows="6" cols="120" placeholder="Objetivo de la diligencia parte 2 (4,000 caráteres)" required>{{Trim($regprogdil->visita_obs3)}}
+                                    </textarea>
+                                </div>                                
+                            </div>                                
 
                             <div class="row">
                                 @if(count($errors) > 0)

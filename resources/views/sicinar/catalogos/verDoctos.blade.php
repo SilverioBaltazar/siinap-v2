@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
@@ -46,8 +42,13 @@
                                     <span class="glyphicon glyphicon-search"></span>
                                     </button>
                                 </div>
-                                <div class="form-group">                           
-                                   <a href="{{route('nuevoDocto')}}"   class="btn btn-primary btn_xs" title="Alta de nuevo documento"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Nuevo documento</a>
+                                <div class="form-group">   
+                                   <a href="{{route('catDoctosExcel')}}" class="btn btn-success" title="Exportar catálogo de documentos (formato Excel)"><i class="fa fa-file-excel-o"></i> Excel
+                                   </a>                            
+                                   <a href="{{route('catDoctosPDF')}}" class="btn btn-danger" title="Exportar catálogo de documentos (formato PDF)"><i class="fa fa-file-pdf-o"></i> PDF
+                                   </a>  
+                                   <a href="{{route('nuevoDocto')}}"   class="btn btn-primary btn_xs" title="Nuevo documento"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Nuevo documento
+                                   </a>
                                 </div>                                
                             {{ Form::close() }}
 
@@ -60,13 +61,16 @@
                                         <th style="text-align:left;   vertical-align: middle;">Id.                </th>
                                         <th style="text-align:left;   vertical-align: middle;">Documento          </th>
                                         <th style="text-align:left;   vertical-align: middle;">Solicita           </th>
-                                        <th style="text-align:center; vertical-align: middle;">Frec. <br>Solic.
-                                            <br>archivo</th>
+                                        <th style="text-align:center; vertical-align: middle;">Periodicidad<br>de Solicitud</th>
+                                        <th style="text-align:center; vertical-align: middle;">Frec. <br>Anual   </th>
                                         <th style="text-align:center; vertical-align: middle;">Rubro <br>Social  <br>
-                                        al que aplica </th>
-                                        <th style="text-align:center; vertical-align: middle;">Tipo<br>Archivo </th>
-                                        <th style="text-align:center; vertical-align: middle;">Formato <br>Archivo           </th>
-                                        <th style="text-align:center; vertical-align: middle;">Activa <br>Inact. </th>
+                                        al que aplica 
+                                        </th>
+                                        <th style="text-align:center; vertical-align: middle;">Control </th>
+                                        <th style="text-align:center; vertical-align: middle;">Tipo    </th> 
+                                        <th style="text-align:center; vertical-align: middle;">Formato </th>
+                                        <th style="text-align:center; vertical-align: middle;">Archivo<br>Digital</th>
+                                        <th style="text-align:center; vertical-align: middle;">Activo <br>Inact. </th>
                                         
                                         <th style="text-align:center; vertical-align: middle; width:100px;">Acciones</th>
                                     </tr>
@@ -74,39 +78,60 @@
                                 <tbody>
                                     @foreach($regdocto as $docto)
                                     <tr>
-                                        <td style="text-align:left; vertical-align: middle;">{{$docto->doc_id}}    </td>
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($docto->doc_desc)}}</td>
-                                        <td style="text-align:left; vertical-align: middle;">{{$docto->dependencia_id}}   
+                                        <td style="text-align:left; vertical-align: middle;"><small>{{$docto->doc_id}}</small>
+                                        </td>
+                                        <td style="text-align:left; vertical-align: middle;"><small>{{Trim($docto->doc_desc)}} </small>
+                                        </td>
+                                        <td style="text-align:left; vertical-align: middle;">
+                                            <small>{{$docto->dependencia_id}}   
                                             @foreach($dep as $depen)
                                                 @if(rtrim($depen->depen_id," ") == $docto->dependencia_id)
                                                     {{$depen->depen_desc}}
                                                     @break
                                                 @endif
                                             @endforeach
+                                        </small>
                                         </td>
-                                        <td style="text-align:left; vertical-align: middle;"> 
+                                        <td style="text-align:left; vertical-align: middle;"> <small>
                                             @foreach($regper as $frec)
                                                 @if($frec->per_id == $docto->per_id)
                                                     {{$frec->per_desc}}
                                                     @break
                                                 @endif
                                             @endforeach 
+                                        </small>
                                         </td> 
-                                        <td style="text-align:left; vertical-align: middle;">  
+                                        <td style="text-align:center;vertical-align:middle;"><small>{{Trim($docto->per_frec)}} </small>
+                                        </td>
+                                        <td style="text-align:left; vertical-align: middle;"><small>
                                             @foreach($regrubro as $rubro)
                                                 @if($rubro->rubro_id == $docto->rubro_id)
                                                     {{$rubro->rubro_desc}}
                                                     @break
                                                 @endif
-                                            @endforeach 
-                                        </td>                    
-                                        <td style="text-align:center; vertical-align: middle;">
+                                            @endforeach </small>
+                                        </td>   
+                                        @if($docto->doc_status2 == 'S')
+                                            <td style="text-align:center; vertical-align:middle;"><small>INTERNO</small>
+                                            </td>                                            
+                                        @else
+                                            <td style="text-align:center; vertical-align:middle;"><small>EXTERNO</small>
+                                            </td>                                            
+                                        @endif
+                                        @if($docto->doc_status3 == 'S')
+                                            <td style="text-align:center; vertical-align:middle;"><small>OBLIGATORIO</small>
+                                            </td>
+                                        @else
+                                            <td style="text-align:center; vertical-align:middle;"><small>OPCIONAL</small>
+                                            </td>                                            
+                                        @endif                                                             
+                                        <td style="text-align:center; vertical-align: middle;"><small>
                                             @foreach($regformato as $formato)
                                                 @if($formato->formato_id == $docto->formato_id)
                                                     {{$formato->formato_desc}}
                                                     @break
                                                 @endif
-                                            @endforeach 
+                                            @endforeach </small>
                                         </td>
                                         
                                         @if(isset($docto->doc_file))
@@ -163,7 +188,7 @@
                                             <a href="{{route('editarDocto1',$docto->doc_id)}}" class="btn badge-warning" title="Editar documento"><i class="fa fa-edit"></i>
                                             </a>
                                         @endif   
-
+                                    
                                         @if($docto->doc_status == 'S')
                                             <td style="color:darkgreen;text-align:center; vertical-align: middle;" title="Activo"><i class="fa fa-check"></i>
                                             </td>                                            

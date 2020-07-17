@@ -14,11 +14,8 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <div class="content-wrapper">
         <section class="content-header">
             <h1>

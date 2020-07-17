@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head> 
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <title>@yield('title','Inicio') | SIINAP v.2</title>
@@ -43,17 +43,15 @@
         @jquery
         @toastr_js
         @toastr_render
-
+        
+        <!--
         $nombre       = session()->get('userlog');
         $pass         = session()->get('passlog');
         $rango        = session()->get('rango');        
-        if($nombre == NULL AND $pass == NULL AND $rango == NULL){
+        -->
+        @if(session()->get('userlog') == NULL || session()->get('passlog') == NULL  )
             return view('sicinar.login.expirada');
-        }
-   
-        if(isset($rango))
-            return view('sicinar.login.expirada');
-        }
+        @endif
         
         @if(count($errors) > 0)
             <div class="alert alert-danger" role="alert">
@@ -84,7 +82,7 @@
               <span class="icon-bar"></span>
             </a>
 
-            <div class="navbar-custom-menu">
+            <div class="navbar-custom-menu"> 
               <ul class="nav navbar-nav">
                 <li class="dropdown user user-menu">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -125,55 +123,134 @@
             <ul class="sidebar-menu" data-widget="tree">
               <li class="header">Menú principal</li>
 
-              
+              @if(session()->get('rango') !== '0')
               <li class="header">Catálogos     </li>    
               <li><a href="{{route('verProceso')}}"><i class="fa fa-circle-o-notch"></i><span>Procesos         </span></a></li>
               <li><a href="{{route('verFuncion')}}"><i class="fa fa-th"       ></i> <span>Funciones de procesos</span></a></li>  
               <li><a href="{{route('verTrx')}}"    ><i class="fa fa-gears"    ></i> <span>Actividades          </span></a></li>  
+              <li><a href="{{ route('verMunicipios') }}"><i class="fa fa-th-large"></i> <span>Municipios SEDESEM</span></a>
               <li><a href="{{route('verRubro')}}"><i class="fa fa-blind"></i> <span>Rubros sociales      </span></a></li>
-              <li><a href="{{ route('verInmuebleedo') }}"><i class="fa fa-university"></i> <span>Estados de Inmuebles sociales</span></a></li>
-              <li><a href="{{route('verFormatos')}}"><i class="fa fa-book"></i> <span>Tipos de archivos</span></a></li>
+              <li><a href="{{ route('verInmuebleedo') }}"><i class="fa fa-university"></i> <span>Edo. Inmuebles Sociales</span></a></li>
+              <li><a href="{{route('verFormatos')}}"><i class="fa fa-database"></i> <span>Formatos de archivos digitales</span></a></li>
               <li><a href="{{route('verDoctos')}}"><i class="fa fa-clone"></i> <span>Documentos</span></a></li>
-              <li><a href="{{ route('verMunicipios') }}"><i class="fa fa-th-large"></i> <span>Municipios SEDESEM</span></a></li>
-              
+              </li>
+              @endif
               <li class="header">Instituciones de Asistencia Privada (IAPS)</li> 
               <li  class="treeview">
                 <a href="#"><i class="fa fa-cubes"></i> <span>IAPS</span>
                   <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                  <li><a href="{{route('verIap')}}" > <i class="fa fa-circle-o"></i>Directorio             </a></li>
-                  <li><a href="{{route('verIapj')}}"> <i class="fa fa-circle-o"></i>Información Jurídica   </a></li>
-                  <li><a href="{{route('verAsyc')}}"> <i class="fa fa-circle-o"></i>Inf. de Asist. Soc. y Contable</a></li>
+                  @if(session()->get('rango') !== '0')
+                    <li><a href="{{route('verIap')}}" > <i class="fa fa-circle-o"></i>Directorio        </a></li>
+                  @else
+                    <li><a href="{{route('verIap5')}}" > <i class="fa fa-circle-o"></i>Directorio       </a></li>
+                  @endif
                   <li><a href="{{route('verApor')}}"> <i class="fa fa-circle-o"></i>Aportaciones monetarias</a></li>
-                  <li><a href="{{route('verCursos')}}"><i class="fa fa-circle-o"></i>Cursos</a></li>
+                  <li><a href="{{route('verCursos')}}"><i class="fa fa-circle-o"></i>Cursos                </a></li>
                 </ul>
-
-                <a href="#"><i class="fa fa-gavel"></i> <span>Agenda de diligencias</span>
+                
+                <a href="#"><i class="fa fa-gavel"></i> <span>Requisitos Jurídicos </span>
                   <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                  <li><a href="{{route('verProgdil')}}"><i class="fa fa-circle-o"></i>Programar diligencias </a></li>
-                  <li><a href="{{route('verVisitas')}}"><i class="fa fa-circle-o"></i>Visitas de diligencia </a></li>
-                  <li><a href=""><i class="fa fa-circle-o"></i>Tablero de control      </a></li>
-                </ul>                
-              </li>
+                    <li><a href="{{route('verIapj')}}"> <i class="fa fa-circle-o"></i>Requisitos Jurídicos </a></li>
+                </ul>  
 
-              <li class="header">Numeralia</li> 
+                <a href="#"><i class="fa fa-wheelchair-alt"></i> <span>Requisitos Asistenciales </span>
+                  <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu"> 
+                  <li><a href="{{route('verPadron')}}"  ><i class="fa fa-circle-o"></i>Padrón de beneficiarios </a></li>
+                  <li><a href="{{route('verPersonal')}}"><i class="fa fa-circle-o"></i>Plantilla de personal   </a></li>
+                  <li><a href="{{route('verProgtrab')}}"><i class="fa fa-circle-o"></i>Programa de trabajo     </a></li>
+                  <li><a href="{{route('verCedula')}}"  ><i class="fa fa-circle-o"></i>Cédula detección de necesidades</a></li>
+                  <li><a href="{{route('verInformes')}}"><i class="fa fa-circle-o"></i>Informe de labores      </a></li>
+                </ul>
+
+                <a href="#"><i class="fa fa-money"></i> <span>Requisitos Contables </span>
+                  <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="{{route('verInventarios')}}"><i class="fa fa-circle-o"></i>Inventario de Activos Fijos</a></li>
+                  <li><a href="{{route('verBalanza')}}"    ><i class="fa fa-circle-o"></i>Edos. Financieros y Balanza comp. </a></li>
+                  <li><a href="{{route('verReqc')}}"><i class="fa fa-circle-o"></i>Otros requisitos   </a></li>                  
+                </ul>  
+
+
+                @if(session()->get('rango') !== '0')
+                <a href="#"><i class="fa fa-calendar"></i> <span>Agenda de diligencias</span>
+                  <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="{{route('verProgdil')}}"  ><i class="fa fa-circle-o"></i>Programación      </a></li>
+                  <li><a href="{{route('verVisitas')}}"  ><i class="fa fa-circle-o"></i>Visitas           </a></li>
+                  <li><a href="{{route('verQuestions')}}"><i class="fa fa-circle-o"></i>Cuestionario      </a></li>
+                  <li><a href="{{route('reporteProgvisitasExcel')}}"><i class="fa fa-circle-o"></i>Programa de visitas Excel</a></li>
+                  <li><a href="{{route('reporteProgvisitas')}}"><i class="fa fa-circle-o"></i>Programa de visitas PDF  </a></li>
+                </ul>                
+                @endif
+              </li>
+              @if(session()->get('rango') !== '0')
+              <li class="header">Tableros de control</li> 
               <li  class="treeview">
-                <a href="#"><i class="fa fa-pie-chart"></i> <span>Estadisticas</span>
+                <a href="#"><i class="fa fa-flickr"></i> <span>Indicadores</span>
                 <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="{{route('verGraficaxedo')}}">  <i class="fa fa-circle-o"> </i>IAPS por estado  </a></li> 
-                    <li><a href="{{route('verGraficaxmpio')}}"> <i class="fa fa-circle-o"> </i>IAPS por municipio </a></li>
-                    <li><a href="{{route('verGraficaxrubro')}}"><i class="fa fa-circle-o"></i>IAPS por Rubro social</a></li>
-                    <li><a href="{{route('verGraficabitacora')}}"><i class="fa fa-circle-o"></i>Bitacora del sistema</a></li>
+                    <li><a href="{{route('vercumplimiento')}}"> <i class="fa fa-circle-o"></i>Cumplimiento de requisitos    </a></li> 
+                    <li><a href="{{route('vercumplimientovisitas')}}"> <i class="fa fa-circle-o"></i>Visitas de verificación</a></li>                     
+                </ul>
+              </li>              
+              <li class="header">Numerália - gráficas</li> 
+              <li  class="treeview">
+                <a href="#"><i class="fa fa-line-chart"></i> <span>Estadísticas - IAPS</span>
+                <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{route('iapxedo')}}">   <i class="fa fa-circle-o"></i>Por estado      </a></li> 
+                    <li><a href="{{route('iapxmpio')}}">  <i class="fa fa-circle-o"></i>Por municipio   </a></li>
+                    <li><a href="{{route('iapxrubro')}}"> <i class="fa fa-circle-o"></i>Por Rubro social</a></li>
+                    <li><a href="{{route('bitacora')}}">  <i class="fa fa-circle-o"></i>Bitacora del sistema </a></li>
                 </ul>
               </li>
-              
+              <li  class="treeview">
+                <a href="#"><i class="fa fa-area-chart"></i> <span>Estadísticas - Padrón</span>
+                <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{route('padronxedo')}}"      ><i class="fa fa-circle-o"></i>Por estado       </a></li>
+                    <li><a href="{{route('padronxservicio')}}" ><i class="fa fa-circle-o"></i>Por servicio     </a></li>
+                    <li><a href="{{route('padronxedad')}}"     ><i class="fa fa-circle-o"></i>Por edad         </a></li>
+                    <li><a href="{{route('padronxrangoedad')}}"><i class="fa fa-circle-o"></i>Por rango de edad</a></li>
+                    <li><a href="{{route('padronxsexo')}}"     ><i class="fa fa-circle-o"></i>Por sexo         </a></li>
+                </ul>
+              </li>        
+              <li  class="treeview">
+                <a href="#"><i class="fa fa-pie-chart"></i> <span>Estadísticas - personal</span>
+                <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{route('personalxestudios')}}"><i class="fa fa-circle-o"></i>Por grado de estudios</a></li>
+                    <li><a href="{{route('personalxtipoemp')}}" ><i class="fa fa-circle-o"></i>Por tipo de empleado </a></li>
+                    <li><a href="{{route('personalxclaseemp')}}"><i class="fa fa-circle-o"></i>Por clase de empleado </a></li>
+                </ul>
+              </li>       
+              <li  class="treeview">
+                <a href="#"><i class="fa fa-pie-chart"></i> <span>Estadísticas - Programación </span>
+                <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{route('verprogdilgraficaxmes')}}" ><i class="fa fa-circle-o"></i>Por mes</a></li>
+                    <li><a href="{{route('verprogdilgraficaxtipo')}}"><i class="fa fa-circle-o"></i>Por tipo de visita</a></li>
+                </ul>
+              </li>                                          
+              @endif
+
               <li class="header">BackOffice</li>              
+              @if(session()->get('rango') !== '0')
               <li><a href="{{route('verUsuarios')}}"><i class="fa fa-users"></i> <span>Usuarios</span></a></li>
+              @endif
               <li>
                 <a href="{{route('terminada')}}" class="btn btn-danger btn-flat"><i class="fa fa-sign-out"></i><span> 
                 Cerrar Sesión</a>

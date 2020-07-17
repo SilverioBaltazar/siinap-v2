@@ -14,16 +14,12 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
                 Menú
-                <small> Catálogos - Tipos de archivos - Editar</small>
+                <small> Catálogos - formato de archivo - Editar</small>
             </h1>
         </section>
         <section class="content">
@@ -31,7 +27,7 @@
                 <div class="col-md-12">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <h3 class="box-title">Editar tipo de archivo</h3>
+                            <h3 class="box-title">Editar formato de archivo</h3>
                         </div>
                         {!! Form::open(['route' => ['actualizarFormato',$regformatos->formato_id], 'method' => 'PUT', 'id' => 'actualizarFormato']) !!}
                         <div class="box-body">
@@ -42,7 +38,7 @@
                             </div>    
                             <div class="row">                                
                                 <div class="col-xs-3 form-group">
-                                    <label>Tipo de archivo </label>
+                                    <label>Formato de archivo </label>
                                     <input type="text" class="form-control" id="formato_desc" name="formato_desc" placeholder="Nombre del formato" value="{{$regformatos->formato_desc}}" required>
                                 </div>
                                 <div class="col-xs-3 form-group">

@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
@@ -35,7 +31,7 @@
                             <div class="row">
                                 <div class="col-xs-5 form-group">
                                     <div class="col-xs-12">
-                                        <label >* Actividad </label>
+                                        <label >Actividad </label>
                                         <input type="text" class="form-control" name="trx_desc" id="trx_desc" placeholder="Digitar nombre de la actividad" onkeypress="return soloAlfa(event)" required>
                                     </div>
                                 </div>

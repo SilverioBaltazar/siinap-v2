@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <meta charset="utf-8">
     <div class="content-wrapper">
@@ -36,7 +32,7 @@
                             <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Nombre del documento </label>
-                                    <input type="text" class="form-control" name="doc_desc" id="doc_desc" placeholder="Digitar nombre del documento" onkeypress="return soloAlfa(event)" required>
+                                    <input type="text" class="form-control" name="doc_desc" id="doc_desc" placeholder="Digitar nombre del documento" required>
                                 </div>
                             </div>
 
@@ -46,17 +42,14 @@
                                     <select class="form-control m-bot15" name="dependencia_id" id="dependencia_id" required>
                                         <option selected="true" disabled="disabled">Seleccionar area o unidad admon.</option>
                                         @foreach($dep as $depen)
-                                            <option value="{{$depen->depen_id}}">{{$depen->depen_id.' '.$depen->depen_desc}}</option>
+                                            <option value="{{$depen->depen_id}}">{{$depen->depen_id.' '.Trim($depen->depen_desc)}}</option>
                                         @endforeach
                                     </select>                                    
                                 </div>                                                                                     
-                            </div>
-
-                            <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Formato del documento </label>
                                     <select class="form-control m-bot15" name="formato_id" id="formato_id" required>
-                                        <option selected="true" disabled="disabled">Seleccionar rubro asistencial</option>
+                                        <option selected="true" disabled="disabled">Seleccionar formato del documento</option>
                                         @foreach($regformato as $formato)
                                             <option value="{{$formato->formato_id}}">{{$formato->formato_desc}}
                                             </option>
@@ -76,8 +69,6 @@
                                         @endforeach
                                     </select>                                  
                                 </div>                                                                    
-                            </div>           
-                            <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Rubro asistencial al que aplica</label>
                                     <select class="form-control m-bot15" name="rubro_id" id="rubro_id" required>
@@ -91,9 +82,27 @@
                             </div>
 
                             <div class="row">
+                                <div class="col-xs-4 form-group">
+                                    <label >Control del documento</label>
+                                    <select class="form-control m-bot15" name="doc_status2" id="doc_status2" required>
+                                        <option selected="true" disabled="disabled">Seleccionar control</option>
+                                        <option value="S">Documento de control interno JAPEM       </option>
+                                        <option value="N">Documento externo solicitado a las IAPS  </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-4 form-group">
+                                    <label >Tipo de documento</label>
+                                    <select class="form-control m-bot15" name="doc_status3" id="doc_status3" required>
+                                        <option selected="true" disabled="disabled">Seleccionar tipo de documento</option>
+                                        <option value="S">Obligatorio </option>
+                                        <option value="N">Opcional    </option>
+                                    </select>
+                                </div>                                
+                            </div>
+                            <div class="row">
                                 <div class="col-xs-12 form-group">
-                                    <label >Observaciones </label>
-                                    <textarea class="form-control" name="doc_obs" id="doc_obs" rows="6" cols="120" placeholder="Observaciones" required>
+                                    <label >Observaciones (300 carácteres)</label>
+                                    <textarea class="form-control" name="doc_obs" id="doc_obs" value="" rows="3" cols="100" placeholder="Observaciones" required>
                                     </textarea>
                                 </div>                                
                             </div>

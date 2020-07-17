@@ -1,6 +1,6 @@
 @extends('sicinar.principal')
 
-@section('title','Ver Visitas de diligencias')
+@section('title','Ver visitas de verificación')
 
 @section('links')
     <link rel="stylesheet" href="{{ asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') }}">
@@ -12,10 +12,6 @@
 
 @section('usuario')
     {{$usuario}}
-@endsection
-
-@section('estructura')
-    {{$estructura}}
 @endsection
 
 @section('content')
@@ -93,10 +89,9 @@
 
                                         <th style="text-align:left;   vertical-align: middle;">IAP        </th>
                                         <th style="text-align:left;   vertical-align: middle;">Domicilio  </th>
-                                        <th style="text-align:center; vertical-align: middle;">Contacto   </th>
-                                        <th style="text-align:left;   vertical-align: middle;">Teléfono   </th>
+                                        <th style="text-align:center; vertical-align: middle;">Tipo       </th>
                                         <th style="text-align:left;   vertical-align: middle;">Objetivo   </th>                                        
-                                        <th style="text-align:center; vertical-align: middle;">Abierta<br>Cerrada<br>Cancel</th>
+                                        <th style="text-align:center; vertical-align: middle;">Abierta<br>Cerrada<br>Cancela</th>
                                         
                                         <th style="text-align:center; vertical-align: middle; width:100px;">Acciones</th>
                                     </tr>
@@ -104,9 +99,11 @@
                                 <tbody>
                                     @foreach($regvisita as $visita)
                                     <tr>
-                                        <td style="text-align:left; vertical-align: middle;">{{$visita->visita_folio}}    </td>
-                                        <td style="text-align:left; vertical-align: middle;">{{$visita->periodo_id}}</td> 
-                                        <td style="text-align:left; vertical-align: middle;">  
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">{{$visita->visita_folio}}    
+                                        </td>
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">{{$visita->periodo_id}}
+                                        </td> 
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">  
                                             @foreach($regmeses as $mes)
                                                 @if($mes->mes_id == $visita->mes_id)
                                                     {{$mes->mes_desc}}
@@ -114,7 +111,7 @@
                                                 @endif
                                             @endforeach 
                                         </td>                    
-                                        <td style="text-align:center; vertical-align: middle;">
+                                        <td style="font-size:10px; text-align:center; vertical-align: middle;">
                                             @foreach($regdias as $dia)
                                                 @if($dia->dia_id == $visita->dia_id)
                                                     {{$dia->dia_desc}}
@@ -122,7 +119,7 @@
                                                 @endif
                                             @endforeach 
                                         </td>
-                                        <td style="text-align:center; vertical-align: middle;">
+                                        <td style="font-size:10px; text-align:center; vertical-align: middle;">
                                             @foreach($reghoras as $hora)
                                                 @if($hora->hora_id == $visita->hora_id)
                                                     {{$hora->hora_desc}}
@@ -131,7 +128,7 @@
                                             @endforeach 
                                         </td>
 
-                                        <td style="text-align:left; vertical-align: middle;">{{$visita->iap_id}}   
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">
                                             @foreach($regiap as $iap)
                                                 @if($iap->iap_id == $visita->iap_id)
                                                     {{$iap->iap_desc}}
@@ -139,26 +136,43 @@
                                                 @endif
                                             @endforeach
                                         </td>                                        
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($visita->visita_dom)}}</td>
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($visita->visita_contacto)}}
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">{{Trim($visita->visita_dom)}}</td>
+                                        @if($visita->visita_tipo1 == 'A')
+                                            <td style="font-size:10px; text-align:left; vertical-align: middle;">Asistencial</td>
+                                        @else
+                                            @if($visita->visita_tipo1 == 'C')
+                                                <td style="font-size:10px; text-align:left; vertical-align: middle;">Contable</td>
+                                            @else 
+                                                @if($visita->visita_tipo1 == 'J')
+                                                   <td style="font-size:10px; text-align:left; vertical-align: middle;">Jurídica</td>
+                                                @else                                       
+                                                   <td style="font-size:10px; text-align:left; vertical-align: middle;"></td>
+                                                @endif
+                                            @endif
+                                        @endif
+
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">
+                                        {{Trim($visita->visita_obj).' '.Trim($visita->visita_obs3)}}
                                         </td>
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($visita->visita_tel)}}</td>
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($visita->visita_obj)}}</td>
-                                        @switch($visita->visita_edo)
+                                        @switch($visita->visita_edo) 
                                         @case(0)  <!-- amarillo -->
-                                            <td style="color:orange;text-align:center; vertical-align: middle;" title="En proceso"><i class="fa fa-ellipsis-h"></i>
+                                            <td style="text-align:center;">
+                                                 <img src="{{ asset('images/semaforo_amarillo.jpg') }}" width="15px" height="15px" title="En proceso" style="text-align:center;margin-right: 15px;vertical-align: middle;"/> 
                                             </td>
                                             @break
                                         @case(1)  <!-- cerrada -->
-                                            <td style="color:darkgreen;text-align:center; vertical-align: middle;" title="Cerrada"><i class="fa fa-check"></i>
+                                            <td style="text-align:center;">
+                                                <img src="{{ asset('images/semaforo_verde.jpg') }}" width="15px" height="15px" title="Cerrada" style="text-align:center;margin-right: 15px;vertical-align: middle;"/>    
                                             </td>
                                             @break
                                         @case(2)
-                                            <td style="color:red;text-align:center; vertical-align: middle;" title="Cancelada"><i class="fa fa-times"></i>
+                                            <td style="text-align:center;">
+                                                <img src="{{ asset('images/semaforo_rojo.jpg') }}" width="15px" height="15px" title="Cancelada" style="text-align:center;margin-right: 15px;vertical-align: middle;"/>
                                             </td>
                                             @break 
                                         @default 
-                                            <td style="color:blue;text-align:center; vertical-align: middle;" title="Sin especificar"><i class="fa fa-times"></i>{{$visita->visita_edo}}
+                                            <td style="text-align:center;"> 
+                                                <img src="{{ asset('images/semaforo_rojo.jpg') }}" width="15px" height="15px" title="Cancelada" style="text-align:center;margin-right: 15px;vertical-align: middle;"/> 
                                             </td>                                          
                                         @endswitch
                                         
@@ -167,11 +181,21 @@
                                             </a>
                                             <a href="{{route('borrarVisita',$visita->visita_folio)}}" class="btn badge-danger" title="Borrar registro de visita de la agenda" onclick="return confirm('¿Seguro que desea borrar el registro de visita de la agenda de diligencias?')"><i class="fa fa-times"></i>
                                             </a>
-                                            <a href="{{route('actavisitaPDF',$visita->visita_folio)}}" class="btn btn-danger" title="Generar la Acta de visita de verificación en formato PDF"><i class="fa fa-file-pdf-o"></i><small>PDF</small>
-                                            </a>
-                                            <a href="{{route('editarquestionVisita',$visita->visita_folio)}}" class="btn btn-danger" title="Aplicar cuestionario de la visita"><i class="fa fa-file-pdf-o"></i><small>PDF</small>
-                                            </a>
-                                        </td>                                                                          
+                                            @if($visita->visita_tipo1 == 'A')
+                                                <a href="{{route('actavisitaAPDF',$visita->visita_folio)}}" class="btn btn-danger" title="Generar la Acta de visita asistencia de verificación en formato PDF"><i class="fa fa-file-pdf-o"></i><small>PDF</small>
+                                                </a>                                            
+                                            @else
+                                                @if($visita->visita_tipo1 == 'J')
+                                                    <a href="{{route('actavisitaJPDF',$visita->visita_folio)}}" class="btn btn-danger" title="Generar la Acta de visita jurídica de verificación en formato PDF"><i class="fa fa-file-pdf-o"></i><small>PDF</small>
+                                                    </a>                         
+                                                @else
+                                                    @if($visita->visita_tipo1 == 'C')
+                                                        <a href="{{route('actavisitaCPDF',$visita->visita_folio)}}" class="btn btn-danger" title="Generar la Acta de visita contable de verificación en formato PDF"><i class="fa fa-file-pdf-o"></i><small>PDF</small>
+                                                        </a>                     
+                                                    @endif
+                                                @endif
+                                            @endif                                            
+                                        </td>                          
                                     </tr>
                                     @endforeach
                                 </tbody>

@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
@@ -125,7 +121,7 @@
                                         <td style="text-align:left; vertical-align: middle;">{{$apor->apor_nocheque}}</td>
                                         @if(!empty($apor->apor_compdepo)&&(!is_null($apor->apor_compdepo)))
                                             <td style="color:darkgreen;text-align:center; vertical-align: middle;" title="Comprobante de depósito">
-                                                <a href="/images/{{$apor->apor_compdepo}}" class="btn btn-danger" title="Constancia de cumplimiento ante el SAT"><i class="fa fa-file-pdf-o"></i>PDF</a>
+                                                <a href="/images/{{$apor->apor_compdepo}}" class="btn btn-danger" title="Comprobante de depósito"><i class="fa fa-file-pdf-o"></i>PDF</a>
                                                 <a href="{{route('editarApor1',$apor->apor_folio)}}" class="btn badge-warning" title="Editar Comprobante de depósito"><i class="fa fa-edit"></i></a>
                                             </td>
                                         @else

@@ -19,8 +19,9 @@ class dependenciasModel extends Model
 
     public static function Unidades($id){
         return dependenciasModel::select('DEPEN_ID','DEPEN_DESC')
-        							->where('ESTRUCGOB_ID','like','%'.$id.'%')
-                                    ->orderBy('DEPEN_ID','asc')
-                                    ->get();
+                                  ->where('DEPEN_ID','like','%211C04%')
+        						  ->where('ESTRUCGOB_ID','like','%'.$id.'%')
+                                  ->orderBy('DEPEN_ID','asc')
+                                  ->get();
     }
 }

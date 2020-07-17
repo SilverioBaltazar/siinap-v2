@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <meta charset="utf-8">
     <div class="content-wrapper">
@@ -36,14 +32,14 @@
                         </div>
                         {!! Form::open(['route' => ['actualizarDocto',$regdocto->doc_id], 'method' => 'PUT', 'id' => 'actualizarDocto', 'enctype' => 'multipart/form-data']) !!}
                         <div class="box-body">
-                            <div class="row">
-                                <div class="col-md-12 offset-md-12">
-                                    <label>Id.: {{$regdocto->doc_id}}</label>
-                                </div>             
+                            <div class="row">          
                                 <div class="col-xs-4 form-group">
-                                    <label >Documento </label>
+                                    <label >Nombre del documento </label>
                                     <input type="text" class="form-control" name="doc_desc" placeholder="Documento" value="{{$regdocto->doc_desc}}" required>
                                 </div>
+                                <div class="col-xs-4 form-group">
+                                    <label>Id.: {{$regdocto->doc_id}}</label>
+                                </div>                                   
                             </div>
 
                             <div class="row">
@@ -63,9 +59,9 @@
 
                             <div class="row">
                                 <div class="col-xs-4 form-group">
-                                    <label >Formato del tipo de documento </label>
+                                    <label >Formato del documento </label>
                                     <select class="form-control m-bot15" name="formato_id" id="formato_id" required>
-                                        <option selected="true" disabled="disabled">Seleccionar formato del tipo de documento</option>
+                                        <option selected="true" disabled="disabled">Seleccionar formato del documento</option>
                                         @foreach($regformato as $formato)
                                             @if($formato->formato_id == $regdocto->formato_id)
                                                 <option value="{{$formato->formato_id}}" selected>{{$formato->formato_desc}}</option>
@@ -76,9 +72,6 @@
                                         @endforeach
                                     </select>                                    
                                 </div>                                     
-                            </div>
-
-                            <div class="row">
                                 <div class="col-xs-4 form-group">
                                     <label >Periodo o frecuencia de entrega del formato </label>
                                     <select class="form-control m-bot15" name="per_id" id="per_id" required>
@@ -106,12 +99,9 @@
                                         @endif
                                     @endforeach
                                 </select>                                                            
-                            </div>
-
-                            <div class="row">
                                 <div class="col-xs-4 form-group">                        
-                                    <label>Documento Activo o Inactivo </label>
-                                    <select class="form-control m-bot15" name="doc_status" required>
+                                    <label>Estado del documento </label>
+                                    <select class="form-control m-bot15" name="doc_status" id="doc_status" required>
                                         @if($regdocto->doc_status == 'S')
                                             <option value="S" selected>Activo  </option>
                                             <option value="N">         Inactivo</option>
@@ -123,10 +113,37 @@
                                 </div>                                                                  
                             </div>
 
+                            <div class="row">
+                                <div class="col-xs-4 form-group">                        
+                                    <label>Control del documento </label>
+                                    <select class="form-control m-bot15" name="doc_status2" id="doc_status2" required>
+                                        @if($regdocto->doc_status2 == 'S')
+                                            <option value="S" selected>Documento de control interno JAPEM     </option>
+                                            <option value="N">         Documento externo solicitado a las IAPS</option>
+                                        @else
+                                            <option value="S">         Documento de control interno JAPEM     </option>
+                                            <option value="N" selected>Documento externo solicitado a las IAPS</option>
+                                        @endif
+                                    </select>
+                                </div>                                                                  
+                                <div class="col-xs-4 form-group">                        
+                                    <label>Tipo de documento  </label>
+                                    <select class="form-control m-bot15" name="doc_status3" id="doc_status3" required>
+                                        @if($regdocto->doc_status3 == 'S')
+                                            <option value="S" selected>Obligatorio </option>
+                                            <option value="N">         Opcional    </option>
+                                        @else
+                                            <option value="S">         Obligatorio </option>
+                                            <option value="N" selected>Opcional    </option>
+                                        @endif
+                                    </select>
+                                </div>                                                                  
+                            </div>                                                        
+
                             <div class="row">                                
                                 <div class="col-xs-12 form-group">
                                     <label >Observaciones (300 carácteres)</label>
-                                    <textarea class="form-control" name="doc_obs" id="doc_obs" rows="6" cols="120" placeholder="Observaciones" required>{{Trim($regdocto->doc_obs)}}
+                                    <textarea class="form-control" name="doc_obs" id="doc_obs" rows="3" cols="100" placeholder="Observaciones" required>{{Trim($regdocto->doc_obs)}}
                                     </textarea>
                                 </div>                                
                             </div>

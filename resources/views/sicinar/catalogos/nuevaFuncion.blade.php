@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
@@ -29,12 +25,12 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box-success">
-                        <div class="box-header"><h3 class="box-title">Registrar nueva Función de proceso</h3></div>
+                        <div class="box-header"><h3 class="box-title">Registrar nueva Función</h3></div>
                         {!! Form::open(['route' => 'AltaNuevaFuncion', 'method' => 'POST','proceso_id','funcion_id' => 'nuevaFuncion']) !!}
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-xs-3 form-group">
-                                    <label>* Proceso</label>
+                                    <label>Proceso</label>
                                     <select class="form-control m-bot15" name="proceso_id" id="proceso_id" required>
                                         <option selected="true" disabled="disabled">Seleccionar proceso</option>
                                         @foreach($regproceso as $proceso)
@@ -44,11 +40,11 @@
                                     </select><br>
                                 </div>
                                 <div class="col-xs-3 form-group">
-                                    <label>* Clave de la función</label>
+                                    <label>Clave de la función</label>
                                     <input type="text" class="form-control" name="funcion_id" id="funcion_id" placeholder="Digitar clave de la función de proceso" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
-                                    <label >* Nombre de la función de proceso </label>
+                                    <label >Nombre de la función de proceso </label>
                                     <input type="text" class="form-control" name="funcion_desc" placeholder="Digitar nombre de la función del proceso" onkeypress="return soloAlfa(event)" required>
                                 </div>
                                 <div class="col-md-12 offset-md-5">

@@ -14,16 +14,12 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
                 Menú
-                <small> Catálogos - Estado de Inmuebles - Editar</small>
+                <small> Catálogos - Estado del Inmueble - Editar</small>
             </h1>
         </section>
         <section class="content">

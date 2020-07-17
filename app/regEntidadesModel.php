@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class regEntidadesModel extends Model
 {
-    protected $table      = "CAT_ENTIDADES_FEDERATIVAS";
+    protected $table      = "JP_CAT_ENTIDADES_FED";
     protected $primaryKey = 'ENTIDADFEDERATIVA_ID';
     public $timestamps    = false;
     public $incrementing  = false;

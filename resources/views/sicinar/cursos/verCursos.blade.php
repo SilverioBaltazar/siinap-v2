@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
@@ -35,7 +31,7 @@
                 <div class="col-md-12">
                     <div class="box">
                         <div class="box-header" style="text-align:right;">
-                            <a href="" class="btn btn-primary btn_xs" title="Registrar nuevo curso"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Registrar curso</a> 
+                            <a href="{{route('nuevoCurso')}}" class="btn btn-primary btn_xs" title="Registrar nuevo curso"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Registrar curso</a> 
                         </div>
                         <div class="box-body">
                             <table id="tabla1" class="table table-striped table-bordered table-sm">
@@ -43,11 +39,11 @@
                                     <tr>
                                         <th style="text-align:left;   vertical-align: middle;">id.                  </th>
                                         <th style="text-align:left;   vertical-align: middle;">Periodo <br>Fiscal   </th>
-                                        <th style="text-align:left;   vertical-align: middle;">IAP                  </th>
                                         <th style="text-align:left;   vertical-align: middle;">Mes                  </th>
                                         <th style="text-align:left;   vertical-align: middle;">Nombre del curso     </th>
-                                        <th style="text-align:left;   vertical-align: middle;">Fecha <br>Inic.      </th>
-                                        <th style="text-align:center; vertical-align: middle;">Fecha <br>Termino    </th>
+                                        <th style="text-align:left;   vertical-align: middle;">Ponente(s)           </th>
+                                        <th style="text-align:left;   vertical-align: middle;">Fecha <br>Inicio     </th>
+                                        <th style="text-align:center; vertical-align: middle;">Fecha <br>Término    </th>
                                         <th style="text-align:center; vertical-align: middle;">Edo.                 </th>
                                         <th style="text-align:center; vertical-align: middle; width:100px;">Acciones</th>
                                     </tr>
@@ -58,14 +54,6 @@
                                         <td style="text-align:left; vertical-align: middle;">{{$curso->curso_id}}   </td>
                                         <td style="text-align:left; vertical-align: middle;">{{$curso->periodo_id}} </td>
                                         <td style="text-align:left; vertical-align: middle;">
-                                        @foreach($regiap as $iap)
-                                            @if($iap->iap_id == $curso->iap_id)
-                                                {{$iap->iap_desc}}
-                                                @break
-                                            @endif
-                                        @endforeach 
-                                        </td>
-                                        <td style="text-align:left; vertical-align: middle;">
                                         @foreach($regmeses as $mes)
                                             @if($mes->mes_id == $curso->mes_id)
                                                 {{$mes->mes_desc}}
@@ -74,9 +62,10 @@
                                         @endforeach
                                         </td>
                                         <td style="text-align:left; vertical-align: middle;">{{Trim($curso->curso_desc)}}</td>
-                                        <td style="text-align:center; vertical-align: middle;">{{date("d/m/Y", strtotime($curso->curso_finicio))}}
+                                        <td style="text-align:left; vertical-align: middle;">{{Trim($curso->curso_ponentes)}}</td>
+                                        <td style="text-align:center; vertical-align: middle;">{{$curso->curso_finicio2}}
                                         </td>
-                                        <td style="text-align:center; vertical-align: middle;">{{date("d/m/Y", strtotime($curso->curso_ffin))}}
+                                        <td style="text-align:center; vertical-align: middle;">{{$curso->curso_ffin2}}
                                         </td>                                                                           
                                         @if($curso->curso_status == 'S')
                                             <td style="color:darkgreen;text-align:center; vertical-align: middle;" title="Activo"><i class="fa fa-check"></i>

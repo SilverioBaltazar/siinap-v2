@@ -18,7 +18,7 @@
     <div class="content-wrapper" id="principal">
         <section class="content-header">
             <h1><i class="fa fa-users"></i>
-                Gestión de Usuarios
+                Gestión de usuarios
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Menú</a></li>

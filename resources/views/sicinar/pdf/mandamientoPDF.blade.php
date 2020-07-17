@@ -1,12 +1,12 @@
-@extends('sicinar.pdf.layoutMandamiento')
+@extends('sicinar.pdf.layout')
 
 @section('content')
     <head>
         <style>
         @page { margin-top: 50px; margin-bottom: 100px; margin-left: 50px; margin-right: 50px; }
-        body{color: #767676;background: #fff;font-family: 'Open Sans',sans-serif;font-size: 12px;}
+        body{color: #767676;background: #fff;font-family: 'Open Sans',sans-serif;}
         #header { position: fixed; left: 0px; top: -20px; right: 0px; height: 375px; }
-        #footer { position: fixed; left: 0px; bottom: -100px; right: 0px; height: 50px; text-align:right; font-size: 8px;}
+        #footer { position: fixed; left: 0px; bottom: -100px; right: 0px; height: 70px; text-align:right; font-size: 8px;}
         #footer .page:after { content: counter(page, upper-roman); }
         #content{ }   
         </style>
@@ -14,44 +14,42 @@
 
     <body>
     <header id="header">
-        <table class="table table-hover table-striped" align="center" width="100%">
-            <tr>
-                <td style="border:0; text-align:left;">
-                    <img src="{{ asset('images/Gobierno.png') }}" alt="EDOMEX" width="75px" height="55px"/>
-                </td>
-                <td style="border:0; text-align:right;">
-                    <img src="{{ asset('images/japem.jpg') }}"  alt="JAPEM"  width="70px" height="55px"/>
-                    <img src="{{ asset('images/Edomex.png') }}" alt="EDOMEX" width="60px" height="55px"/>
-                </td>
-            </tr>
-            <tr>
-                <td style="border:0; text-align:center;font-size: 7px;">
-                    “2019. Año del centésimo  aniversario luctuoso de Emiliano Zapata Salazar. El Caudillo del Sur”    
-                </td>
-            </tr>
-        </table>                
+        <p style="border:0; font-family:'Arial, Helvetica, sans-serif'; font-size:11px; text-align:center;">
+            <img src="{{ asset('images/Gobierno.png') }}" alt="EDOMEX" width="90px" height="55px" style="margin-right: 15px;" align="left"/>            
+            &nbsp;&nbsp;MANDAMIENTO
+            <img src="{{ asset('images/Edomex.png') }}" alt="EDOMEX" width="80px" height="55px" style="margin-left: 15px;" align="right"/>
+        </p>
+        <p style="border:0; font-size:8px; text-align:center;">
+            “2020. Año de Laura Méndez de Cuenca; emblema de la mujer Mexiquense”
+        </p>
     </header>
   
     <section id="content">
-        <table class="table table-hover table-striped" align="center" width="100%"> 
+        <table class="table table-hover table-striped" align="center" width="100%" style="width:700px;"> 
             <tr><td style="border:0;"></td></tr>
             <tr><td style="border:0;"></td></tr>
-            <tr><td style="border:0;"></td></tr>
-            <tr><td style="border:0;"></td></tr>
-            <tr>
-                <td style="border:0; text-align:right;">Toluca de Lerdo, México a {{date('d')}} de {{strftime("%B")}} de {{date('Y')}}
-                <br>
-                MANDAMIENTO ESCRITO No. JAP/________/_____
-                <br>
-                No. DE REGISTRO JAP/______/_____       
-                </td>
-            </tr>
+            
             @foreach($regprogdil as $program)
             <tr>
-                <td style="border:0; font-size: x-small; text-align:left;vertical-align: middle;">
+                <td style="border:0; text-align:right;font-size:12px;">Toluca de Lerdo, México a {{date('d')}} de {{strftime("%B")}} de {{date('Y')}}
+                <br>
+                MANDAMIENTO ESCRITO No. JAP/<b>{{$program->visita_folio}}/{{date('Y')}}</b>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                No. DE REGISTRO <b> 
+                @foreach($regiap as $iap)
+                        @if($iap->iap_id == $program->iap_id)
+                            {{Trim($iap->iap_regcons)}}
+                            @break
+                        @endif
+                @endforeach 
+                </b>     
+                </td>
+            </tr>
+            
+            <tr>
+                <td style="border:0; text-align:left;vertical-align: middle;font-size:12px;">
                     <p align="justify">
-                    ____________________________________________; 
-                    Secretario Ejecutivo de la Junta de Asistencia Privada del Estado de México, en el ejercicio de las funciones y atribuciones que me confiere el Artículo 24  Fracciones II y III de la Ley de Instituciones de Asistencia Privada del Estado de México, con fundamento en el artículo 16 de la Constitución Política de los Estados Unidos Mexicanos y los artículos 64 inciso a) fracciones II, III, IV, V, X, XII, XIII y XIV,  inciso b) fracción IV, 72, 73, 74, 92, 93, fracciones I, II, III, IV, 94 y 95 de la Ley de Instituciones de Asistencia Privada del Estado de México y 128 del Código de Procedimientos Administrativos del Estado de México, por este medio, le informo a usted que la Institución de Asistencia Privada que representa, será verificada el día <b>{{$program->dia_id}}</b> de <b> 
+                    <b>{{$program->visita_auditor4}}</b>; Secretario Ejecutivo de la Junta de Asistencia Privada del Estado de México, en el ejercicio de las funciones y atribuciones que me confiere el Artículo 24  Fracciones II y III de la Ley de Instituciones de Asistencia Privada del Estado de México, con fundamento en el artículo 16 de la Constitución Política de los Estados Unidos Mexicanos y los artículos 64 inciso a) fracciones II, III, IV, V, X, XII, XIII y XIV,  inciso b) fracción IV, 72, 73, 74, 92, 93, fracciones I, II, III, IV, 94 y 95 de la Ley de Instituciones de Asistencia Privada del Estado de México y 128 del Código de Procedimientos Administrativos del Estado de México, por este medio, le informo a usted que la Institución de Asistencia Privada que representa, será verificada el día <b>{{$program->dia_id}}</b> de <b> 
                     @foreach($regmeses as $mes)
                         @if($mes->mes_id == $program->mes_id)
                             {{$mes->mes_desc}}
@@ -59,28 +57,19 @@
                     @endforeach
                     </b>
                     del <b>{{$program->periodo_id}}</b>; por lo que deberá permitir el acceso al siguiente personal: <b>{{$program->visita_spub2}}</b>, adscrito a la Junta de Asistencia Privada del Estado de México, quien se identifica con gafete, que cuenta con fotografía al frente expedido y firmado autógrafamente por el Secretario Ejecutivo de esta Junta respectivamente, en las instalaciones de la institución denominada: 
-                    <b> {{$program->iap_id}} </b>, I.A.P. que se ubica en: <b>{{$program->visita_dom}}</b>, con el objeto de  revisar los CRITERIOS DE VERIFICACIÓN, el CUMPLIMIENTO DEL OBJETO SOCIAL mismo que se describe a continuación: <b>{{$program->visita_obj}}</b> y TODA AQUELLA DOCUMENTACIÓN QUE SUSTENTEN LAS ACTIVIDADES ASISTENCIALES REALIZADAS POR LA INSTITUCIÓN, con fundamento en el artículo 22, fracción VII y articulo 64, fracción III, de la Ley de Instituciones de Asistencia Privada del Estado de México. No omito comentar, que en caso de existir alguna manifestación al respecto; los visitados, su representante o la persona que  atienda la verificación, podrá formular sus observaciones en el acto de la diligencia y ofrecer pruebas en relación a los hechos u omisiones contenidos en el acta de verificación o bien hacer uso de ese derecho, por escrito, dentro del término de los tres días siguientes a la fecha en que se hubiera levantado el acta; lo anterior con fundamento en el artículo 128 fracción X del Código de Procedimientos Administrativos del Estado de México.
+                    <b> {{$program->iap_desc}} </b> que se ubica en: <b>{{$program->visita_dom}}</b>, con el objeto de  revisar los CRITERIOS DE VERIFICACIÓN, mismo que se describe a continuación: <b>{{trim($program->visita_obj).' '.trim($program->visita_obs3)}}</b> y TODA AQUELLA DOCUMENTACIÓN QUE SUSTENTEN LAS ACTIVIDADES ASISTENCIALES REALIZADAS POR LA INSTITUCIÓN, con fundamento en el artículo 22, fracción VII y articulo 64, fracción III, de la Ley de Instituciones de Asistencia Privada del Estado de México. No omito comentar, que en caso de existir alguna manifestación al respecto; los visitados, su representante o la persona que  atienda la verificación, podrá formular sus observaciones en el acto de la diligencia y ofrecer pruebas en relación a los hechos u omisiones contenidos en el acta de verificación o bien hacer uso de ese derecho, por escrito, dentro del término de los tres días siguientes a la fecha en que se hubiera levantado el acta; lo anterior con fundamento en el artículo 128 fracción X del Código de Procedimientos Administrativos del Estado de México.
                     <br><br>
                     Agradeciendo la atención brindada al presente, me despido de usted.
                     </p>
                 </td>
             </tr>
+            <tr><td style="border:0;"></td></tr>
             
-            <tr><td style="border:0;"></td></tr>
-            <tr><td style="border:0;"></td></tr>
-            <tr><td style="border:0;text-align:center;">A T E N T A M E N T E</td></tr>
-            <tr><td style="border:0;"></td></tr>
-            <tr><td style="border:0;"></td></tr>
             <tr>
-               <td style="border:0; text-align:center;">NOMBRE Y FIRMA DEL SECRETARIO EJECUTIVO DE LA JAPEM</td>
-            </tr>
-            <tr><td style="border:0;"></td></tr> 
-            <tr><td style="border:0;"></td></tr>
-            <tr><td style="border:0;"></td></tr>   
-            <tr>
-                <td style="border:0; text-align:left;font-size: 7px;">c.c.p. NOMBRE DE LA DIRECTORA DEL DESARROLLO ASISTENCIA DE LA JAPEM.
-                <br>
-                {{$program->visita_spub}}
+                <td style="border:0;text-align:center;font-size:12px;">
+                    A T E N T A M E N T E <br>
+                    <b>{{$program->visita_auditor4}}</b><br>
+                    SECRETARIO EJECUTIVO DE LA JAPEM
                 </td>
             </tr>
             @endforeach 
@@ -90,10 +79,13 @@
     <footer id="footer">
         <table class="table table-hover table-striped" align="center" width="100%">
             <tr>
+                <td style="border:0; text-align:left;font-size: 7px;">c.c.p. <b>Archivo</b></td>
+            </tr>
+            <tr>
                 <td style="border:0; text-align:right;">
                     <b>SECRETARIA DE DESARROLLO SOCIAL</b><br>JUNTA DE ASISTENCIA PRIVADA DEL ESTADO DE MÉXICO
                 </td>
-            </tr>
+            </tr>            
         </table>
     </footer>    
     </body>

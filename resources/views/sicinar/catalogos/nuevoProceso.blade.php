@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
@@ -35,7 +31,7 @@
                             <div class="row">
                                 <div class="col-xs-5 form-group">
                                     <div class="col-xs-12">
-                                        <label >* Nombre del proceso </label>
+                                        <label >Nombre del proceso </label>
                                         <input type="text" class="form-control" name="proceso_desc" placeholder="Digitar nombre del proceso" onkeypress="return soloAlfa(event)" required>
                                     </div>
                                 </div>

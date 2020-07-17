@@ -14,16 +14,12 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
                 Menú
-                <small> Catálogos - Procesos - Editar</small>
+                <small> Catálogos - Funciones - Editar</small>
             </h1>
         </section>
         <section class="content">
@@ -31,7 +27,7 @@
                 <div class="col-md-12">
                     <div class="box box-primary">
                         <div class="box-header">
-                            <h3 class="box-title">Editar función del modelado de procesos</h3>
+                            <h3 class="box-title">Editar función </h3>
                         </div>
                         {!! Form::open(['route' => ['actualizarFuncion', $regfuncion->funcion_id], 'method' => 'PUT', 'id' => 'actualizarFuncion']) !!}
                         <div class="box-body">
@@ -43,7 +39,7 @@
                                     <label><i class="fa fa-circle-o-notch"></i> Proceso </label>
                                     <select class="form-control m-bot15" name="proceso" id="proceso" required>
                                         @foreach($regproceso as $proceso)
-                                            @if($proceso->proceso_id == $regfuncion->funcion_id)
+                                            @if($proceso->proceso_id == $regfuncion->proceso_id)
                                                 <option value="{{$proceso->proceso_id}}" selected>{{$proceso->proceso_desc}}</option>
                                             @else
                                                 <option value="{{$proceso->proceso_id}}">{{$proceso->proceso_desc}}</option>

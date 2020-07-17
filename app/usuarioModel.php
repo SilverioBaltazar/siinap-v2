@@ -14,7 +14,6 @@ class usuarioModel extends Model
 	    'N_PERIODO', 
 	    'CVE_PROGRAMA', 
 	    'FOLIO',
-	    'ESTRUCGOB_ID',
 	    'CVE_DEPENDENCIA',
         'AP_PATERNO',
         'AP_MATERNO',

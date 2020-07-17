@@ -78,7 +78,7 @@
                                     <select class="form-control m-bot15" name="iap_id" id="iap_id" required>
                                         <option selected="true" disabled="disabled">Seleccionar IAP</option>
                                         @foreach($regiap as $iap)
-                                            <option value="{{$iap->iap_id}}">{{$iap->iap_desc}}</option>
+                                            <option value="{{$iap->iap_id}}">{{$iap->iap_desc.' '.$iap->iap_id}}</option>
                                         @endforeach
                                     </select>
                                 </div>                                

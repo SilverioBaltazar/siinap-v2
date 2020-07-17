@@ -14,11 +14,8 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <div class="content-wrapper">
         <section class="content-header">
             <h1>Menú
@@ -32,18 +29,6 @@
                         <div class="box-header"><h3 class="box-title">Registrar curso</h3></div> 
                         {!! Form::open(['route' => 'AltaNuevoCurso', 'method' => 'POST','id' => 'nuevoCurso', 'enctype' => 'multipart/form-data']) !!}
                         <div class="box-body">
-
-                            <div class="row">                                
-                                <div class="col-xs-4 form-group">
-                                    <label >IAP </label>
-                                    <select class="form-control m-bot15" name="iap_id" id="iap_id" required>
-                                        <option selected="true" disabled="disabled">Seleccionar IAP</option>
-                                        @foreach($regiap as $iap)
-                                            <option value="{{$iap->iap_id}}">{{$iap->iap_desc}}</option>
-                                        @endforeach
-                                    </select>                                    
-                                </div>                                 
-                            </div>
 
                             <div class="row">                                
                                 <div class="col-xs-4 form-group">
@@ -74,41 +59,93 @@
                                 <div class="col-xs-4 form-group">
                                     <label >Objetivo del curso  </label>
                                     <input type="text" class="form-control" name="curso_obj" id="curso_obj" placeholder="Digitar el objetivo del curso" onkeypress="return soloAlfa(event)" required>
-                                </div>                                
+                                </div>               
+                                <div class="col-xs-4 form-group">
+                                    <label >Ponente(s)  </label>
+                                    <input type="text" class="form-control" name="curso_ponentes" id="curso_ponentes" placeholder="Digitar el nombre(s) del ponentes del curso" onkeypress="return soloAlfa(event)" required>
+                                </div>                                                                
                             </div>                            
+
+                            <div class="row">    
+                                <div class="col-xs-4 form-group">
+                                    <label >Fecha de inicio - Año </label>
+                                    <select class="form-control m-bot15" name="periodo_id1" id="periodo_id1" required>
+                                        <option selected="true" disabled="disabled">Seleccionar año de inicio </option>
+                                        @foreach($regperiodos as $periodo)
+                                            <option value="{{$periodo->periodo_id}}">{{$periodo->periodo_desc}}</option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>   
+                                <div class="col-xs-4 form-group">
+                                    <label >Mes </label>
+                                    <select class="form-control m-bot15" name="mes_id1" id="mes_id1" required>
+                                        <option selected="true" disabled="disabled">Seleccionar mes de inicio </option>
+                                        @foreach($regmeses as $mes)
+                                            <option value="{{$mes->mes_id}}">{{$mes->mes_desc}} </option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>    
+                                <div class="col-xs-4 form-group">
+                                    <label >Día </label>
+                                    <select class="form-control m-bot15" name="dia_id1" id="dia_id1" required>
+                                        <option selected="true" disabled="disabled">Seleccionar día de inicio </option>
+                                        @foreach($regdias as $dia)
+                                            <option value="{{$dia->dia_id}}">{{$dia->dia_desc}} </option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>                                    
+                            </div>
+
+                            <div class="row">    
+                                <div class="col-xs-4 form-group">
+                                    <label >Fecha de término - Año </label>
+                                    <select class="form-control m-bot15" name="periodo_id2" id="periodo_id2" required>
+                                        <option selected="true" disabled="disabled">Seleccionar año de término </option>
+                                        @foreach($regperiodos as $periodo)
+                                            <option value="{{$periodo->periodo_id}}">{{$periodo->periodo_desc}}</option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>   
+                                <div class="col-xs-4 form-group">
+                                    <label >Mes </label>
+                                    <select class="form-control m-bot15" name="mes_id2" id="mes_id2" required>
+                                        <option selected="true" disabled="disabled">Seleccionar mes de término </option>
+                                        @foreach($regmeses as $mes)                                      
+                                            <option value="{{$mes->mes_id}}">{{$mes->mes_desc}} </option>
+                                        @endforeach
+                                    </select>                                    
+                                </div>    
+                                <div class="col-xs-4 form-group">
+                                    <label >Día </label>
+                                    <select class="form-control m-bot15" name="dia_id2" id="dia_id2" required>
+                                        <option selected="true" disabled="disabled">Seleccionar día de término </option>
+                                        @foreach($regdias as $dia)
+                                            <option value="{{$dia->dia_id}}">{{$dia->dia_desc}} </option>
+                                        @endforeach
+                                    </select>       
+                                </div>                                    
+                            </div>
 
                             <div class="row">                                
                                 <div class="col-xs-4 form-group">
                                     <label >Costo ($) </label>
-                                    <input type="text" class="form-control" name="curso_costo" id="curso_costo" placeholder="Costo del curso" required>
+                                    <input type="text" class="form-control" name="curso_costo" id="curso_costo" placeholder="Costo del curso" onkeypress="return soloNumeros(event)" required>
                                 </div>  
                                 <div class="col-xs-4 form-group">
-                                    <label >Número de horas </label>
-                                    <input type="text" class="form-control" name="curso_thoras" id="curso_thoras" placeholder="Número de horas" required>
-                                </div>           
-                            </div>
-
-                            <div class="row">
-                                <div class="col-xs-4 form-group">
-                                    <label>Fecha de inicio (dd/mm/aaaa)</label>
-                                    <div class="input-group date">
-                                        <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                        <input type="text" class="form-control pull-right" id="datepicker1"  name="curso_finicio" placeholder="Fecha de inicio (dd/mm/aaaa)" required>
-                                    </div>
+                                    <label >Total de horas </label>
+                                    <input type="text" class="form-control" name="curso_thoras" id="curso_thoras" placeholder="Total de horas" onkeypress="return soloNumeros(event)" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
-                                    <label>Fecha de término (dd/mm/aaaa)</label>
-                                    <div class="input-group date">
-                                        <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                        <input type="text" class="form-control pull-right" id="datepicker1"  name="curso_ffin" placeholder="Fecha de termino (dd/mm/aaaa)" required>
-                                    </div>
-                                </div>
+                                    <label >Total de dias </label>
+                                    <input type="text" class="form-control" name="curso_tdias" id="curso_tdias" placeholder="Total de dias" onkeypress="return soloNumeros(event)" required>
+                                </div>                                           
                             </div>
 
                             <div class="row">                               
                                 <div class="col-md-12 offset-md-5">
                                     <label >Observaciones </label>
-                                    <input type="text" class="form-control" name="curso_obs" id="curso_obs" placeholder="Observaciones relevantes del curso" required>
+                                    <textarea class="form-control" name="curso_obs" id="curso_obs" rows="3" cols="120" placeholder="Observaciones relevantes (4,000 carácteres)" required>
+                                    </textarea>
                                 </div>                                
                             </div>
 
@@ -137,6 +174,23 @@
 
 @section('javascrpt')
 <script>
+    function soloNumeros(e){
+       key = e.keyCode || e.which;
+       tecla = String.fromCharCode(key);
+       letras = "1234567890";
+       especiales = "8-37-39-46";
+       tecla_especial = false
+       for(var i in especiales){
+            if(key == especiales[i]){
+                tecla_especial = true;
+                break;
+            }
+        }
+        if(letras.indexOf(tecla)==-1 && !tecla_especial){
+            return false;
+        }
+    }    
+
   function soloAlfa(e){
        key = e.keyCode || e.which;
        tecla = String.fromCharCode(key);

@@ -1,12 +1,15 @@
 <?php
-
+/*
+Clase modelo: regMunicipioModel
+Descripción: esta clase se creó para poder utilizar los datos de este catálogo de municipios
+*/
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
 class regMunicipioModel extends Model
 {
-    protected $table      = "CAT_MUNICIPIOS_SEDESEM";
+    protected $table      = "JP_CAT_MUNICIPIOS_SEDESEM";
     protected $primaryKey = 'MUNICIPIOID';
     public $timestamps    = false;
     public $incrementing  = false;
@@ -17,4 +20,16 @@ class regMunicipioModel extends Model
         'REGIONID',
         'CVE_COORDINACION'
     ];
+
+    /*****************************************************************************************************
+    Función Municipios(): Obtiene todos los municipios pertenecientes a la clave de la entidad federativa 
+                          igual al parámetro que viene en la función.
+    *****************************************************************************************************/    
+    public static function Municipios($id){
+        return regMunicipioModel::where('ENTIDADFEDERATIVAID',$id)
+                                  ->orderBy('MUNICIPIONOMBRE','asc')
+                                  ->get();
+    }
+
+
 }

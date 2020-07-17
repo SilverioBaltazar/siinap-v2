@@ -18,7 +18,6 @@ class regIapModel extends Model
             'IAP_DOM1',
             'IAP_DOM2',
             'IAP_DOM3',
-            'IAP_COLONIA',
             'MUNICIPIO_ID',
             'ESTADO_ID',
             'RUBRO_ID',
@@ -26,7 +25,18 @@ class regIapModel extends Model
             'IAP_RFC',
             'IAP_CP',
             'IAP_FECCONS',
+            'IAP_FECCONS2',
+            'PERIODO_ID1',
+            'MES_ID1',
+            'DIA_ID1',
             'IAP_TELEFONO',
+            'ANIO_ID',
+            'IAP_FVP',
+            'IAP_FVP2',
+            'PERIODO_ID2',
+            'MES_ID2',
+            'DIA_ID2',            
+            'INM_ID',            
             'IAP_EMAIL',
             'IAP_SWEB',
             'IAP_PRES',
@@ -35,6 +45,8 @@ class regIapModel extends Model
             'IAP_TESORERO',
             'IAP_OBJSOC',
             'GRUPO_ID',
+            'IAP_OBS1',
+            'IAP_OBS2',
             'IAP_STATUS',         //S ACTIVO N INACTIVO
             'IAP_FECCERTIFIC',
             'IAP_GEOREF_LATITUD', 
@@ -92,6 +104,11 @@ class regIapModel extends Model
         if($name)
             return $query->where('IAP_DESC', 'LIKE', "%$name%");
     }
+    public function scopeIdd($query, $idd)
+    {
+        if($idd)
+            return $query->where('IAP_ID', '=', "$idd");
+    }    
 
     public function scopeEmail($query, $email)
     {

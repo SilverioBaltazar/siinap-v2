@@ -1,4 +1,4 @@
-@extends('sicinar.pdf.layoutiaps')
+@extends('sicinar.pdf.layout')
 
 @section('content')
     <!--<h1 class="page-header">Listado de productos</h1>-->

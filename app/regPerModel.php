@@ -13,7 +13,13 @@ class regPerModel extends Model
     protected $fillable   = [
         'PER_ID',
         'PER_DESC',
+        'PER_FREC',
         'PER_STATUS', //S ACTIVO      N INACTIVO
         'FECREG'
     ];
+
+    public static function ObtFrec($id){
+        return (regPerModel::select('PER_FREC')->where('PER_ID','=',$id)
+                             ->get());
+    }
 }

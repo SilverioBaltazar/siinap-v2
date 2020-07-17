@@ -14,20 +14,16 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
-            <h1>Catálogo de tipos de archivos
-                <small> Seleccionar alguno para editar o registrar nuevo tipo de archivo </small>
+            <h1>Catálogo de formatos de archivos
+                <small> Seleccionar alguno para editar o registrar nuevo formato de archivo </small>
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Menú</a></li>
                 <li><a href="#">Catálogos </a></li>
-                <li><a href="#">Tipos de archivos  </a></li>         
+                <li><a href="#">Formatos de archivos  </a></li>         
             </ol>
         </section>
         <section class="content">
@@ -35,7 +31,7 @@
                 <div class="col-md-12">
                     <div class="box">
                         <div class="box-header" style="text-align:right;">
-                            <a href="{{route('nuevoFormato')}}"   class="btn btn-primary" title="Alta de nuevo formato"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Nuevo tipo de archivo</a>
+                            <a href="{{route('nuevoFormato')}}"   class="btn btn-primary" title="Alta de nuevo formato"><i class="fa fa-file-new-o"></i><span class="glyphicon glyphicon-plus"></span>Nuevo formato de archivo</a>
                         </div>
                         <div class="box-body">
                             <table id="tabla1" class="table table-striped table-bordered table-sm">

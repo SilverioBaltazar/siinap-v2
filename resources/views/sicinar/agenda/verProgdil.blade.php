@@ -14,10 +14,6 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
@@ -91,13 +87,12 @@
                                         <th style="text-align:center; vertical-align: middle;">Folio      </th>
                                         <th style="text-align:center; vertical-align: middle;">Per.       </th>
                                         <th style="text-align:center; vertical-align: middle;">Mes        </th>
-                                        <th style="text-align:center; vertical-align: middle;">Dia        </th>
+                                        <th style="text-align:center; vertical-align: middle;">Día        </th>
                                         <th style="text-align:center; vertical-align: middle;">Hora       </th>
 
                                         <th style="text-align:left;   vertical-align: middle;">IAP        </th>
                                         <th style="text-align:left;   vertical-align: middle;">Domicilio  </th>
-                                        <th style="text-align:center; vertical-align: middle;">Contacto   </th>
-                                        <th style="text-align:left;   vertical-align: middle;">Teléfono   </th>
+                                        <th style="text-align:center; vertical-align: middle;">Tipo       </th>
                                         <th style="text-align:left;   vertical-align: middle;">Objetivo   </th>                                        
                                         <th style="text-align:center; vertical-align: middle;">Abierta<br>Cerrada<br>Cancel</th>
                                         
@@ -107,9 +102,12 @@
                                 <tbody>
                                     @foreach($regprogdil as $program)
                                     <tr>
-                                        <td style="text-align:left; vertical-align: middle;">{{$program->visita_folio}}    </td>
-                                        <td style="text-align:left; vertical-align: middle;">{{$program->periodo_id}}</td> 
-                                        <td style="text-align:left; vertical-align: middle;">  
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">
+                                            {{$program->visita_folio}}    
+                                        </td>
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">{{$program->periodo_id}}
+                                        </td> 
+                                        <td style="font-size:10px; text-align:center; vertical-align: middle;">  
                                             @foreach($regmeses as $mes)
                                                 @if($mes->mes_id == $program->mes_id)
                                                     {{$mes->mes_desc}}
@@ -117,7 +115,7 @@
                                                 @endif
                                             @endforeach 
                                         </td>                    
-                                        <td style="text-align:center; vertical-align: middle;">
+                                        <td style="font-size:10px; text-align:center; vertical-align: middle;">
                                             @foreach($regdias as $dia)
                                                 @if($dia->dia_id == $program->dia_id)
                                                     {{$dia->dia_desc}}
@@ -125,7 +123,7 @@
                                                 @endif
                                             @endforeach 
                                         </td>
-                                        <td style="text-align:center; vertical-align: middle;">
+                                        <td style="font-size:10px; text-align:center; vertical-align: middle;">
                                             @foreach($reghoras as $hora)
                                                 @if($hora->hora_id == $program->hora_id)
                                                     {{$hora->hora_desc}}
@@ -134,7 +132,7 @@
                                             @endforeach 
                                         </td>
 
-                                        <td style="text-align:left; vertical-align: middle;">{{$program->iap_id}}   
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">   
                                             @foreach($regiap as $iap)
                                                 @if($iap->iap_id == $program->iap_id)
                                                     {{$iap->iap_desc}}
@@ -142,27 +140,48 @@
                                                 @endif
                                             @endforeach
                                         </td>                                        
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($program->visita_dom)}}</td>
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($program->visita_contacto)}}
+                                        <td style="font-size:10px; text-align:left; vertical-align: middle;">{{Trim($program->visita_dom)}}</td>
+
+                                        @if($program->visita_tipo1 == 'A')
+                                            <td style="font-size:10px; text-align:center; vertical-align: middle;">Asistencial
+                                            </td>
+                                        @else
+                                            @if($program->visita_tipo1 == 'C')
+                                                <td style="font-size:10px; text-align:center; vertical-align: middle;">Contable
+                                                </td>
+                                            @else 
+                                                @if($program->visita_tipo1 == 'J')
+                                                   <td style="font-size:10px; text-align:center; vertical-align: middle;">Jurídica
+                                                   </td>
+                                                @else                                       
+                                                   <td style="font-size:10px; text-align:center; vertical-align: middle;">
+                                                   </td>
+                                                @endif
+                                            @endif
+                                        @endif
+                                        <td style="font-size:08px; text-align:left; vertical-align: middle;">
+                                            {{Trim($program->visita_obj).' '.Trim($program->visita_obs3)}}
                                         </td>
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($program->visita_tel)}}</td>
-                                        <td style="text-align:left; vertical-align: middle;">{{Trim($program->visita_obj)}}</td>
                                         @switch($program->visita_edo)
                                         @case(0)  <!-- amarillo -->
-                                            <td style="color:orange;text-align:center; vertical-align: middle;" title="En proceso"><i class="fa fa-ellipsis-h"></i>
+                                            <td style="text-align:center;">
+                                                 <img src="{{ asset('images/semaforo_amarillo.jpg') }}" width="15px" height="15px" title="En proceso" style="text-align:center;margin-right: 15px;vertical-align: middle;"/> 
                                             </td>
                                             @break
                                         @case(1)  <!-- cerrada -->
-                                            <td style="color:darkgreen;text-align:center; vertical-align: middle;" title="Cerrada"><i class="fa fa-check"></i>
+                                            <td style="text-align:center;">
+                                                <img src="{{ asset('images/semaforo_verde.jpg') }}" width="15px" height="15px" title="Cerrada" style="text-align:center;margin-right: 15px;vertical-align: middle;"/>    
                                             </td>
                                             @break
                                         @case(2)
-                                            <td style="color:red;text-align:center; vertical-align: middle;" title="Cancelada"><i class="fa fa-times"></i>
+                                            <td style="text-align:center;">
+                                                <img src="{{ asset('images/semaforo_rojo.jpg') }}" width="15px" height="15px" title="Cancelada" style="text-align:center;margin-right: 15px;vertical-align: middle;"/>
                                             </td>
                                             @break 
                                         @default 
-                                            <td style="color:blue;text-align:center; vertical-align: middle;" title="Sin especificar"><i class="fa fa-times"></i>{{$program->visita_edo}}
-                                            </td>                                          
+                                            <td style="text-align:center;"> 
+                                                <img src="{{ asset('images/semaforo_rojo.jpg') }}" width="15px" height="15px" title="Cancelada" style="text-align:center;margin-right: 15px;vertical-align: middle;"/> 
+                                            </td>                                                                                  
                                         @endswitch
                                         
                                         <td style="text-align:center;">

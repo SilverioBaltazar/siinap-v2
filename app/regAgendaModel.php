@@ -314,6 +314,7 @@ class regAgendaModel extends Model
         'VISITA_SUGEREN',
         'VISITA_OBS1',
         'VISITA_OBS2',
+        'VISITA_OBS3',
         'VISITA_FECREGP',
         'VISITA_FECREGD',
         'VISITA_FECREGV',
@@ -324,6 +325,11 @@ class regAgendaModel extends Model
         'IP_M',
         'LOGIN_M'
     ];
+
+    public static function ObtIap($id){
+        return regAgendaModel::select('IAP_ID')->where('VISITA_FOLIO','=',$id )
+                               ->get();
+    }   
 
     //***************************************//
     // *** Como se usa el query scope  ******//

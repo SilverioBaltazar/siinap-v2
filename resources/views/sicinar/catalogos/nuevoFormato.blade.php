@@ -14,28 +14,24 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
             <h1>Menú
-                <small> Catálogos - Tipos de archivo - Nuevo</small>                
+                <small> Catálogos - Formato de archivo - Nuevo</small>                
             </h1>
         </section>
         <section class="content">
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box-success">
-                        <div class="box-header"><h3 class="box-title">Registrar nuevo tipo de archivo </h3></div>
+                        <div class="box-header"><h3 class="box-title">Registrar nuevo formato de archivo </h3></div>
                         {!! Form::open(['route' => 'AltaNuevoFormato', 'method' => 'POST','id' => 'nuevoFormato']) !!}
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-xs-5 form-group">
                                     <div class="col-xs-12">
-                                        <label >Tipo de archivo </label>
+                                        <label >Formato de archivo </label>
                                         <input type="text" class="form-control" id="formato_desc" name="formato_desc" placeholder="Digitar nombre del formato" onkeypress="return soloAlfa(event)" required>
                                     </div>
                                 </div>

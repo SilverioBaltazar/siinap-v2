@@ -14,10 +14,6 @@
 {{$usuario}}
 @endsection
 
-@section('estructura')
-{{$estructura}}
-@endsection
-
 @section('content')
   <div class="content-wrapper">
     <section class="content-header">

@@ -14,11 +14,8 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <div class="content-wrapper">
         <section class="content-header">
             <h1>
@@ -38,7 +35,7 @@
 
                             <div class="row">    
                                 <div class="col-xs-4 form-group">
-                                    <label >IAP </label>
+                                    <label >IAP </label><br>
                                     <td style="text-align:left; vertical-align: middle;">   
                                         @foreach($regiap as $iap)
                                             @if($iap->iap_id == $regvisita->iap_id)
@@ -52,6 +49,10 @@
                                     <label >Domicilio </label>
                                     <input type="text" class="form-control" name="visita_dom" id="visita_dom" placeholder="Domicilio a donde va a ser la diligencia" value="{{Trim($regvisita->visita_dom)}}" required>
                                 </div>    
+                                <div class="col-xs-4 form-group" style="color:green;font-size:12px; text-align:right; vertical-align: middle;">
+                                    <label >Folio </label><br>
+                                    {{Trim($regvisita->visita_folio)}}
+                                </div>                                    
                             </div>
 
                             <div class="row">                                
@@ -166,12 +167,12 @@
 
                             <div class="row">
                                 <div class="col-xs-4 form-group">
-                                    <label >Representante legal de la IAP</label>
-                                    <input type="text" class="form-control" name="visita_auditado2" id="visita_auditado2" placeholder="Representante legal de la IAP" value="{{$regvisita->visita_auditado2}}" required>
+                                    <label >Representante de la IAP</label>
+                                    <input type="text" class="form-control" name="visita_auditado2" id="visita_auditado2" placeholder="Representante de la IAP" value="{{$regvisita->visita_auditado2}}" required>
                                 </div>   
                                 <div class="col-xs-4 form-group">
-                                    <label >Puesto del representante legal de la IAP</label>
-                                    <input type="text" class="form-control" name="visita_puesto2" id="visita_puesto2" placeholder="Puesto del representante legal DE LA iap" value="{{Trim($regvisita->regvisita_puesto2)}}" required>
+                                    <label >Puesto del representante de la IAP</label>
+                                    <input type="text" class="form-control" name="visita_puesto2" id="visita_puesto2" placeholder="Puesto del representante de la IAP" value="{{Trim($regvisita->regvisita_puesto2)}}" required>
                                 </div>                                          
                             </div>
                             <div class="row">
@@ -217,7 +218,7 @@
                             <div class="row">                                                             
                                 <div class="col-xs-4 form-group">                        
                                     <label>Estado de la diligencia (en proceso, cerrada o cancelada </label>
-                                    <select class="form-control m-bot15" name="visita_edo" required>
+                                    <select class="form-control m-bot15" name="visita_edo" id="visita_edo" required>
                                         @if($regvisita->visita_edo == '1')
                                             <option value="0"         >En proceso</option>
                                             <option value="1" selected>Cerrada   </option>
@@ -237,7 +238,7 @@
                                 </div>  
                                 <div class="col-xs-4 form-group">                        
                                     <label>¿Se realizo visita de diligencia? </label>
-                                    <select class="form-control m-bot15" name="visita_edo" required>
+                                    <select class="form-control m-bot15" name="visita_status2" id="visita_status2" required>
                                         @if($regvisita->status2 == 'S')
                                             <option value="S" selected>Si </option>
                                             <option value="N"         >No </option>
@@ -251,21 +252,21 @@
 
                             <div class="row">                                
                                 <div class="col-xs-12 form-group">
-                                    <label >Criterios de verificación (500 carácteres)</label>
+                                    <label >Criterios de verificación, hechos y circunstancias (4,000 carácteres)</label>
                                     <textarea class="form-control" name="visita_criterios" id="visita_criterios" rows="6" cols="120" placeholder="Criterios de verificación de la visita de diligencia" required>{{Trim($regvisita->visita_criterios)}}
                                     </textarea>
                                 </div>                                
                             </div>
                             <div class="row">                                
                                 <div class="col-xs-12 form-group">
-                                    <label >Visto de la diligencia (500 carácteres)</label>
+                                    <label >Visto de la diligencia (4,000 carácteres)</label>
                                     <textarea class="form-control" name="visita_visto" id="visita_visto" rows="6" cols="120" placeholder="Visto de la diligencia" required>{{Trim($regvisita->visita_visto)}}
                                     </textarea>
                                 </div>                                
                             </div>
                             <div class="row">                                
                                 <div class="col-xs-12 form-group">
-                                    <label >Recomendaciones (500 carácteres)</label>
+                                    <label >Recomendaciones (4,000 carácteres)</label>
                                     <textarea class="form-control" name="visita_recomen" id="visita_recomen" rows="6" cols="120" placeholder="Recomendaciones" required>{{Trim($regvisita->visita_recomen)}}
                                     </textarea>
                                 </div>                                
@@ -273,27 +274,11 @@
 
                             <div class="row">                                
                                 <div class="col-xs-12 form-group">
-                                    <label >Sugerencias (500 carácteres)</label>
+                                    <label >Sugerencias (4,000 carácteres)</label>
                                     <textarea class="form-control" name="visita_sugeren" id="visita_sugeren" rows="6" cols="120" placeholder="Sugerencias" required>{{Trim($regvisita->visita_sugeren)}}
                                     </textarea>
                                 </div>                                
                             </div>                                                        
-
-                            <div class="row">                                
-                                <div class="col-xs-4 form-group">
-                                    <label >Plazo de entrega de duplicado de Acta de visita </label>
-                                    <select class="form-control m-bot15" name="num3_id" id="num3_id" required>
-                                        <option selected="true" disabled="disabled">Seleccionar plazo de entrega</option>
-                                        @foreach($regminutos as $num)
-                                            @if($num->num_id == $regvisita->num3_id)
-                                                <option value="{{$num->num_id}}" selected>{{$num->num_desc}}</option>
-                                            @else                                        
-                                               <option value="{{$num->num_id}}">{{$num->num_desc}} </option>
-                                            @endif
-                                        @endforeach
-                                    </select>                                    
-                                </div>                                   
-                            </div>         
 
                             <div class="row">
                                 @if(count($errors) > 0)

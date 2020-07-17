@@ -14,11 +14,8 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <div class="content-wrapper">
         <section class="content-header">
             <h1>Menú
@@ -72,8 +69,8 @@
                                     <input type="text" class="form-control" name="apor_concepto" id="apor_concepto" placeholder="Digitar concepto de la paotración monetaria" onkeypress="return soloAlfa(event)" required>
                                 </div>
                                 <div class="col-xs-4 form-group">
-                                    <label >Monto ($) </label>
-                                    <input type="text" class="form-control" name="apor_monto" id="apor_monto" placeholder="* Monto de la aportación en pesos mexicanos" required>
+                                    <label >$ Monto </label>
+                                    <input type="number" min="0" max="999999999999.99" class="form-control" name="apor_monto" id="apor_monto" placeholder="Monto de la aportación en pesos mexicanos" required>
                                 </div>  
                             </div>                            
 

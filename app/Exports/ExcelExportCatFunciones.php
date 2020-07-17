@@ -28,7 +28,8 @@ class ExcelExportCatFunciones implements FromCollection, /*FromQuery,*/ WithHead
     {
          return regfuncionModel::join('JP_CAT_PROCESOS','JP_CAT_PROCESOS.PROCESO_ID','=','JP_CAT_FUNCIONES.PROCESO_ID')
                             ->select('JP_CAT_FUNCIONES.PROCESO_ID','JP_CAT_PROCESOS.PROCESO_DESC','JP_CAT_FUNCIONES.FUNCION_ID','JP_CAT_FUNCIONES.FUNCION_DESC','JP_CAT_FUNCIONES.FUNCION_STATUS','JP_CAT_FUNCIONES.FUNCION_FECREG')
-                            ->orderBy('JP_CAT_FUNCIONES.PROCESO_ID','JP_CAT_FUNCIONES.FUNCION_ID','DESC')
+                            ->orderBy('JP_CAT_FUNCIONES.PROCESO_ID','ASC')
+                            ->orderBy('JP_CAT_FUNCIONES.FUNCION_ID','ASC')
                             ->get();                               
     }
 }

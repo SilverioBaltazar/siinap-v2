@@ -14,13 +14,13 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
+    <!DOCTYPE html>
+    <html lang="es">
     <div class="content-wrapper">
         <section class="content-header">
+            <!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
+            <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
             <h1>
                 Menú
                 <small> Instituciones Privadas (IAPS) - Cursos - Editar</small>
@@ -35,25 +35,6 @@
                         </div>
                         {!! Form::open(['route' => ['actualizarCurso',$regcursos->curso_id], 'method' => 'PUT', 'id' => 'actualizarCurso', 'enctype' => 'multipart/form-data']) !!}
                         <div class="box-body">
-
-                            <div class="row">
-                                <div class="col-xs-4 form-group">
-                                    <label >IAP </label>
-                                    <select class="form-control m-bot15" name="iap_id" id="iap_id" required>
-                                        <option selected="true" disabled="disabled">Seleccionar IAP </option>
-                                        @foreach($regiap as $iap)
-                                            @if($iap->iap_id == $regcursos->iap_id)
-                                                <option value="{{$iap->iap_id}}" selected>{{$iap->iap_desc}}</option>
-                                            @else                                        
-                                               <option value="{{$iap->iap_id}}">{{$iap->iap_desc}} </option>
-                                            @endif
-                                        @endforeach
-                                    </select>                                    
-                                </div> 
-                                <div class="col-xs-4 form-group">
-                                    <label>Id del curso: {{$regcursos->curso_id}}</label>
-                                </div>             
-                            </div>
 
                             <div class="row">
                                 <div class="col-xs-4 form-group">
@@ -83,6 +64,9 @@
                                         @endforeach
                                     </select>                                    
                                 </div>                                
+                                <div class="col-xs-4 form-group">
+                                    <label>Id del curso: {{$regcursos->curso_id}}</label>
+                                </div>                                             
                             </div>
 
                             <div class="row">
@@ -94,23 +78,96 @@
                                     <label >Objetivo del curso</label>
                                     <input type="text" class="form-control" name="curso_obj" id="curso_obj" placeholder="Objetivo del curso" value="{{Trim($regcursos->curso_obj)}}" required>
                                 </div>
+                                <div class="col-xs-4 form-group">
+                                    <label >Ponente(s) </label>
+                                    <input type="text" class="form-control" name="curso_ponentes" id="curso_ponentes" placeholder="Ponente(s) del curso" value="{{Trim($regcursos->curso_ponentes)}}" required>
+                                </div>                                
                             </div>                            
 
-                            <div class="row">
+                            <div class="row">    
                                 <div class="col-xs-4 form-group">
-                                    <label>Fecha de inicio (dd/mm/aaaa)</label>
-                                    <div class="input-group date">
-                                        <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                        <input type="text" class="form-control pull-right" id="datepicker1"  name="curso_finicio" placeholder="Fecha de inicio (dd/mm/aaaa)" value="{!! date('d/m/Y',strtotime($regcursos->curso_finicio)) !!}" required>
-                                    </div>
-                                </div>  
+                                    <label >Fecha de inicio del curso - Año </label>
+                                    <select class="form-control m-bot15" name="periodo_id1" id="periodo_id1" required>
+                                        <option selected="true" disabled="disabled">Seleccionar año de inicio </option>
+                                        @foreach($regperiodos as $periodo)
+                                            @if($periodo->periodo_id == $regcursos->periodo_id1)
+                                                <option value="{{$periodo->periodo_id}}" selected>{{$periodo->periodo_desc}}</option>
+                                            @else                                        
+                                               <option value="{{$periodo->periodo_id}}">{{$periodo->periodo_desc}} 
+                                               </option>
+                                            @endif
+                                        @endforeach
+                                    </select>                                    
+                                </div>   
                                 <div class="col-xs-4 form-group">
-                                    <label>Fecha de término (dd/mm/aaaa)</label>
-                                    <div class="input-group date">
-                                        <div class="input-group-addon"><i class="fa fa-calendar"></i></div>
-                                        <input type="text" class="form-control pull-right" id="datepicker1"  name="curso_ffin" placeholder="Fecha de termino (dd/mm/aaaa)" value="{!! date('d/m/Y',strtotime($regcursos->curso_ffin)) !!}" required>
-                                    </div>
+                                    <label >Mes </label>
+                                    <select class="form-control m-bot15" name="mes_id1" id="mes_id1" required>
+                                        <option selected="true" disabled="disabled">Seleccionar mes de inicio </option>
+                                        @foreach($regmeses as $mes)
+                                            @if($mes->mes_id == $regcursos->mes_id1)
+                                                <option value="{{$mes->mes_id}}" selected>{{$mes->mes_desc}}</option>
+                                            @else                                        
+                                               <option value="{{$mes->mes_id}}">{{$mes->mes_desc}} </option>
+                                            @endif
+                                        @endforeach
+                                    </select>                                    
                                 </div>    
+                                <div class="col-xs-4 form-group">
+                                    <label >Día </label>
+                                    <select class="form-control m-bot15" name="dia_id1" id="dia_id1" required>
+                                        <option selected="true" disabled="disabled">Seleccionar día de inicio </option>
+                                        @foreach($regdias as $dia)
+                                            @if($dia->dia_id == $regcursos->dia_id1)
+                                                <option value="{{$dia->dia_id}}" selected>{{$dia->dia_desc}}</option>
+                                            @else                                        
+                                               <option value="{{$dia->dia_id}}">{{$dia->dia_desc}} </option>
+                                            @endif
+                                        @endforeach
+                                    </select>                                    
+                                </div>                                    
+                            </div>
+
+                            <div class="row">    
+                                <div class="col-xs-4 form-group">
+                                    <label >Fecha de termino del curso - Año </label>
+                                    <select class="form-control m-bot15" name="periodo_id2" id="periodo_id2" required>
+                                        <option selected="true" disabled="disabled">Seleccionar año de ntermino </option>
+                                        @foreach($regperiodos as $periodo)
+                                            @if($periodo->periodo_id == $regcursos->periodo_id2)
+                                                <option value="{{$periodo->periodo_id}}" selected>{{$periodo->periodo_desc}}</option>
+                                            @else                                        
+                                               <option value="{{$periodo->periodo_id}}">{{$periodo->periodo_desc}} 
+                                               </option>
+                                            @endif
+                                        @endforeach
+                                    </select>                                    
+                                </div>   
+                                <div class="col-xs-4 form-group">
+                                    <label >Mes </label>
+                                    <select class="form-control m-bot15" name="mes_id2" id="mes_id2" required>
+                                        <option selected="true" disabled="disabled">Seleccionar mes de termino </option>
+                                        @foreach($regmeses as $mes)
+                                            @if($mes->mes_id == $regcursos->mes_id2)
+                                                <option value="{{$mes->mes_id}}" selected>{{$mes->mes_desc}}</option>
+                                            @else                                        
+                                               <option value="{{$mes->mes_id}}">{{$mes->mes_desc}} </option>
+                                            @endif
+                                        @endforeach
+                                    </select>                                    
+                                </div>    
+                                <div class="col-xs-4 form-group">
+                                    <label >Día </label>
+                                    <select class="form-control m-bot15" name="dia_id2" id="dia_id2" required>
+                                        <option selected="true" disabled="disabled">Seleccionar día de termino </option>
+                                        @foreach($regdias as $dia)
+                                            @if($dia->dia_id == $regcursos->dia_id2)
+                                                <option value="{{$dia->dia_id}}" selected>{{$dia->dia_desc}}</option>
+                                            @else                                        
+                                               <option value="{{$dia->dia_id}}">{{$dia->dia_desc}} </option>
+                                            @endif
+                                        @endforeach
+                                    </select>                                    
+                                </div>                                    
                             </div>
 
                             <div class="row">
@@ -122,6 +179,10 @@
                                     <label >Total de horas</label>
                                     <input type="text" class="form-control" name="curso_thoras" id="curso_thoras" placeholder="Total de horas" value="{{$regcursos->curso_thoras}}" required>
                                 </div>
+                                <div class="col-xs-4 form-group">
+                                    <label >Total de dias</label>
+                                    <input type="text" class="form-control" name="curso_tdias" id="curso_tdias" placeholder="Total de dias" value="{{$regcursos->curso_tdias}}" required>
+                                </div>                                
                             </div>
 
                             <div class="row">
@@ -149,8 +210,8 @@
 
                             <div class="row">                                
                                 <div class="col-xs-12 form-group">
-                                    <label >Observaciones (300 carácteres)</label>
-                                    <textarea class="form-control" name="curso_obs" id="curso_obs" rows="6" cols="120" placeholder="Observaciones" required>{{Trim($regcursos->curso_obs)}}
+                                    <label >Observaciones (4,000 carácteres)</label>
+                                    <textarea class="form-control" name="curso_obs" id="curso_obs" rows="3" cols="120" placeholder="Observaciones" required>{{Trim($regcursos->curso_obs)}}
                                     </textarea>
                                 </div>                                
                             </div>

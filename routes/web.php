@@ -19,73 +19,7 @@ Route::get('/', function () {
     Route::post('menu', 'usuariosController@actionLogin')->name('login');
     Route::get('status-sesion/expirada', 'usuariosController@actionExpirada')->name('expirada');
     Route::get('status-sesion/terminada', 'usuariosController@actionCerrarSesion')->name('terminada');
-
-    Route::get('cedula-evaluacion/inicio', 'cuestionarioController@actionCuestionario')->name('cuestionario');
-    Route::get('cedula-evaluacion/confirmacion', 'cuestionarioController@Val')->name('confirmacion');
-    Route::get('cedula-evaluacion/confirmado', 'cuestionarioController@actionConfirmado')->name('confirmado');
-    Route::get('cedula-evaluacion/verificar/{id}', 'cuestionarioController@actionVerificar')->name('verificar');
-    Route::put('cedula-evaluacion/verificar/{id}', 'cuestionarioController@actionVerificando')->name('verificando');
-    Route::post('cedula-evaluacion/nuevo', 'cuestionarioController@actionAltaCuestionario')->name('altaCuestionario');
-    Route::get('cedula-evaluacion/editar', 'cuestionarioController@actionEditar')->name('evalEditar');
-    //EDICION NORMA 1
-    Route::get('cedula-evaluacion/{id}/editar/cedula-evaluacion/N1', 'cuestionarioController@actionObtenerEvaluacionN1')->name('EditarN1');
-    Route::put('cedula-evaluacion/{id}/guardar/cedula-evaluacion/N1', 'cuestionarioController@actionGuardarEvaluacionN1')->name('ActualizarN1');
-    //EDICION NORMA 2
-    Route::get('cedula-evaluacion/{id}/editar/cedula-evaluacion/N2', 'cuestionarioController@actionObtenerEvaluacionN2')->name('EditarN2');
-    Route::put('cedula-evaluacion/{id}/guardar/cedula-evaluacion/N2', 'cuestionarioController@actionGuardarEvaluacionN2')->name('ActualizarN2');
-    //EDICION NORMA 3
-    Route::get('cedula-evaluacion/{id}/editar/cedula-evaluacion/N3', 'cuestionarioController@actionObtenerEvaluacionN3')->name('EditarN3');
-    Route::put('cedula-evaluacion/{id}/guardar/cedula-evaluacion/N3', 'cuestionarioController@actionGuardarEvaluacionN3')->name('ActualizarN3');
-    //EDICION NORMA 3
-    Route::get('cedula-evaluacion/{id}/editar/cedula-evaluacion/N4', 'cuestionarioController@actionObtenerEvaluacionN4')->name('EditarN4');
-    Route::put('cedula-evaluacion/{id}/guardar/cedula-evaluacion/N4', 'cuestionarioController@actionGuardarEvaluacionN4')->name('ActualizarN4');
-    //EDICION NORMA 3
-    Route::get('cedula-evaluacion/{id}/editar/cedula-evaluacion/N5', 'cuestionarioController@actionObtenerEvaluacionN5')->name('EditarN5');
-    Route::put('cedula-evaluacion/{id}/guardar/cedula-evaluacion/N5', 'cuestionarioController@actionGuardarEvaluacionN5')->name('ActualizarN5');
-    //PROCESOS
-	Route::get('procesos/nuevo','procesosController@actionVerAltaProcesos')->name('nuevoProceso');
-	Route::post('procesos/nuevo/alta','procesosController@actionAltaProcesos')->name('altaProceso');
-	Route::get('procesos/unidades/{id}','procesosController@actionUnidades')->name('unidades');
-	Route::get('cuestionario/unidades/{id}','procesosController@actionUnidades');
-    //Graficas
-    //Route::get('procesos/ver/graficas','procesosController@Graficas')->name('verGraficas');
-
-	Route::get('procesos/ver/todos','procesosController@actionVerProcesos')->name('verProcesos');
-    Route::get('procesos/ver/sustantivos','procesosController@actionVerProcesosSustantivos')->name('verProcesosSust');
-    Route::get('procesos/ver/administrativos','procesosController@actionVerProcesosAdministrativos')->name('verProcesosAdmin');
-    Route::get('procesos/ver/institucionales','procesosController@actionVerProcesosInstitucionales')->name('verProcesosInst');
-	Route::get('procesos/ver/todos/evaluaciones','procesosController@actionEvalProcesos')->name('evalProcesos');
-    Route::get('procesos/gestion','procesosController@actionGestionProcesos')->name('procesosGestion');
-    Route::get('procesos/gestion/administrativo','procesosController@actionGestionProcesosAdm')->name('procesosGestionAdm');
-    Route::get('procesos/gestion/institucional','procesosController@actionGestionProcesosInst')->name('procesosGestionInst');
-    Route::get('procesos/gestion/sustantivo','procesosController@actionGestionProcesosSust')->name('procesosGestionSust');
-    Route::get('procesos/gestion/ver/{id}/informacion-general','procesosController@actionVerInfo')->name('procesoVerInfo');
-    Route::get('procesos/gestion/unidades/administrativas','procesosController@actionGestionUnidad')->name('Gestunidades');
-    Route::get('procesos/gestion/unidad/administrativa','procesosController@actionInfoUnidad')->name('unidadesInfo');
-    Route::get('procesos/gestion/todos/{id}/activar','procesosController@actionActivarProcesos')->name('procesosGestionAct');
-    Route::get('procesos/gestion/todos/{id}/desactivar','procesosController@actionDesactivarProcesos')->name('procesosGestionDes');
-    Route::get('procesos/gestion/adm/{id}/activar','procesosController@actionActivarProcesosAdm')->name('procesosGestionActAdm');
-    Route::get('procesos/gestion/adm/{id}/desactivar','procesosController@actionDesactivarProcesosAdm')->name('procesosGestionDesAdm');
-    Route::get('procesos/gestion/inst/{id}/activar','procesosController@actionActivarProcesosInst')->name('procesosGestionActInst');
-    Route::get('procesos/gestion/inst/{id}/desactivar','procesosController@actionDesactivarProcesosInst')->name('procesosGestionDesInst');
-    Route::get('procesos/gestion/sust/{id}/activar','procesosController@actionActivarProcesosSust')->name('procesosGestionActSust');
-    Route::get('procesos/gestion/sust/{id}/desactivar','procesosController@actionDesactivarProcesosSust')->name('procesosGestionDesSust');
-
-	Route::get('downloadExcel','procesosController@export')->name('download');
-    Route::get('ver/pdf/{id}','procesosController@verPDF')->name('Verpdf');
-    //PLAN DE TRABAJO
-    Route::get('plan-de-trabajo/nuevo','estrategiasController@actionNuevoPlan')->name('nuevoPlan');
-    Route::post('plan-de-trabajo/nuevo/alta','estrategiasController@actionAltaNuevoPlan')->name('AltaNuevoPlan');
-    Route::get('plan-de-trabajo/ver/todos','estrategiasController@actionVerPlan')->name('verPlan');
-    Route::get('plan-de-trabajo/{id}/marcar/activo','estrategiasController@actionActivarPlan')->name('activarPlan');
-    Route::get('plan-de-trabajo/{id}/marcar/inhactivo','estrategiasController@actionDesactivarPlan')->name('desactivarPlan');
-    Route::get('plan-de-trabajo/{id}/marcar/pendiente','estrategiasController@actionPlanPendiente')->name('planPendiente');
-    Route::get('plan-de-trabajo/{id}/marcar/concluido','estrategiasController@actionPlanConcluido')->name('planConcluido');
-    Route::get('plan-de-trabajo/{id}/editar/plan-de-trabajo','estrategiasController@actionEditarPlan')->name('editarPlan');
-    Route::get('plan-de-trabajo/{id}/editar/plan-de-trabajo/accion-de-mejora','estrategiasController@actionEditarAccion')->name('editarAccion');
-    Route::put('plan-de-trabajo/{id}/editar/plan-de-trabajo/nueva/accion-de-mejora','estrategiasController@actionAltaAccion')->name('altaAccion');
-    Route::get('plan-de-trabajo/{id}/ver/pdf','estrategiasController@actionVerPDF')->name('planPDF');
-   
+  
     // BACK OFFICE DEL SISTEMA
     Route::get('BackOffice/usuarios'                ,'usuariosController@actionNuevoUsuario')->name('nuevoUsuario');
     Route::post('BackOffice/usuarios/alta'          ,'usuariosController@actionAltaUsuario')->name('altaUsuario');
@@ -161,8 +95,8 @@ Route::get('/', function () {
     Route::get('docto/{id}/editar/formato1','catdoctosController1@actionEditarDocto1')->name('editarDocto1');
     Route::put('docto/{id}/actualizar1'    ,'catdoctosController1@actionActualizarDocto1')->name('actualizarDocto1');
     Route::get('docto/{id}/Borrar'         ,'catdoctosController@actionBorrarDocto')->name('borrarDocto');    
-    //Route::get('docto/excel'             ,'catdoctosController@exportCatDoctosExcel')->name('catDoctosExcel');
-    //Route::get('docto/pdf'               ,'catdoctosController@exportCatDoctosPdf')->name('catDoctosPDF');     
+    Route::get('docto/excel'               ,'catdoctosController@exportCatDoctosExcel')->name('catDoctosExcel');
+    Route::get('docto/pdf'                 ,'catdoctosController@exportCatDoctosPdf')->name('catDoctosPDF');     
 
     //Municipios sedesem
     Route::get('municipio/ver/todos','catalogosmunicipiosController@actionVermunicipios')->name('verMunicipios');
@@ -170,7 +104,7 @@ Route::get('/', function () {
     Route::get('municipio/pdf'      ,'catalogosmunicipiosController@exportCatmunicipiosPdf')->name('catmunicipiosPDF');
     
     //Instituciones de Asistencia Privada (IAPS)
-    //IAPS Directorio
+    //Directorio
     Route::get('iaps/nueva'           ,'iapsController@actionNuevaIap')->name('nuevaIap');
     Route::post('iaps/nueva/alta'     ,'iapsController@actionAltaNuevaIap')->name('AltaNuevaIap');
     Route::get('iaps/ver/todas'       ,'iapsController@actionVerIap')->name('verIap');
@@ -180,36 +114,15 @@ Route::get('/', function () {
     Route::get('iaps/{id}/Borrar'     ,'iapsController@actionBorrarIap')->name('borrarIap');
     Route::get('iaps/excel'           ,'iapsController@exportCatIapsExcel')->name('downloadiap');
     Route::get('iaps/pdf'             ,'iapsController@exportCatIapsPdf')->name('catiapPDF');
-    //Route::get('/', 'UserController@index')->name('users');
 
     Route::get('iaps/{id}/editar/iaps1','iapsController1@actionEditarIap1')->name('editarIap1');
     Route::put('iaps/{id}/actualizar1' ,'iapsController1@actionActualizarIap1')->name('actualizarIap1'); 
     Route::get('iaps/{id}/editar/iaps2','iapsController2@actionEditarIap2')->name('editarIap2');
     Route::put('iaps/{id}/actualizar2' ,'iapsController2@actionActualizarIap2')->name('actualizarIap2');        
 
-    //Numeralia
-    Route::get('numeralia/ver/graficaxedo'   ,'iapsController@IapxEdo')->name('verGraficaxedo');
-    Route::get('numeralia/ver/graficaxmpio'  ,'iapsController@IapxMpio')->name('verGraficaxmpio');
-    Route::get('numeralia/ver/graficaxrubro' ,'iapsController@IapxRubro')->name('verGraficaxrubro');    
-    Route::get('numeralia/ver/graficaxrubro2','iapsController@IapxRubro2')->name('verGraficaxrubro2'); 
-    Route::get('numeralia/ver/graficadeBitacora','iapsController@Bitacora')->name('verGraficabitacora'); 
-    Route::get('numeralia/ver/mapas'         ,'iapsController@Mapas')->name('verMapas');        
-    Route::get('numeralia/ver/mapas2'        ,'iapsController@Mapas2')->name('verMapas2');        
-    Route::get('numeralia/ver/mapas3'        ,'iapsController@Mapas3')->name('verMapas3');        
-    
-    //IAPS datos Juridicos
-    Route::get('iapsjuridico/nueva'             ,'iapsjuridicoController@actionNuevaIapj')->name('nuevaIapj');
-    Route::post('iapsjuridico/nueva/alta'       ,'iapsjuridicoController@actionAltaNuevaIapj')->name('AltaNuevaIapj');    
-    Route::get('iapsjuridico/ver/todasj'        ,'iapsjuridicoController@actionVerIapj')->name('verIapj');
-    Route::get('iapsjuridico/{id}/editar/iapsj' ,'iapsjuridicoController@actionEditarIapj')->name('editarIapj');
-    Route::put('iapsjuridico/{id}/actualizarj'  ,'iapsjuridicoController@actionActualizarIapj')->name('actualizarIapj');    
-    Route::get('iapsjuridico/{id}/editar/iapsj1','iapsjuridicoController@actionEditarIapj1')->name('editarIapj1');
-    Route::put('iapsjuridico/{id}/actualizarj1' ,'iapsjuridicoController@actionActualizarIapj1')->name('actualizarIapj1');    
-    Route::get('iapsjuridico/{id}/editar/iapsj2','iapsjuridicoController@actionEditarIapj2')->name('editarIapj2');
-    Route::put('iapsjuridico/{id}/actualizarj2' ,'iapsjuridicoController@actionActualizarIapj2')->name('actualizarIapj2');    
-    Route::get('iapsjuridico/{id}/Borrarj'      ,'iapsjuridicoController@actionBorrarIapj')->name('borrarIapj');
-    //Route::get('iapsjuridico/excel'           ,'iapsjuridicoController@exportCatIapsExcel')->name('downloadiap');
-    //Route::get('iapsjuridico/{id, file}/pdfj'   ,'iapsjuridicoController@exportAct_ConstPDF')->name('acta_constPDF');
+    Route::get('iaps5/ver/todas'       ,'iapsController@actionVerIap5')->name('verIap5');
+    Route::get('iaps5/{id}/editar/iaps','iapsController@actionEditarIap5')->name('editarIap5');
+    Route::put('iaps5/{id}/actualizar' ,'iapsController@actionActualizarIap5')->name('actualizarIap5');    
 
     //IAPS Aportaciones monetarias
     Route::get('aportaciones/nueva'            ,'aportacionesController@actionNuevaApor')->name('nuevaApor');
@@ -224,34 +137,6 @@ Route::get('/', function () {
     //Route::get('aportaciones/excel'           ,'aportacionesController@exportAporExcel')->name('aporExcel');
     //Route::get('aportaciones/pdf'             ,'aportacionesController@exportAporPdf')->name('aporPDF');    
 
-    //IAPS Informacion de asistencia social y contable
-    Route::get('asistsocycont/nueva'             ,'asycController@actionNuevaAsyc')->name('nuevaAsyc');
-    Route::post('asistsocycont/nueva/alta'       ,'asycController@actionAltaNuevaAsyc')->name('AltaNuevaAsyc');
-    Route::get('asistsocycont/ver/todas'         ,'asycController@actionVerAsyc')->name('verAsyc');
-    Route::get('asistsocycont/{id}/editar/asyc'  ,'asycController@actionEditarAsyc')->name('editarAsyc');
-    Route::put('asistsocycont/{id}/actualizar'   ,'asycController@actionActualizarAsyc')->name('actualizarAsyc');
-    Route::get('asistsocycont/{id}/editar/asyc2' ,'asycController@actionEditarAsyc2')->name('editarAsyc2');
-    Route::put('asistsocycont/{id}/actualizar2'  ,'asycController@actionActualizarAsyc2')->name('actualizarAsyc2');
-    Route::get('asistsocycont/{id}/editar/asyc3' ,'asycController@actionEditarAsyc3')->name('editarAsyc3');
-    Route::put('asistsocycont/{id}/actualizar3'  ,'asycController@actionActualizarAsyc3')->name('actualizarAsyc3');
-    Route::get('asistsocycont/{id}/editar/asyc4' ,'asycController@actionEditarAsyc4')->name('editarAsyc4');
-    Route::put('asistsocycont/{id}/actualizar4'  ,'asycController@actionActualizarAsyc4')->name('actualizarAsyc4');
-    Route::get('asistsocycont/{id}/editar/asyc5' ,'asycController@actionEditarAsyc5')->name('editarAsyc5');
-    Route::put('asistsocycont/{id}/actualizar5'  ,'asycController@actionActualizarAsyc5')->name('actualizarAsyc5');    
-    Route::get('asistsocycont/{id}/editar/asyc6' ,'asycController@actionEditarAsyc6')->name('editarAsyc6');
-    Route::put('asistsocycont/{id}/actualizar6'  ,'asycController@actionActualizarAsyc6')->name('actualizarAsyc6');
-    Route::get('asistsocycont/{id}/editar/asyc7' ,'asycController@actionEditarAsyc7')->name('editarAsyc7');
-    Route::put('asistsocycont/{id}/actualizar7'  ,'asycController@actionActualizarAsyc7')->name('actualizarAsyc7');
-    Route::get('asistsocycont/{id}/editar/asyc8' ,'asycController@actionEditarAsyc8')->name('editarAsyc8');
-    Route::put('asistsocycont/{id}/actualizar8'  ,'asycController@actionActualizarAsyc8')->name('actualizarAsyc8');
-    Route::get('asistsocycont/{id}/editar/asyc9' ,'asycController@actionEditarAsyc9')->name('editarAsyc9');
-    Route::put('asistsocycont/{id}/actualizar9'  ,'asycController@actionActualizarAsyc9')->name('actualizarAsyc9');
-    Route::get('asistsocycont/{id}/editar/asyc10','asycController@actionEditarAsyc10')->name('editarAsyc10');
-    Route::put('asistsocycont/{id}/actualizar10' ,'asycController@actionActualizarAsyc10')->name('actualizarAsyc10');    
-    Route::get('asistconycont/{id}/Borrar'       ,'asycController@actionBorrarAsyc')->name('borrarAsyc');
-    //Route::get('aportaciones/excel'           ,'aportacionesController@exportAporExcel')->name('aporExcel');
-    //Route::get('aportaciones/pdf'             ,'aportacionesController@exportAporPdf')->name('aporPDF');        
-
     //Cursos de capacitación
     Route::get('cursos/nuevo'            ,'cursosController@actionNuevoCurso')->name('nuevoCurso');
     Route::post('cursos/nuevo/alta'      ,'cursosController@actionAltaNuevoCurso')->name('AltaNuevoCurso');
@@ -261,6 +146,176 @@ Route::get('/', function () {
     Route::get('cursos/{id}/Borrar'      ,'cursosController@actionBorrarCurso')->name('borrarCurso');
     //Route::get('aportaciones/excel'           ,'aportacionesController@exportAporExcel')->name('aporExcel');
     //Route::get('aportaciones/pdf'             ,'aportacionesController@exportAporPdf')->name('aporPDF');    
+      
+    //Requisitos Jurídicos
+    Route::get('rjuridicos/nueva'             ,'rJuridicosController@actionNuevaIapj')->name('nuevaIapj');
+    Route::post('rjuridicos/nueva/alta'       ,'rJuridicosController@actionAltaNuevaIapj')->name('AltaNuevaIapj');    
+    Route::get('rjuridicos/ver/todasj'        ,'rJuridicosController@actionVerIapj')->name('verIapj');
+    Route::get('rjuridicos/{id}/editar/iapsj' ,'rJuridicosController@actionEditarIapj')->name('editarIapj');
+    Route::put('rjuridicos/{id}/actualizarj'  ,'rJuridicosController@actionActualizarIapj')->name('actualizarIapj'); 
+    Route::get('rjuridicos/{id}/Borrarj'      ,'rJuridicosController@actionBorrarIapj')->name('borrarIapj');
+
+    Route::get('rjuridicos/{id}/editar/iapsj12','rJuridicosController@actionEditarIapj12')->name('editarIapj12');
+    Route::put('rjuridicos/{id}/actualizarj12' ,'rJuridicosController@actionActualizarIapj12')->name('actualizarIapj12');    
+    Route::get('rjuridicos/{id}/editar/iapsj13','rJuridicosController@actionEditarIapj13')->name('editarIapj13');
+    Route::put('rjuridicos/{id}/actualizarj13' ,'rJuridicosController@actionActualizarIapj13')->name('actualizarIapj13'); 
+
+    Route::get('rjuridicos/{id}/editar/iapsj14','rJuridicosController@actionEditarIapj14')->name('editarIapj14');
+    Route::put('rjuridicos/{id}/actualizarj14' ,'rJuridicosController@actionActualizarIapj14')->name('actualizarIapj14');
+
+    Route::get('rjuridicos/{id}/editar/iapsj15','rJuridicosController@actionEditarIapj15')->name('editarIapj15');
+    Route::put('rjuridicos/{id}/actualizarj15' ,'rJuridicosController@actionActualizarIapj15')->name('actualizarIapj15');
+
+    //Requisitos jurídicos
+    //Padron de beneficiarios
+    Route::get('padron/nueva'           ,'padronController@actionNuevoPadron')->name('nuevoPadron');
+    Route::post('padron/nueva/alta'     ,'padronController@actionAltaNuevoPadron')->name('AltaNuevoPadron');
+    Route::get('padron/ver/todas'       ,'padronController@actionVerPadron')->name('verPadron');
+    Route::get('padron/buscar/todas'    ,'padronController@actionBuscarPadron')->name('buscarPadron');    
+    Route::get('padron/{id}/editar/padron','padronController@actionEditarPadron')->name('editarPadron');
+    Route::put('padron/{id}/actualizar' ,'padronController@actionActualizarPadron')->name('actualizarPadron');
+    Route::get('padron/{id}/Borrar'     ,'padronController@actionBorrarPadron')->name('borrarPadron');
+    Route::get('padron/excel'           ,'padronController@actionExportPadronExcel')->name('ExportPadronExcel');
+    Route::get('padron/pdf'             ,'padronController@actionExportPadronPdf')->name('ExportPadronPdf');
+
+    //Plantilla de personal
+    Route::get('personal/nueva'           ,'personalController@actionNuevoPersonal')->name('nuevoPersonal');
+    Route::post('personal/nueva/alta'     ,'personalController@actionAltaNuevoPersonal')->name('AltaNuevoPersonal');
+    Route::get('personal/ver/todas'       ,'personalController@actionVerPersonal')->name('verPersonal');
+    Route::get('personal/buscar/todas'    ,'personalController@actionBuscarPersonal')->name('buscarPersonal');    
+    Route::get('personal/{id}/editar/personal','personalController@actionEditarPersonal')->name('editarPersonal');
+    Route::put('personal/{id}/actualizar' ,'personalController@actionActualizarPersonal')->name('actualizarPersonal');
+    Route::get('personal/{id}/Borrar'     ,'personalController@actionBorrarPersonal')->name('borrarPersonal');
+    Route::get('personal/excel'           ,'personalController@actionExportPersonalExcel')->name('ExportPersonalExcel');
+    Route::get('personal/pdf'             ,'personalController@actionExportPersonalPdf')->name('ExportPersonalPdf');
+
+    Route::get('personal/{id}/municipios','personalController@EntidadMunicipios')->name('Entidadmunicipios');
+    Route::get('municipios/{id}'         ,'personalController@EntidadMunicipios');
+
+    //Programa de trabajo
+    Route::get('programat/nuevo'           ,'progtrabController@actionNuevoProgtrab')->name('nuevoProgtrab');
+    Route::post('programat/nuevo/alta'     ,'progtrabController@actionAltaNuevoProgtrab')->name('AltaNuevoProgtrab');
+    Route::get('programat/ver/todos'       ,'progtrabController@actionVerProgtrab')->name('verProgtrab');
+    Route::get('programat/buscar/todos'    ,'progtrabController@actionBuscarProgtrab')->name('buscarProgtrab');    
+    Route::get('programat/{id}/editar/progt','progtrabController@actionEditarProgtrab')->name('editarProgtrab');
+    Route::put('programat/{id}/actualizar' ,'progtrabController@actionActualizarProgtrab')->name('actualizarProgtrab');
+    Route::get('programat/{id}/Borrar'     ,'progtrabController@actionBorrarProgtrab')->name('borrarProgtrab');
+    Route::get('programat/excel/{id}'      ,'progtrabController@actionExportProgtrabExcel')->name('ExportProgtrabExcel');
+    Route::get('programat/pdf/{id}/{id2}'  ,'progtrabController@actionExportProgtrabPdf')->name('ExportProgtrabPdf');
+
+    Route::get('programadt/{id}/nuevo'         ,'progtrabController@actionNuevoProgdtrab')->name('nuevoProgdtrab');
+    Route::post('programadt/nuevo/alta'   ,'progtrabController@actionAltaNuevoProgdtrab')->name('AltaNuevoProgdtrab');
+    Route::get('programadt/{id}/ver/todosd'         ,'progtrabController@actionVerProgdtrab')->name('verProgdtrab');
+    Route::get('programadt/{id}/{id2}/editar/progdt','progtrabController@actionEditarProgdtrab')->name('editarProgdtrab');
+    Route::put('programadt/{id}/{id2}/actualizardt' ,'progtrabController@actionActualizarProgdtrab')->name('actualizarProgdtrab');
+    Route::get('programadt/{id}/{id2}/Borrardt','progtrabController@actionBorrarProgdtrab')->name('borrarProgdtrab');
+
+    //Cedula de detección de necesidades
+    Route::get('cedula/nuevo'           ,'cedulaController@actionNuevaCedula')->name('nuevaCedula');
+    Route::post('cedula/nuevo/alta'     ,'cedulaController@actionAltaNuevaCedula')->name('AltaNuevaCedula');
+    Route::get('cedula/ver/todos'       ,'cedulaController@actionVerCedula')->name('verCedula');
+    Route::get('cedula/buscar/todos'    ,'cedulaController@actionBuscarCedula')->name('buscarCedula');    
+    Route::get('cedula/{id}/editar/progt','cedulaController@actionEditarCedula')->name('editarCedula');
+    Route::put('cedula/{id}/actualizar' ,'cedulaController@actionActualizarCedula')->name('actualizarCedula');
+    Route::get('cedula/{id}/Borrar'     ,'cedulaController@actionBorrarCedula')->name('borrarCedula');
+    Route::get('cedula/excel/{id}'      ,'cedulaController@actionExportvExcel')->name('ExportCedulaExcel');
+    Route::get('cedula/pdf/{id}/{id2}'  ,'cedulaController@actionExportCedulaPdf')->name('ExportCedulaPdf');
+
+    Route::get('cedulaart/{id}/{id2}/nuevo','cedulaController@actionNuevaCedulaarti')->name('nuevaCedulaarti');
+    Route::post('cedulaarti/nuevo/alta'    ,'cedulaController@actionAltaNuevaCedulaarti')->name('AltaNuevaCedulaarti');
+    Route::get('cedulaarti/{id}/{id2}/ver/todosa'             ,'cedulaController@actionVerCedulaarti')->name('verCedulaarti');
+    Route::get('cedulaarti/{id}/{id2}/{id3}/editar/cedarti'   ,'cedulaController@actionEditarCedulaarti')->name('editarCedulaarti');
+    Route::put('cedulaarti/{id}/{id2}/{id3}/actualizarcedarti','cedulaController@actionActualizarCedulaarti')->name('actualizarCedulaarti');
+    Route::get('cedulaarti/{id}/{id2}/Borrarca','cedulaController@actionBorrarCedulaarti')->name('borrarCedulaarti');
+
+    //Informe de labores - Programa de trabajo
+    //Route::get('informe/nuevo'           ,'informeController@actionNuevoInforme')->name('nuevoInforme');
+    //Route::post('informe/nuevo/alta'     ,'informeController@actionAltaNuevoInforme')->name('AltaNuevoInforme');
+    Route::get('informe/ver/todos'       ,'informeController@actionVerInformes')->name('verInformes');
+    Route::get('informe/buscar/todos'    ,'informeController@actionBuscarInforme')->name('buscarInforme');    
+    //Route::get('informe/{id}/editar/inflab','informeController@actionEditarInforme')->name('editarInforme');
+    //Route::put('informe/{id}/actualizar' ,'informeController@actionActualizarInforme')->name('actualizarInforme');
+    //Route::get('informe/{id}/Borrar'     ,'informeController@actionBorrarInforme')->name('borrarInforme');
+    //Route::get('informe/excel/{id}'      ,'informeController@actionExportInformeExcel')->name('ExportInformeExcel');
+    Route::get('informe/pdf/{id}/{id2}'  ,'informeController@actionExportInformePdf')->name('ExportInformePdf');
+
+    Route::get('informe/{id}/ver/todosi','informeController@actionVerInformelab')->name('verInformelab');
+    //Route::get('informe/{id}/nuevo'     ,'informeController@actionNuevoInformelab')->name('nuevoInformelab');
+    //Route::post('informe/nuevo/alta'    ,'informeController@actionAltaNuevoInformelab')->name('altaNuevoInformelab'); 
+    Route::get('informe/{id}/{id2}/editar/inflabdet'    ,'informeController@actionEditarInformelab')->name('editarInformelab');
+    Route::put('informe/{id}/{id2}/actualizarinflabdet' ,'informeController@actionActualizarInformelab')->name('actualizarInformelab');
+    //Route::get('informe/{id}/{id2}/Borrarinflabdet'     ,'informeController@actionBorrarInformelab')->name('borrarInformelab');
+
+    //Requisitos asistenciales ojo borrar *****************
+    Route::get('rasistencia/nueva'              ,'rAsistenciaController@actionNuevoReqa')->name('nuevoReqa');
+    Route::post('rasistencia/nueva/alta'        ,'rAsistenciaController@actionAltaNuevoReqa')->name('AltaNuevoReqa');    
+    Route::get('rasistencia/ver/todasa'         ,'rAsistenciaController@actionVerReqa')->name('verReqa');
+    Route::get('rasistencia/{id}/editar/reqa'   ,'rAsistenciaController@actionEditarReqa')->name('editarReqa');
+    Route::put('rasistencia/{id}/actualizarreqa','rAsistenciaController@actionActualizarReqa')->name('actualizarReqa'); 
+    Route::get('rasistencia/{id}/Borrarreqa'    ,'rAsistenciaController@actionBorrarReqa')->name('borrarReqa');
+
+    Route::get('rasistencia/{id}/editar/reqa1'   ,'rAsistenciaController@actionEditarReqa1')->name('editarReqa1');
+    Route::put('rasistencia/{id}/actualizarreqa1','rAsistenciaController@actionActualizarReqa1')->name('actualizarReqa1');    
+    Route::get('rasistencia/{id}/editar/reqa2'   ,'rAsistenciaController@actionEditarReqa2')->name('editarReqa2');
+    Route::put('rasistencia/{id}/actualizarreqa2','rAsistenciaController@actionActualizarReqa2')->name('actualizarReqa2'); 
+
+    Route::get('rasistencia/{id}/editar/reqa3'   ,'rAsistenciaController@actionEditarReqa3')->name('editarReqa3');
+    Route::put('rasistencia/{id}/actualizarreqa3','rAsistenciaController@actionActualizarReqa3')->name('actualizarReqa3');    
+    Route::get('rasistencia/{id}/editar/reqa4'   ,'rAsistenciaController@actionEditarReqa4')->name('editarReqa4');
+    Route::put('rasistencia/{id}/actualizarreqa4','rAsistenciaController@actionActualizarReqa4')->name('actualizarReqa4');    
+    Route::get('rasistencia/{id}/editar/reqa5'   ,'rAsistenciaController@actionEditarReqa5')->name('editarReqa5');
+    Route::put('rasistencia/{id}/actualizarreqa5','rAsistenciaController@actionActualizarReqa5')->name('actualizarReqa5');
+
+    //Requisitos contables
+    Route::get('rcontables/nueva'              ,'rContablesController@actionNuevoReqc')->name('nuevoReqc');
+    Route::post('rcontables/nueva/alta'        ,'rContablesController@actionAltaNuevoReqc')->name('AltaNuevoReqc');    
+    Route::get('rcontables/ver/todasc'         ,'rContablesController@actionVerReqc')->name('verReqc');
+    Route::get('rcontables/{id}/editar/reqc'   ,'rContablesController@actionEditarReqc')->name('editarReqc');
+    Route::put('rcontables/{id}/actualizarreqc','rContablesController@actionActualizarReqc')->name('actualizarReqc'); 
+    Route::get('rcontables/{id}/Borrarreqc'    ,'rContablesController@actionBorrarReqc')->name('borrarReqc');
+
+    Route::get('rcontables/{id}/editar/reqc6'   ,'rContablesController@actionEditarReqc6')->name('editarReqc6');
+    Route::put('rcontables/{id}/actualizarreqc6','rContablesController@actionActualizarReqc6')->name('actualizarReqc6');    
+
+    Route::get('rcontables/{id}/editar/reqc7'   ,'rContablesController@actionEditarReqc7')->name('editarReqc7');
+    Route::put('rcontables/{id}/actualizarreqc7','rContablesController@actionActualizarReqc7')->name('actualizarReqc7'); 
+
+    Route::get('rcontables/{id}/editar/reqc8'   ,'rContablesController@actionEditarReqc8')->name('editarReqc8');
+    Route::put('rcontables/{id}/actualizarreqc8','rContablesController@actionActualizarReqc8')->name('actualizarReqc8');    
+
+    Route::get('rcontables/{id}/editar/reqc9'   ,'rContablesController@actionEditarReqc9')->name('editarReqc9');
+    Route::put('rcontables/{id}/actualizarreqc9','rContablesController@actionActualizarReqc9')->name('actualizarReqc9');    
+
+    Route::get('rcontables/{id}/editar/reqc10'   ,'rContablesController@actionEditarReqc10')->name('editarReqc10');
+    Route::put('rcontables/{id}/actualizarreqc10','rContablesController@actionActualizarReqc10')->name('actualizarReqc10'); 
+
+    Route::get('rcontables/{id}/editar/reqc11'   ,'rContablesController@actionEditarReqc11')->name('editarReqc11');
+    Route::put('rcontables/{id}/actualizarreqc11','rContablesController@actionActualizarReqc11')->name('actualizarReqc11');  
+
+     //Requisito contables - Inventario de activo fijo
+    Route::get('activo/nueva'           ,'inventarioController@actionNuevoInventario')->name('nuevoInventario');
+    Route::post('activo/nueva/alta'     ,'inventarioController@actionAltaNuevoInventario')->name('AltaNuevoInventario');
+    Route::get('activo/ver/todos'       ,'inventarioController@actionVerInventarios')->name('verInventarios');
+    Route::get('activo/buscar/todos'    ,'inventarioController@actionBuscarInventario')->name('buscarInventario');    
+    Route::get('activo/{id}/editar/activo','inventarioController@actionEditarInventario')->name('editarInventario');
+    Route::put('activo/{id}/actualizar'   ,'inventarioController@actionActualizarInventario')->name('actualizarInventario');
+    Route::get('activo/{id}/Borrar'       ,'inventarioController@actionBorrarInventario')->name('borrarInventario');
+    Route::get('activo/excel'           ,'inventarioController@actionExportInventarioExcel')->name('ExportInventarioExcel');
+    Route::get('activo/pdf'             ,'inventarioController@actionExportInventarioPdf')->name('ExportInventarioPdf');
+
+     //Requisito contable - Edos financieros, Balnza de comprobación
+    Route::get('balanza/nueva'             ,'balanzaController@actionNuevaBalanza')->name('nuevaBalanza');
+    Route::post('balanz/nueva/alta'        ,'balanzaController@actionAltaNuevaBalanza')->name('AltaNuevaBalanza');
+    Route::get('balanza/ver/todos'         ,'balanzaController@actionVerBalanza')->name('verBalanza');
+    Route::get('balanza/buscar/todos'      ,'balanzaController@actionBuscarBalanza')->name('buscarBalanza');    
+    Route::get('balanza/{id}/editar/activo','balanzaController@actionEditarBalanza')->name('editarBalanza');
+    Route::put('balanza/{id}/actualizar'   ,'balanzaController@actionActualizarBalanza')->name('actualizarBalanza');
+    Route::get('balanza/{id}/Borrar'       ,'balanzaController@actionBorrarBalanza')->name('borrarBalanza');
+    Route::get('balanza/excel'             ,'balanzaController@actionExportvExcel')->name('ExportBalanzaExcel');
+    Route::get('balanza/pdf'               ,'balanzaController@actionExportBalanzaPdf')->name('ExportBalanzaPdf');
+
+    Route::get('balanza/{id}/editar/balanza1'   ,'balanzaController@actionEditarBalanza1')->name('editarBalanza1');
+    Route::put('balanza/{id}/actualizarbalanza1','balanzaController@actionActualizarBalanza1')->name('actualizarBalanza1');  
 
     //Programar diligencias
     Route::get('progdil/nuevo'           ,'progdilController@actionNuevoProgdil')->name('nuevoProgdil');
@@ -273,19 +328,69 @@ Route::get('/', function () {
     //Route::get('progdil/excel'           ,'progdilController@exportProgdilExcel')->name('ProgdilExcel');
     Route::get('progdil/{id}/pdf'        ,'progdilController@actionMandamientoPDF')->name('mandamientoPDF');
 
+    Route::get('progdil/reporte/reportepv','progdilController@actionReporteProgvisitas')->name('reporteProgvisitas');
+    Route::post('progdil/pdf/reportepv'   ,'progdilController@actionProgramavisitasPdf')->name('programavisitasPdf');
+    Route::get('progdil/reporte/reportepdf' ,'progdilController@actionReporteProgvisitasExcel')->name('reporteProgvisitasExcel');
+    Route::post('progdil/Excel//reporteexel','progdilController@actionProgramavisitasExcel')->name('programavisitasExcel');
+
     //Visitas de diligencia
-    //Route::get('visitas/nueva'           ,'visitasController@actionNuevaVisita')->name('nuevoProgdil');
-    //Route::post('visitas/nueva/alta'     ,'visitasController@actionAltaNuevaVisita')->name('AltaNuevaVisita');
-    Route::get('visitas/ver/todas'       ,'visitasController@actionVerVisitas')->name('verVisitas');
-    Route::get('visitas/buscar/todas'    ,'visitasController@actionBuscarVisita')->name('buscarVisita');    
+    Route::get('visitas/nueva'           ,'visitasController@actionNuevaVisita')->name('nuevaVisita');
+    Route::post('visitas/nueva/alta'     ,'visitasController@actionAltaNuevaVisita')->name('altaNuevaVisita');
+    Route::get('visitas/ver/todas'         ,'visitasController@actionVerVisitas')->name('verVisitas');
+    Route::get('visitas/buscar/todas'      ,'visitasController@actionBuscarVisita')->name('buscarVisita');    
     Route::get('visitas/{id}/editar/visita','visitasController@actionEditarVisita')->name('editarVisita');
-    Route::put('visitas/{id}/actualizar' ,'visitasController@actionActualizarVisita')->name('actualizarVisita');
-    Route::get('visitas/{id}/Borrar'     ,'visitasController@actionBorrarVisita')->name('borrarVisita');
-    //Route::get('visitas/excel'           ,'visitasController@exportVisitasExcel')->name('VisitasExcel');
-    Route::get('visitas/{id}/pdf'        ,'visitasController@actionActaVisitaPDF')->name('actavisitaPDF');    
-    Route::get('visitas/{id}/editar/visitaq','visitasController@actionEditarQuestionVisita')->name('editarquestionVisita');
-    Route::put('visitas/{id}/actualizarq' ,'visitasController@actionActualizarQuestionVisita')->name('actualizarQuestionVisita');
+    Route::put('visitas/{id}/actualizar'   ,'visitasController@actionActualizarVisita')->name('actualizarVisita');
+    Route::get('visitas/{id}/Borrar'       ,'visitasController@actionBorrarVisita')->name('borrarVisita');
+   
+    //Route::get('visitas/excel'              ,'visitasController@exportVisitasExcel')->name('VisitasExcel');
+    Route::get('visitas/{id}/pdfA'          ,'visitasController@actionActaVisitaAPDF')->name('actavisitaAPDF'); 
+    Route::get('visitas/{id}/pdfJ'          ,'visitasController@actionActaVisitaJPDF')->name('actavisitaJPDF');    
+    Route::get('visitas/{id}/pdfC'          ,'visitasController@actionActaVisitaCPDF')->name('actavisitaCPDF');       
 
+    //Cuestionario de diligencia
+    Route::get('question/ver/todos'         ,'questionController@actionVerQuestions')->name('verQuestions');
+    Route::get('question/buscar/todos'      ,'questionController@actionBuscarQuestion')->name('buscarQuestion');    
+    Route::get('question/nuevo'             ,'questionController@actionNuevoQuestion')->name('nuevoQuestion');
+    Route::post('question/nueva/alta'       ,'questionController@actionAltaNuevoQuestion')->name('altaNuevoQuestion');
+    Route::get('question/{id}/editar/visita','questionController@actionEditarQuestion')->name('editarQuestion');
+    Route::put('question/{id}/actualizar'   ,'questionController@actionActualizarQuestion')->name('actualizarQuestion');
+    Route::get('question/{id}/Borrar'       ,'questionController@actionBorrarQuestion')->name('borrarQuestion');
+    Route::get('question/{id}/pdf'          ,'questionController@actionQuestionPDF')->name('questionPDF');
 
+    //Tablero de control
+    Route::get('indicador/ver/todos'       ,'indicadoresController@actionVerCumplimiento')->name('vercumplimiento');
+    Route::get('indicador/buscar/todos'    ,'indicadoresController@actionBuscarCumplimiento')->name('buscarcumplimiento');    
+    Route::get('indicador/ver/todasvisitas','indicadoresController@actionVerCumplimientovisitas')->name('vercumplimientovisitas');
+    Route::get('indicador/buscar/todasvisitas','indicadoresController@actionBuscarCumplimientovisitas')->name('buscarcumplimientovisitas');    
+
+    //Numeralia
+    // IAPS
+    Route::get('numeralia/ver/graficaixedo'   ,'iapsController@IapxEdo')->name('iapxedo');
+    Route::get('numeralia/ver/graficaixmpio'  ,'iapsController@IapxMpio')->name('iapxmpio');
+    Route::get('numeralia/ver/graficaixrubro' ,'iapsController@IapxRubro')->name('iapxrubro');    
+    Route::get('numeralia/ver/graficaixrubro2','iapsController@IapxRubro2')->name('iapxrubro2'); 
+    Route::get('numeralia/ver/graficaiBitacora','iapsController@Bitacora')->name('bitacora'); 
+    Route::get('numeralia/ver/mapas'         ,'iapsController@Mapas')->name('verMapas');        
+    Route::get('numeralia/ver/mapas2'        ,'iapsController@Mapas2')->name('verMapas2');        
+    Route::get('numeralia/ver/mapas3'        ,'iapsController@Mapas3')->name('verMapas3');        
+
+    //padrón
+    Route::get('numeralia/ver/graficapadxedo'  ,'padronController@actionPadronxEdo')->name('padronxedo');
+    //Route::get('numeralia/ver/graficapadxmpio' ,'padronController@actionPadronxMpio')->name('padronxmpio');
+    Route::get('numeralia/ver/graficapadxserv' ,'padronController@actionPadronxServicio')->name('padronxservicio');
+    Route::get('numeralia/ver/graficapadxsexo' ,'padronController@actionPadronxsexo')->name('padronxsexo');
+    Route::get('numeralia/ver/graficapadxedad' ,'padronController@actionPadronxedad')->name('padronxedad');
+    Route::get('numeralia/ver/graficapadxrangoedad','padronController@actionPadronxRangoedad')->name('padronxrangoedad');
+
+    //Plantilla de personal
+    Route::get('numeralia/ver/graficapadxclase'   ,'personalController@actionPersonalxClaseemp')->name('personalxclaseemp');
+    Route::get('numeralia/ver/graficapadxTipo'    ,'personalController@actionPersonalxTipoemp')->name('personalxtipoemp');
+    Route::get('numeralia/ver/graficapadxEstudios','personalController@actionPersonalxEstudios')->name('personalxestudios');
+
+    //Agenda
+    Route::get('numeralia/ver/graficaagenda1'    ,'progdilController@actionVerProgdilGraficaxmes')->name('verprogdilgraficaxmes');    
+    Route::post('numeralia/ver/graficaagendaxmes','progdilController@actionProgdilGraficaxmes')->name('progdilgraficaxmes');
+    Route::get('numeralia/ver/graficaagenda2'    ,'progdilController@actionVerprogdilGraficaxtipo')->name('verprogdilgraficaxtipo');        
+    Route::post('numeralia/ver/graficaagendaxtipo','progdilController@actionProgdilGraficaxtipo')->name('progdilgraficaxtipo');
 });
 

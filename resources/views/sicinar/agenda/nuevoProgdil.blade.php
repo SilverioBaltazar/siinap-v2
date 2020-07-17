@@ -14,12 +14,8 @@
     {{$usuario}}
 @endsection
 
-@section('estructura')
-    {{$estructura}}
-@endsection
-
 @section('content')
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <div class="content-wrapper">
         <section class="content-header">
             <h1>Menú
@@ -98,16 +94,14 @@
                                     <input type="text" class="form-control" name="visita_contacto" id="visita_contacto" placeholder="Nombre del contacto del personal de la IAP" required>
                                 </div>                                                          
                                 <div class="col-xs-4 form-group">
-                                    <label >Telefóno </label>
-                                    <input type="text" class="form-control" name="visita_tel" id="visita_tel" placeholder="Telefóno" required>
-                                </div>   
-                            </div>                            
-
-                            <div class="row">                                                                
-                                <div class="col-xs-4 form-group">
-                                    <label >e-mail </label>
-                                    <input type="text" class="form-control" name="visita_email" id="visita_email" placeholder="e-mail del personal de la IAP" required>
-                                </div>                                                          
+                                    <label >Entidad</label>
+                                    <select class="form-control m-bot15" name="entidad_id" id="entidad_id" required>
+                                        <option selected="true" disabled="disabled">Seleccionar entidad</option>
+                                        @foreach($regentidades as $entidad)
+                                            <option value="{{$entidad->entidadfederativa_id}}">{{$entidad->entidadfederativa_desc}}</option>
+                                        @endforeach
+                                    </select>                                  
+                                </div>                                      
                                 <div class="col-xs-4 form-group">
                                     <label >Municipio</label>
                                     <select class="form-control m-bot15" name="municipio_id" id="municipio_id" required>
@@ -122,22 +116,53 @@
 
                             <div class="row">                                                                
                                 <div class="col-xs-4 form-group">
-                                    <label >Personal de JAPEM asigando a la diligencia </label>
+                                    <label >Responsable a realizar la diligencia </label>
+                                    <input type="text" class="form-control" name="visita_auditor2" id="visita_auditor2" placeholder="Responsable a realizar la diligencia" required>
+                                </div> 
+                                <div class="col-xs-4 form-group">
+                                    <label >Personal adicional asigando a la diligencia </label>
                                     <input type="text" class="form-control" name="visita_spub2" id="visita_spub2" placeholder="Personal de JAPEM asigando a la diligencia" required>
+                                </div>                                                          
+                                                                  
+                            </div>                            
+                            <div class="row">                                                                
+                                <div class="col-xs-4 form-group">
+                                    <label >Secretario Ejecutivo del JAPEM </label>
+                                    <input type="text" class="form-control" name="visita_auditor4" id="visita_auditor4" placeholder="Secretario Ejecutivo del JAPEM" required>
                                 </div>                                                          
                                 <div class="col-xs-4 form-group">
                                     <label >Servidor público que programa diligencia </label>
                                     <input type="text" class="form-control" name="visita_spub" id="visita_spub" placeholder="Servidor público que programa diligencia" required>
-                                </div>                                   
-                            </div>                            
+                                </div> 
+                            </div>     
+
+                            <div class="row">    
+                                <div class="col-xs-4 form-group">
+                                    <label >Tipo de diligencia arealizar </label>
+                                    <br>
+                                    <input type="radio" name="visita_tipo1" checked value="A" style="margin-right:8px;">
+                                    Asistencial
+                                    <input type="radio" name="visita_tipo1" value="J" style="margin-right:8px;">Jurídica
+                                    <input type="radio" name="visita_tipo1" value="C" style="margin-right:8px;">Contable
+                                    
+                                </div>  
+                            </div>                         
 
                             <div class="row">
                                 <div class="col-xs-12 form-group">
-                                    <label >Objetivo de la diligencia </label>
-                                    <textarea class="form-control" name="visita_obj" id="visita_obj" rows="6" cols="120" placeholder="Objetivo de la diligencia" required>
+                                    <label >Objetivo de la diligencia parte 1 (4,000 carácteres) </label>
+                                    <textarea class="form-control" name="visita_obj" id="visita_obj" rows="6" cols="120" placeholder="Objetivo de la diligencia parte 1 (4,000 caráteres)" required>
                                     </textarea>
                                 </div>                                
                             </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 form-group">
+                                    <label >Objetivo de la diligencia parte 2 (4,000 carácteres) </label>
+                                    <textarea class="form-control" name="visita_obs3" id="visita_obs3" rows="6" cols="120" placeholder="Objetivo de la diligencia parte 2 (4,000 caráteres)" required>
+                                    </textarea>
+                                </div>                                
+                            </div>                            
 
                             <div class="row">
                                 <div class="col-md-12 offset-md-5">

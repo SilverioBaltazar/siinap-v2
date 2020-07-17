@@ -1,4 +1,4 @@
-@extends('sicinar.pdf.layoutCatTrx')
+@extends('sicinar.pdf.layout')
 
 @section('content')
     <!--<h1 class="page-header">Listado de productos</h1>-->
@@ -6,7 +6,7 @@
         <thead>
         <tr>
             <th><img src="{{ asset('images/Gobierno.png') }}" alt="EDOMEX" width="90px" height="55px" style="margin-right: 15px;"/></th>
-            <th style="width:740px; text-align:center;"><h4 style="color:black;">Catálogo de Actividades del modelado de Procesos</h4></th>
+            <th style="width:440px; text-align:center;"><h4 style="color:black;">Catálogo de Actividades (Modelado de Procesos)</h4></th>
             <th><img src="{{ asset('images/Edomex.png') }}" alt="EDOMEX" width="80px" height="55px" style="margin-left: 15px;"/>
             </th>
         </tr>

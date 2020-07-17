@@ -14,8 +14,8 @@ class visitaRequest extends FormRequest
             'dia2_id.required'        => 'El dia es obligatorio.',  
             'hora2_id.required'       => 'La hora es obligatoria.',            
             'num2_id.required'        => 'Los minutos son obligatorios.',            
-            'municipio2_id.required'  => 'El municipio es obligatorio.',
-            'num3_id.required'        => 'Plazo de entrega de duplicado de acta de mandamiento es obligatorio'            
+            'municipio2_id.required'  => 'El municipio es obligatorio.'
+            //'num3_id.required'        => 'Plazo de entrega de duplicado de acta de mandamiento es obligatorio'            
             //'visita_contacto.min'     => 'El contacto de la IAP es de mínimo 1 caracter.',
             //'visita_contacto.max'     => 'El contacto de la IAP es de máximo 100 caracteres.',
             //'visita_contacto.required'=> 'El contacto de la IAP es obligatorio.',
@@ -62,8 +62,8 @@ class visitaRequest extends FormRequest
             'dia2_id'         => 'required', 
             'hora2_id'        => 'required', 
             'num2_id'         => 'required', 
-            'municipio2_id'   => 'required',
-            'num3_id'         => 'required'
+            'municipio2_id'   => 'required'
+            //'num3_id'         => 'required'
             //'visita_contacto'=> 'required|min:1|max:80',
             //'visita_dom'     => 'required|min:1|max:100',
             //'visita_tel'     => 'required|min:1|max:60',

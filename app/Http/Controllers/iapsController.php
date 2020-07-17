@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests\iapsRequest;
+use App\Http\Requests\iaps5Request;
 use App\Http\Requests\iapsjuridicoRequest;
 use App\regIapModel;
 use App\regIapJuridicoModel;
 use App\regBitacoraModel;
 use App\regMunicipioModel;
 use App\regRubroModel;
-use App\regEntidadesModel;
+use App\regEntidadesModel; 
+use App\regVigenciaModel;
+use App\regInmuebleedoModel;
+use App\regPeriodosaniosModel;
+use App\regMesesModel;
+use App\regDiasModel;
+
 // Exportar a excel 
 use App\Exports\ExcelExportCatIAPS;
 use Maatwebsite\Excel\Facades\Excel;
@@ -30,24 +37,37 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
         $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');
 
         $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')
-                           ->orderBy('ENTIDADFEDERATIVA_ID','asc')
-                           ->get();
-        $regmunicipio = regMunicipioModel::join('CAT_ENTIDADES_FEDERATIVAS','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID', '=', 'CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
-                        ->select('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC','CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
-                        ->wherein('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
+                        ->orderBy('ENTIDADFEDERATIVA_ID','asc')
+                        ->get();
+        $regmunicipio = regMunicipioModel::join('JP_CAT_ENTIDADES_FED',
+                                                'JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_ID', '=', 
+                                                'JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
+                        ->select('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',
+                          'JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_DESC','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID',
+                          'JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
+                        ->wherein('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
                         ->get();
         $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
-                            ->orderBy('RUBRO_ID','asc')
-                            ->get();                         
+                        ->orderBy('RUBRO_ID','asc')
+                        ->get(); 
+        $regvigencia  = regVigenciaModel::select('ANIO_ID', 'ANIO_DESC')->get();
+        $reginmuebles = regInmuebleedoModel::select('INM_ID','INM_DESC')->get();   
+        $regperiodos  = regPeriodosaniosModel::select('PERIODO_ID', 'PERIODO_DESC')->get();         
+        $regmeses     = regMesesModel::select('MES_ID','MES_DESC')->get();      
+        $regdias      = regDiasModel::select('DIA_ID','DIA_DESC')->get();                
+        $regtotactivas= regIapModel::selectRaw('COUNT(*) AS TOTAL_ACTIVAS')
+                        ->where('IAP_STATUS','S')
+                        ->get();
+        $regtotinactivas=regIapModel::selectRaw('COUNT(*) AS TOTAL_INACTIVAS')
+                        ->where('IAP_STATUS','N')
+                        ->get();                                                                       
         //**************************************************************//
         // ***** busqueda https://github.com/rimorsoft/Search-simple ***//
         // ***** video https://www.youtube.com/watch?v=bmtD9GUaszw   ***//                            
@@ -64,7 +84,7 @@ class iapsController extends Controller
             toastr()->error('No existen registros de IAPS.','Lo siento!',['positionClass' => 'toast-bottom-right']);
             //return redirect()->route('nuevaIap');
         }            
-        return view('sicinar.iaps.verIap', compact('nombre','usuario','estructura','id_estructura','regiap','regentidades', 'regmunicipio', 'regrubro'));
+        return view('sicinar.iaps.verIap', compact('nombre','usuario','regiap','regentidades','regmunicipio','regrubro','regvigencia','reginmuebles','regtotactivas','regtotinactivas','regperiodos','regmeses','regdias'));
     }
 
 
@@ -75,42 +95,37 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
         $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');
 
-        //$regmunicipio = regMunicipioModel::obCatMunicipios();
-        //$regrubro     = regRubroModel::obCatRubros();
-
-        $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')                            
-                           ->orderBy('ENTIDADFEDERATIVA_ID','asc')
-                           ->get();
-
-        $regmunicipio = regMunicipioModel::join('CAT_ENTIDADES_FEDERATIVAS','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID', '=', 'CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
-                        ->select('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC','CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
-                        ->wherein('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
+        $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')                    
+                        ->orderBy('ENTIDADFEDERATIVA_ID','asc')
                         ->get();
-
-        //$regmunicipio = regMunicipioModel::select('ENTIDADFEDERATIVAID','MUNICIPIOID','MUNICIPIONOMBRE')
-        //                   ->wherein('ENTIDADFEDERATIVAID',[9,15,22])
-        //                   ->orderBy('MUNICIPIOID','asc')
-        //                   ->get();
-        
+        $regmunicipio = regMunicipioModel::join('JP_CAT_ENTIDADES_FED','JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_ID', '=', 'JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
+                        ->select('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_DESC','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
+                        ->wherein('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
+                        ->get();
         $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
-                            ->orderBy('RUBRO_ID','asc')
-                            ->get();  
-        $regiapjuridico =regIapJuridicoModel::select('IAP_ID','IAP_ACT_CONST','IAP_RFC','IAP_RPP','ANIO_ID','IAP_FVP','INM_ID','FECREG','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
-                         ->get();                             
-
-        $regiap       = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_DOM1','IAP_DOM2','IAP_DOM3','IAP_COLONIA','MUNICIPIO_ID', 'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC', 'GRUPO_ID', 'IAP_STATUS', 'IAP_FECCERTIFIC','IAP_FOTO1','IAP_FOTO2','IAP_GEOREF_LATITUD','IAP_GEOREF_LONGITUD','IP',
+                        ->orderBy('RUBRO_ID','asc')
+                        ->get();  
+        $regvigencia  = regVigenciaModel::select('ANIO_ID', 'ANIO_DESC')->get();
+        $reginmuebles = regInmuebleedoModel::select('INM_ID','INM_DESC')->get();
+        $regperiodos  = regPeriodosaniosModel::select('PERIODO_ID', 'PERIODO_DESC')->get();         
+        $regmeses     = regMesesModel::select('MES_ID','MES_DESC')->get();      
+        $regdias      = regDiasModel::select('DIA_ID','DIA_DESC')->get();     
+        $regiap       = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_DOM1','IAP_DOM2','IAP_DOM3','MUNICIPIO_ID', 
+            'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_FECCONS2',
+            'IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC', 
+            'IAP_STATUS', 'IAP_FECCERTIFIC','ANIO_ID','IAP_FVP','IAP_FVP2','INM_ID','IAP_FOTO1','IAP_FOTO2',
+            'PERIODO_ID1','MES_ID1','DIA_ID1','PERIODO_ID2','MES_ID2','DIA_ID2',
+            'IAP_OBS1','IAP_OBS2','IAP_GEOREF_LATITUD','IAP_GEOREF_LONGITUD','IP',
             'LOGIN','FECHA_M','IP_M','LOGIN_M')
-                                     ->orderBy('IAP_ID','asc')->get();
+                         ->orderBy('IAP_ID','asc')->get();
         //dd($unidades);
-        return view('sicinar.iaps.nuevaIap',compact('regrubro','regmunicipio','regentidades','regiap','nombre','usuario','estructura','id_estructura','regiapjuridico'));
+        return view('sicinar.iaps.nuevaIap',compact('regrubro','regmunicipio','regentidades','regiap','nombre','usuario','regvigencia','reginmuebles','regperiodos','regmeses','regdias'));
     }
 
     public function actionAltaNuevaIap(Request $request){
@@ -121,11 +136,9 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
         $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');
 
         /************ Obtenemos la IP ***************************/                
         if (getenv('HTTP_CLIENT_IP')) {
@@ -142,31 +155,26 @@ class iapsController extends Controller
             $ip = $_SERVER['REMOTE_ADDR'];
         }        
 
-        /************ ALTA DE IAP *****************************/ 
-        // Antes de sumar
-        //echo settype($request->iap_iap_georef_latitud, 'double'); //Convertir a doble presicion      
-        //echo var_dump($cifra_monetaria); // Te dirá el tipo de variable
-        //$latitud = 0;
-        //$latitud = number_format($request->iap_iap_georef_latitud,10);
-        //if (isset($request->iap_iap_georef_latitud)&&is_double($request->iap_iap_georef_latitud)&&!empty($request->iap_iap_georef_latitud)) {
-          //$latitud = settype($request->iap_iap_georef_latitud, 'double');
+        /************ ALTA  *****************************/ 
+        //dd('periodo_d11=',$request->periodo1,'-mes_d1=',$request->mes1,'-dia_d1=',$request->dia1,'--periodo_d2=',$request->periodo_d2,'-mes_d2=',$request->mes_d2,'-dia_d2=',$request->dia_d2,'-iap_feccons=',$request->iap_feccons);
+        //if(!empty($request->periodo_d1) and !empty($request->mes_d1) and !empty($request->dia_d1) ){
+        //    toastr()->error('muy bien 1....................','¡ok...........!',['positionClass' => 'toast-bottom-right']);
+        //    $mes1 = regMesesModel::ObtMes($request->mes_id1);
+        //    $dia1 = regDiasModel::ObtDia($request->dia_id1);                
+            ////xiap_feccons = $dia1[0]->dia_desc.'/'.$mes1[0]->mes_mes.'/'.$request->periodo_id1;
+        //}   ////endif
+        
+        //if(!empty($request->periodo_d2) and !empty($request->mes_d2) and !empty($request->dia_d2) ){
+        //    toastr()->error('muy bien 2....................','¡ok...........!',['positionClass' => 'toast-bottom-right']);
+        //    $mes2 = regMesesModel::ObtMes($request->mes_id2);
+        //    $dia2 = regDiasModel::ObtDia($request->dia_id2);        
         //}
-        //$latitud  = settype($request->iap_iap_georef_latitud, 'double'); //Convertir a doble presicion              
-        //$longitud = 0;
-        //if (isset($request->iap_iap_georef_longitud)&&is_double($request->iap_iap_georef_longitud)&&!empty($request->iap_iap_georef_longitud)) {
-           //$longitud = settype($request->iap_iap_georef_longitud, 'double'); //Convertir a doble presicion 
-        //}        
 
-     
-        //https://ajgallego.gitbooks.io/laravel-5/content/capitulo_4_datos_de_entrada.html
-        // video https://www.youtube.com/watch?v=1Z7oson-G8M
-        // Mover el fichero a la ruta conservando el nombre original:         
-        //$request->file('photo')->move($destinationPath);
-        // Mover el fichero a la ruta con un nuevo nombre:
-        //$request->file('photo')->move($destinationPath, $fileName);
+        //$mes1 = regMesesModel::ObtMes($request->mes_id1);
+        //$dia1 = regDiasModel::ObtDia($request->dia_id1);                
+        //$mes2 = regMesesModel::ObtMes($request->mes_id2);
+        //$dia2 = regDiasModel::ObtDia($request->dia_id2);                
 
-        //$name2 = $request->file('iap_foto2')->getClientOriginalName();
-        //$name1 = $request->file('iap_foto1')->getClientOriginalName();    ok
         $iap_id = regIapModel::max('IAP_ID');
         $iap_id = $iap_id+1;
 
@@ -188,95 +196,121 @@ class iapsController extends Controller
         }
 
         $nuevaiap->IAP_ID      = $iap_id;
-        $nuevaiap->IAP_DESC    = strtoupper($request->iap_desc);
-        $nuevaiap->IAP_DOM1    = strtoupper($request->iap_dom1);
-        $nuevaiap->IAP_DOM2    = strtoupper($request->iap_dom2);
-        $nuevaiap->IAP_DOM3    = strtoupper($request->iap_dom3);
-        $nuevaiap->IAP_COLONIA = strtoupper($request->iap_colonia);
+        $nuevaiap->IAP_DESC    = substr(trim(strtoupper($request->iap_desc)),0,99);
+        $nuevaiap->IAP_DOM1    = substr(trim(strtoupper($request->iap_dom1)),0,149);
+        $nuevaiap->IAP_DOM2    = substr(trim(strtoupper($request->iap_dom2)),0,149);
+        $nuevaiap->IAP_DOM3    = substr(trim(strtoupper($request->iap_dom3)),0,149);
+        //$nuevaiap->IAP_OTRAREF = strtoupper($request->iap_otraref);
+        //$nuevaiap->IAP_COLONIA = strtoupper($request->iap_colonia);
         $nuevaiap->MUNICIPIO_ID= $request->municipio_id;
         $nuevaiap->ENTIDADFEDERATIVA_ID = $request->entidadfederativa_id;
         $nuevaiap->RUBRO_ID    = $request->rubro_id;
-        $nuevaiap->IAP_REGCONS = strtoupper($request->iap_regcons);
-        $nuevaiap->IAP_RFC     = strtoupper($request->iap_rfc);
+        $nuevaiap->IAP_REGCONS = substr(trim(strtoupper($request->iap_regcons)),0,49);
+        $nuevaiap->IAP_RFC     = substr(trim(strtoupper($request->iap_rfc)),0,17);
         $nuevaiap->IAP_CP      = $request->iap_cp;
-        $nuevaiap->IAP_FECCONS = date('Y/m/d', strtotime($request->iap_feccons));
-        $nuevaiap->IAP_TELEFONO= strtoupper($request->iap_telefono);
-        $nuevaiap->IAP_EMAIL   = strtolower($request->iap_email);
-        $nuevaiap->IAP_SWEB    = strtolower($request->iap_sweb);
-        $nuevaiap->IAP_PRES    = strtoupper($request->iap_pres);
-        $nuevaiap->IAP_REPLEGAL= strtoupper($request->iap_replegal);
-        $nuevaiap->IAP_SRIO    = strtoupper($request->iap_srio);        
-        $nuevaiap->IAP_TESORERO= strtoupper($request->iap_tesorero);
-        $nuevaiap->IAP_OBJSOC  = strtoupper($request->iap_objsoc);
-        //$nuevaiap->IAP_GEOREF_LATITUD  = $latitud; 
+        
+        //$nuevaiap->IAP_FECCONS = date('Y/m/d', strtotime(trim($dia1[0]->dia_desc.'/'.$mes1[0]->mes_mes.'/'.$request->periodo_id1) ));
+        //$nuevaiap->IAP_FECCONS2= trim($dia1[0]->dia_desc.'/'.$mes1[0]->mes_mes.'/'.$request->periodo_id1);
+
+        //$nuevoiap->PERIODO_ID1 = $request->periodo_id1;                
+        //$nuevoiap->MES_ID1     = $request->mes_id1;                
+        //$nuevoiap->DIA_ID1     = $request->dia_id1;       
+        $nuevaiap->IAP_FECCONS2= substr(trim($request->iap_feccons2),0,10);    
+
+        $nuevaiap->ANIO_ID     = $request->anio_id;        
+        
+        //$nuevaiap->IAP_FVP     = date('Y/m/d', strtotime(trim($dia2[0]->dia_desc.'/'.$mes2[0]->mes_mes.'/'.$request->periodo_id2) ));
+        //$nuevaiap->IAP_FVP2    = trim($dia2[0]->dia_desc.'/'.$mes2[0]->mes_mes.'/'.$request->periodo_id2);        
+        //$nuevoiap->PERIODO_ID2 = $request->periodo_id2;                
+        //$nuevoiap->MES_ID2     = $request->mes_id2;                
+        //$nuevoiap->DIA_ID2     = $request->dia_id2;  
+        $nuevaiap->IAP_FVP2    = substr(trim($request->iap_fvp2),0,10);    
+
+        $nuevaiap->INM_ID      = $request->inm_id;        
+        $nuevaiap->IAP_TELEFONO= substr(trim(strtoupper($request->iap_telefono)),0,59);
+        $nuevaiap->IAP_EMAIL   = substr(strtolower($request->iap_email),0,149);
+        $nuevaiap->IAP_SWEB    = substr(trim(strtolower($request->iap_sweb)),0,99);
+        $nuevaiap->IAP_PRES    = substr(trim(strtoupper($request->iap_pres)),0,79);
+        $nuevaiap->IAP_REPLEGAL= substr(trim(strtoupper($request->iap_replegal)),0,149);
+        $nuevaiap->IAP_SRIO    = substr(trim(strtoupper($request->iap_srio)),0,79);        
+        $nuevaiap->IAP_TESORERO= substr(trim(strtoupper($request->iap_tesorero)),0,79);
+        $nuevaiap->IAP_OBJSOC  = substr(trim(strtoupper($request->iap_objsoc)),0,799);
+        $nuevaiap->IAP_OBS1    = substr(trim(strtoupper($request->iap_obs1)),0,199);
         $nuevaiap->IAP_GEOREF_LATITUD  = $request->iap_georef_latitud;
         $nuevaiap->IAP_GEOREF_LONGITUD = $request->iap_georef_longitud;
-        //$nuevaiap->IAP_FOTO1   = $request->iap_foto1;
+        
         $nuevaiap->IAP_FOTO1   = $name1;
         $nuevaiap->IAP_FOTO2   = $name2;
         $nuevaiap->IP          = $ip;
         $nuevaiap->LOGIN       = $nombre;         // Usuario ;
+        //dd($nuevaiap);
         $nuevaiap->save();
-
         if($nuevaiap->save() == true){
-            toastr()->success('La IAP dada de alta correctamente.','IAP dado de alta!',['positionClass' => 'toast-bottom-right']);
+            toastr()->success('IAP dada de alta.','ok!',['positionClass' => 'toast-bottom-right']);
+
+            /************ Bitacora inicia *************************************/ 
+            setlocale(LC_TIME, "spanish");        
+            $xip          = session()->get('ip');
+            $xperiodo_id  = (int)date('Y');
+            $xprograma_id = 1;
+            $xmes_id      = (int)date('m');
+            $xproceso_id  =         3;
+            $xfuncion_id  =      3001;
+            $xtrx_id      =       145;    //Alta
+
+            $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 
+                                                    'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 
+                                                    'FECHA_M', 'IP_M', 'LOGIN_M')
+                           ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id,
+                                    'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 
+                                    'FOLIO' => $iap_id])
+                           ->get();
+            if($regbitacora->count() <= 0){              // Alta
+                $nuevoregBitacora = new regBitacoraModel();              
+                $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
+                $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
+                $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
+                $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
+                $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
+                $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
+                $nuevoregBitacora->FOLIO      = $iap_id;         // Folio    
+                $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
+                $nuevoregBitacora->IP         = $ip;             // IP
+                $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
+
+                $nuevoregBitacora->save();
+                if($nuevoregBitacora->save() == true)
+                    toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+                else
+                    toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
+            }else{                   
+                //*********** Obtine el no. de veces *****************************
+                $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 
+                                                      'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 
+                                                      'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 
+                                                      'FOLIO' => $iap_id])
+                             ->max('NO_VECES');
+                $xno_veces = $xno_veces+1;                        
+                //*********** Termina de obtener el no de veces *****************************         
+                $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
+                               ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id,'TRX_ID' => $xtrx_id,'FOLIO' => $iap_id])
+                               ->update([
+                                         'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
+                                         'IP_M' => $regbitacora->IP           = $ip,
+                                         'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
+                                         'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
+                                       ]);
+                toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            }
+            /************ Bitacora termina *************************************/ 
+
             //return redirect()->route('nuevaIap');
             //return view('sicinar.plandetrabajo.nuevoPlan',compact('unidades','nombre','usuario','estructura','id_estructura','rango','preguntas','apartados'));
         }else{
-            toastr()->error('Error inesperado al dar de alta la IAP. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
+            toastr()->error('Error al dar de alta la IAP. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
             //return back();
             //return redirect()->route('nuevoProceso');
         }
-
-        /************ Bitacora inicia *************************************/ 
-        setlocale(LC_TIME, "spanish");        
-        $xip          = session()->get('ip');
-        $xperiodo_id  = (int)date('Y');
-        $xprograma_id = 1;
-        $xmes_id      = (int)date('m');
-        $xproceso_id  =         9;
-        $xfuncion_id  =      9001;
-        $xtrx_id      =       145;    //Alta de IAP
-
-        $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
-                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id,'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $iap_id])
-                        ->get();
-        if($regbitacora->count() <= 0){              // Alta
-            $nuevoregBitacora = new regBitacoraModel();              
-            $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
-            $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
-            $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
-            $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
-            $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
-            $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
-            $nuevoregBitacora->FOLIO      = $iap_id;         // Folio    
-            $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
-            $nuevoregBitacora->IP         = $ip;             // IP
-            $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
-
-            $nuevoregBitacora->save();
-            if($nuevoregBitacora->save() == true)
-               toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-            else
-               toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
-        }else{                   
-            //*********** Obtine el no. de veces *****************************
-            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $iap_id])
-                        ->max('NO_VECES');
-            $xno_veces = $xno_veces+1;                        
-            //*********** Termina de obtener el no de veces *****************************         
-
-            $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
-                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id,'TRX_ID' => $xtrx_id,'FOLIO' => $iap_id])
-            ->update([
-                'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
-                'IP_M' => $regbitacora->IP           = $ip,
-                'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
-                'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
-            ]);
-            toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-        }
-        /************ Bitacora termina *************************************/ 
 
         return redirect()->route('verIap');
     }
@@ -289,37 +323,102 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
         $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');        
 
         $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')
                            ->orderBy('ENTIDADFEDERATIVA_ID','asc')
                            ->get();
-        $regmunicipio = regMunicipioModel::join('CAT_ENTIDADES_FEDERATIVAS','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID', '=', 'CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
-                        ->select('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC','CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
-                        ->wherein('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
+        $regmunicipio = regMunicipioModel::join('JP_CAT_ENTIDADES_FED','JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_ID', '=', 
+                                                                       'JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
+                        ->select('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_DESC','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
+                        ->wherein('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
                         ->get();
         $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
-                            ->orderBy('RUBRO_ID','asc')
-                            ->get();                         
-
-        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC','IAP_DOM1','IAP_DOM2','IAP_DOM3','IAP_COLONIA','MUNICIPIO_ID',          'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','GRUPO_ID',
-            'IAP_FOTO1','IAP_FOTO2','IAP_GEOREF_LATITUD','IAP_GEOREF_LONGITUD','IAP_STATUS',
-            'IAP_FECCERTIFIC','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
-            ->orderBy('IAP_ID','ASC')
-            ->paginate(30);
+                        ->orderBy('RUBRO_ID','asc')
+                        ->get();      
+        $regvigencia  = regVigenciaModel::select('ANIO_ID', 'ANIO_DESC')->get();
+        $reginmuebles = regInmuebleedoModel::select('INM_ID','INM_DESC')->get();  
+        $regperiodos  = regPeriodosaniosModel::select('PERIODO_ID', 'PERIODO_DESC')->get();         
+        $regmeses     = regMesesModel::select('MES_ID','MES_DESC')->get();      
+        $regdias      = regDiasModel::select('DIA_ID','DIA_DESC')->get();                                                  
+        $regtotactivas= regIapModel::selectRaw('COUNT(*) AS TOTAL_ACTIVAS')
+                        ->where('IAP_STATUS','S')
+                        ->get();
+        $regtotinactivas=regIapModel::selectRaw('COUNT(*) AS TOTAL_INACTIVAS')
+                        ->where('IAP_STATUS','N')
+                        ->get();                        
+        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC','IAP_DOM1','IAP_DOM2','IAP_DOM3','MUNICIPIO_ID',
+                  'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS',
+                  'IAP_FECCONS2','IAP_TELEFONO',
+                  'IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC',
+                  'ANIO_ID','IAP_FVP','IAP_FVP2','INM_ID','IAP_FOTO1','IAP_FOTO2',
+                  'IAP_GEOREF_LATITUD','IAP_GEOREF_LONGITUD',
+                  'PERIODO_ID1','MES_ID1','DIA_ID1','PERIODO_ID2','MES_ID2','DIA_ID2',
+                  'IAP_STATUS','IAP_OBS1','IAP_OBS2','IAP_FECCERTIFIC','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+                  ->orderBy('IAP_ID','ASC')
+                  ->paginate(30);
         if($regiap->count() <= 0){
-            toastr()->error('No existen registros de IAPS dadas de alta.','Lo siento!',['positionClass' => 'toast-bottom-right']);
+            toastr()->error('No existen IAPS.','Lo siento!',['positionClass' => 'toast-bottom-right']);
             return redirect()->route('nuevaIap');
         }
-        return view('sicinar.iaps.verIap',compact('nombre','usuario','estructura','id_estructura','regiap','regentidades', 'regmunicipio', 'regrubro'));
+        return view('sicinar.iaps.verIap',compact('nombre','usuario','regiap','regentidades', 'regmunicipio', 'regrubro','regvigencia','reginmuebles','regtotactivas','regtotinactivas','regperiodos','regmeses','regdias'));
 
     }
+
+    public function actionVerIap5(){
+        $nombre       = session()->get('userlog');
+        $pass         = session()->get('passlog');
+        if($nombre == NULL AND $pass == NULL){
+            return view('sicinar.login.expirada');
+        }
+        $usuario      = session()->get('usuario');
+        $rango        = session()->get('rango');
+        $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');        
+
+        $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')
+                        ->orderBy('ENTIDADFEDERATIVA_ID','asc')
+                        ->get();
+        $regmunicipio = regMunicipioModel::join('JP_CAT_ENTIDADES_FED',
+                                                'JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_ID', '=', 
+                                                'JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
+                        ->select('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',
+                                 'JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_DESC',
+                                 'JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
+                        ->wherein('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
+                        ->get();
+        $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
+                        ->orderBy('RUBRO_ID','asc')
+                        ->get();   
+        $regvigencia  = regVigenciaModel::select('ANIO_ID', 'ANIO_DESC')->get();
+        $reginmuebles = regInmuebleedoModel::select('INM_ID','INM_DESC')->get(); 
+        $regperiodos  = regPeriodosaniosModel::select('PERIODO_ID', 'PERIODO_DESC')->get();         
+        $regmeses     = regMesesModel::select('MES_ID','MES_DESC')->get();      
+        $regdias      = regDiasModel::select('DIA_ID','DIA_DESC')->get();         
+        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC','IAP_DOM1','IAP_DOM2','IAP_DOM3','MUNICIPIO_ID',
+                  'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS',
+                  'IAP_FECCONS2','IAP_TELEFONO',
+                  'IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC',
+                  'ANIO_ID','IAP_FVP','IAP_FVP2','INM_ID','IAP_FOTO1','IAP_FOTO2','IAP_GEOREF_LATITUD',
+                  'IAP_GEOREF_LONGITUD',
+                  'PERIODO_ID1','MES_ID1','DIA_ID1','PERIODO_ID2','MES_ID2','DIA_ID2',
+                  'IAP_STATUS','IAP_OBS1','IAP_OBS2','IAP_FECCERTIFIC','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+                  ->where('IAP_ID',$arbol_id)
+                  ->orderBy('IAP_ID','ASC')
+                  ->paginate(30);
+        if($regiap->count() <= 0){
+            toastr()->error('No existe IAPS.','Lo siento!',['positionClass' => 'toast-bottom-right']);
+            //return redirect()->route('nuevaIap');
+        }
+        return view('sicinar.iaps.verIap5',compact('nombre','usuario','regiap','regentidades','regmunicipio','regrubro','regvigencia','reginmuebles','regperiodos','regmeses','regdias'));
+    }
+
 
     public function actionEditarIap($id){
         $nombre        = session()->get('userlog');
@@ -328,35 +427,41 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario       = session()->get('usuario');
-        $estructura    = session()->get('estructura');
-        $id_estruc     = session()->get('id_estructura');
-        $id_estructura = rtrim($id_estruc," ");
         $rango         = session()->get('rango');
+        $arbol_id      = session()->get('arbol_id');        
 
-        $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')                            
+        $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')         
                            ->orderBy('ENTIDADFEDERATIVA_ID','asc')
                            ->get();
-
-        $regmunicipio = regMunicipioModel::join('CAT_ENTIDADES_FEDERATIVAS','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID', '=', 'CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
-                        ->select('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC','CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
-                        ->wherein('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
-                        ->orderBy('CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
+        $regmunicipio = regMunicipioModel::join('JP_CAT_ENTIDADES_FED','JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_ID', '=', 'JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
+                        ->select('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_DESC','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
+                        ->wherein('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
                         ->get();
-
         $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
-                            ->orderBy('RUBRO_ID','asc')
-                            ->get();        
-
-        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_DOM1','IAP_DOM2','IAP_DOM3','IAP_COLONIA','MUNICIPIO_ID',          'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','GRUPO_ID','IAP_STATUS','IAP_FECCERTIFIC', 'IAP_GEOREF_LATITUD', 'IAP_GEOREF_LONGITUD', 'IAP_FOTO1', 'IAP_FOTO2', 'IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
-            ->where('IAP_ID',$id)
-            ->orderBy('IAP_ID','ASC')
-            ->first();
+                        ->orderBy('RUBRO_ID','asc')
+                        ->get();   
+        $regvigencia  = regVigenciaModel::select('ANIO_ID', 'ANIO_DESC')->get();
+        $reginmuebles = regInmuebleedoModel::select('INM_ID','INM_DESC')->get();
+        $regperiodos  = regPeriodosaniosModel::select('PERIODO_ID', 'PERIODO_DESC')->get();         
+        $regmeses     = regMesesModel::select('MES_ID','MES_DESC')->get();      
+        $regdias      = regDiasModel::select('DIA_ID','DIA_DESC')->get();         
+        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_DOM1','IAP_DOM2','IAP_DOM3','MUNICIPIO_ID',
+                  'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS',
+                  'IAP_FECCONS2','IAP_TELEFONO',
+                  'IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC',
+                  'PERIODO_ID1','MES_ID1','DIA_ID1','PERIODO_ID2','MES_ID2','DIA_ID2',                  
+                  'IAP_OBS1','IAP_OBS2','IAP_STATUS','IAP_FECCERTIFIC','IAP_GEOREF_LATITUD','IAP_GEOREF_LONGITUD', 
+                  'ANIO_ID','IAP_FVP','IAP_FVP2','INM_ID','IAP_FOTO1','IAP_FOTO2','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+                  ->where('IAP_ID',$id)
+                  ->orderBy('IAP_ID','ASC')
+                  ->first();
         if($regiap->count() <= 0){
-            toastr()->error('No existe registros de IAPS.','Lo siento!',['positionClass' => 'toast-bottom-right']);
+            toastr()->error('No existen registros de IAPS.','Lo siento!',['positionClass' => 'toast-bottom-right']);
             return redirect()->route('nuevaIap');
         }
-        return view('sicinar.iaps.editarIap',compact('nombre','usuario','estructura','id_estructura','regiap','regentidades','regmunicipio','regrubro'));
+        return view('sicinar.iaps.editarIap',compact('nombre','usuario','regiap','regentidades','regmunicipio','regrubro','regvigencia','reginmuebles','regperiodos','regmeses','regdias'));
 
     }
 
@@ -367,71 +472,35 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario       = session()->get('usuario');
-        $estructura    = session()->get('estructura');
-        $id_estruc     = session()->get('id_estructura');
-        $id_estructura = rtrim($id_estruc," ");
         $rango         = session()->get('rango');
         $ip            = session()->get('ip');
-
-        /************ Bitacora inicia *************************************/ 
-        setlocale(LC_TIME, "spanish");        
-        $xip          = session()->get('ip');
-        $xperiodo_id  = (int)date('Y');
-        $xprograma_id = 1;
-        $xmes_id      = (int)date('m');
-        $xproceso_id  =         9;
-        $xfuncion_id  =      9001;
-        $xtrx_id      =       146;    //Actualizar IAPS        
-
-        $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
-                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
-                        ->get();
-        if($regbitacora->count() <= 0){              // Alta
-            $nuevoregBitacora = new regBitacoraModel();              
-            $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
-            $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
-            $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
-            $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
-            $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
-            $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
-            $nuevoregBitacora->FOLIO      = $id;             // Folio    
-            $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
-            $nuevoregBitacora->IP         = $ip;             // IP
-            $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
-
-            $nuevoregBitacora->save();
-            if($nuevoregBitacora->save() == true)
-               toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-            else
-               toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
-        }else{                   
-            //*********** Obtine el no. de veces *****************************
-            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
-                        ->max('NO_VECES');
-            $xno_veces = $xno_veces+1;                        
-            //*********** Termina de obtener el no de veces *****************************         
-            $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
-                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
-            ->update([
-                'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
-                'IP_M' => $regbitacora->IP           = $ip,
-                'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
-                'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
-            ]);
-            toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-        }
-        /************ Bitacora termina *************************************/         
+        $arbol_id      = session()->get('arbol_id');        
 
         // **************** actualizar ******************************
         $regiap = regIapModel::where('IAP_ID',$id);
         if($regiap->count() <= 0)
             toastr()->error('No existe IAP.','¡Por favor volver a intentar!',['positionClass' => 'toast-bottom-right']);
         else{        
-            //                'IAP_GEOREF_LATITUD' => $request->iap_georef_latitud, 
-            //    'IAP_GEOREF_LONGITUD'=> $request->iap_georef_longitud, 
-            //    'IAP_FOTO1'   => $request->iap_foto1, 
-            //    'IAP_FOTO2'   => $request->iap_foto2,
+            //*************** Actualizar ********************************/
+            //xiap_feccons =null;
+            //if(!empty($request->periodo_d1) and !empty($request->mes_d1) and !empty($request->dia_d1) ){
+            //    //toastr()->error('muy bien 1....................','¡ok...........!',['positionClass' => 'toast-bottom-right']);
+            //    $mes1 = regMesesModel::ObtMes($request->mes_id1);
+            //    $dia1 = regDiasModel::ObtDia($request->dia_id1);                
+                //xiap_feccons = $dia1[0]->dia_desc.'/'.$mes1[0]->mes_mes.'/'.$request->periodo_id1;
+            //}   //endif
+            //if(!empty($request->periodo_d2) and !empty($request->mes_d2) and !empty($request->dia_d2) ){
+            //    $mes2 = regMesesModel::ObtMes($request->mes_id2);
+            //    $dia2 = regDiasModel::ObtDia($request->dia_id2);        
+            //}
+
+            //$mes1 = regMesesModel::ObtMes($request->mes_id1);
+            //$dia1 = regDiasModel::ObtDia($request->dia_id1);                
+            //$mes2 = regMesesModel::ObtMes($request->mes_id2);
+            //$dia2 = regDiasModel::ObtDia($request->dia_id2);                    
+            //dd('año 1:',$request->periodo_id1, ' año 2:',$request->periodo_id2,' mes1:',$mes1[0]->mes_mes,' dia1:',$dia1[0]->dia_desc,' mes2:',$mes2[0]->mes_mes, ' dia2:',$dia2[0]->dia_desc);
             $name1 =null;
+            //dd('fecha constitución:',trim($dia1[0]->dia_desc.'/'.$mes1[0]->mes_mes.'/'.$request->periodo_id1));
             //if (isset($request->iap_foto1)||empty($request->iap_foto1)||is_null($reques->iap_foto1)) {
             //if (isset($request->iap_foto1)||empty($request->iap_foto1)||is_null($reques->iap_foto1)) {
             //if(isset($_PUT['submit'])){
@@ -446,11 +515,8 @@ class iapsController extends Controller
                     }
                 }
             }
-            else
-                $name1 = $request->iap_foto1;
-
             $name2 =null;
-            if (isset($request->iap_foto2)||empty($request->iap_foto2)||is_null($reques->iap_foto2)) {
+            if (isset($request->iap_foto2) and !empty($request->iap_foto2) ) {
                //Comprobar  si el campo foto2 tiene un archivo asignado:        
                if($request->hasFile('iap_foto2')){
                    $name2 = $id.'_'.$request->file('iap_foto2')->getClientOriginalName(); 
@@ -458,46 +524,255 @@ class iapsController extends Controller
                    $request->file('iap_foto2')->move(public_path().'/images/', $name2);
                }
             }
-            else
-                $name2 = $request->iap_foto2;
-
-
             $regiap = regIapModel::where('IAP_ID',$id)        
-            ->update([                
-                'IAP_DESC'    => strtoupper($request->iap_desc),
-                'IAP_DOM1'    => strtoupper($request->iap_dom1),
-                'IAP_DOM2'    => strtoupper($request->iap_dom2),
-                'IAP_DOM3'    => strtoupper($request->iap_dom3),
-                'IAP_COLONIA' => strtoupper($request->iap_colonia),
+                      ->update([                
+                'IAP_DESC'      => substr(trim(strtoupper($request->iap_desc)),0,99),
+                'IAP_DOM1'      => substr(trim(strtoupper($request->iap_dom1)),0,149),
+                'IAP_DOM2'      => substr(trim(strtoupper($request->iap_dom2)),0,149),
+                'IAP_DOM3'      => substr(trim(strtoupper($request->iap_dom3)),0,149),
+                //'IAP_OTRAREF'   => substr(trim(strtoupper($request->iap_otraref)),0,149),
                 'ENTIDADFEDERATIVA_ID' => $request->entidadfederativa_id,                
-                'MUNICIPIO_ID'=> $request->municipio_id,
-                'RUBRO_ID'    => $request->rubro_id,
-                'IAP_REGCONS' => strtoupper($request->iap_regcons),
-                'IAP_RFC'     => strtoupper($request->iap_rfc),
-                'IAP_CP'      => $request->iap_cp,
-                'IAP_FECCONS' => date('Y/m/d', strtotime($request->iap_feccons)), //$request->iap_feccons
-                //'IAP_FECCONS' => $request->iap_feccons,
-                'IAP_TELEFONO'=> strtoupper($request->iap_telefono),
-                'IAP_EMAIL'   => strtolower($request->iap_email),
-                'IAP_SWEB'    => strtolower($request->iap_sweb),
-                'IAP_PRES'    => strtoupper($request->iap_pres),
-                'IAP_REPLEGAL'=> strtoupper($request->iap_replegal),
-                'IAP_SRIO'    => strtoupper($request->iap_srio),        
-                'IAP_TESORERO'=> strtoupper($request->iap_tesorero),
-                'IAP_OBJSOC'  => strtoupper($request->iap_objsoc),
+                'MUNICIPIO_ID'  => $request->municipio_id,
+                'RUBRO_ID'      => $request->rubro_id,
+                'IAP_REGCONS'   => substr(trim(strtoupper($request->iap_regcons)),0,49),
+                'IAP_RFC'       => substr(trim(strtoupper($request->iap_rfc)),0,17),
+                'IAP_CP'        => $request->iap_cp,
+                //'IAP_FECCONS'   => date('Y/m/d', strtotime($request->iap_feccons)), //$request->iap_feccons
+                //'IAP_FECCONS'   => date('Y/m/d', strtotime(trim($dia1[0]->dia_desc.'/'.$mes1[0]->mes_mes.'/'.$request->periodo_id1) )),
+                //'IAP_FECCONS2'  => trim($dia1[0]->dia_desc.'/'.$mes1[0]->mes_mes.'/'.$request->periodo_id1), 
+                //'PERIODO_ID1'   => $request->periodo_id1,
+                //'MES_ID1'       => $request->mes_id1,
+                //'DIA_ID1'       => $request->dia_id1,                
+                'IAP_FECCONS2'  => substr(trim($request->iap_feccons2),0,10),
+
+                'ANIO_ID'       => $request->anio_id,                
+                //'IAP_FVP'       => date('Y/m/d', strtotime($request->iap_fvp)),
+                //'IAP_FVP'       => date('Y/m/d', strtotime(trim($dia2[0]->dia_desc.'/'.$mes2[0]->mes_mes.'/'.$request->periodo_id2) )),
+                //'IAP_FVP2'      => trim($dia2[0]->dia_desc.'/'.$mes2[0]->mes_mes.'/'.$request->periodo_id2),
+                //'PERIODO_ID2'   => $request->periodo_id2,
+                //'MES_ID2'       => $request->mes_id2,
+                //'DIA_ID2'       => $request->dia_id2,
+                'IAP_FVP2'      => substr(trim($request->iap_fvp2),0,10),
+
+                'INM_ID'        => $request->inm_id,
+                'IAP_TELEFONO'  => substr(trim(strtoupper($request->iap_telefono)),0,59),
+                'IAP_EMAIL'     => substr(trim(strtolower($request->iap_email)),0,149),
+                'IAP_SWEB'      => substr(trim(strtolower($request->iap_sweb)),0,99),
+                'IAP_PRES'      => substr(trim(strtoupper($request->iap_pres)),0,79),
+                'IAP_REPLEGAL'  => substr(trim(strtoupper($request->iap_replegal)),0,149),
+                'IAP_SRIO'      => substr(trim(strtoupper($request->iap_srio)),0,79),
+                'IAP_TESORERO'  => substr(trim(strtoupper($request->iap_tesorero)),0,79),
+                'IAP_OBJSOC'    => substr(trim(strtoupper($request->iap_objsoc)),0,799),
+                'IAP_OBS1'      => substr(trim(strtoupper($request->iap_obs1)),0,299),        
                 'IAP_GEOREF_LATITUD' => $request->iap_georef_latitud,
                 'IAP_GEOREF_LONGITUD'=> $request->iap_georef_longitud,
-                'IAP_STATUS'  => $request->iap_status,                
-                'IP_M'        => $ip,
-                'LOGIN_M'     => $nombre,
-                'FECHA_M'     => date('Y/m/d')    //date('d/m/Y')                                
-            ]);
-            toastr()->success('IAP actualizada correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-        }
+                'IAP_STATUS'    => $request->iap_status,                
+                'IP_M'          => $ip,
+                'LOGIN_M'       => $nombre,
+                'FECHA_M'       => date('Y/m/d')    //date('d/m/Y')                                
+                              ]);
+            toastr()->success('IAP actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+
+            /************ Bitacora inicia *************************************/ 
+            setlocale(LC_TIME, "spanish");        
+            $xip          = session()->get('ip');
+            $xperiodo_id  = (int)date('Y');
+            $xprograma_id = 1;
+            $xmes_id      = (int)date('m');
+            $xproceso_id  =         3;
+            $xfuncion_id  =      3001;
+            $xtrx_id      =       146;    //Actualizar IAPS        
+            $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 
+                           'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
+                           ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 
+                                    'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 
+                                    'FOLIO' => $id])
+                           ->get();
+            if($regbitacora->count() <= 0){              // Alta
+                $nuevoregBitacora = new regBitacoraModel();              
+                $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
+                $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
+                $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
+                $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
+                $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
+                $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
+                $nuevoregBitacora->FOLIO      = $id;             // Folio    
+                $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
+                $nuevoregBitacora->IP         = $ip;             // IP
+                $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
+
+                $nuevoregBitacora->save();
+                if($nuevoregBitacora->save() == true)
+                    toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+                else
+                    toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
+            }else{                   
+                //*********** Obtine el no. de veces *****************************
+                $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 
+                             'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 
+                             'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                             ->max('NO_VECES');
+                $xno_veces = $xno_veces+1;                        
+                //*********** Termina de obtener el no de veces *****************************         
+                $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
+                               ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 
+                                        'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 
+                                        'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                               ->update([
+                                         'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
+                                         'IP_M' => $regbitacora->IP           = $ip,
+                                         'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
+                                         'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
+                                        ]);
+                toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            }   /************ Bitacora termina *************************************/                     
+        }       /************ Actualizar *******************************************/
+
         return redirect()->route('verIap');
-        //return view('sicinar.catalogos.verProceso',compact('nombre','usuario','estructura','id_estructura','regproceso'));
 
     }
+
+    public function actionEditarIap5($id){
+        $nombre        = session()->get('userlog');
+        $pass          = session()->get('passlog');
+        if($nombre == NULL AND $pass == NULL){
+            return view('sicinar.login.expirada');
+        }
+        $usuario       = session()->get('usuario');
+        $rango         = session()->get('rango');
+        $arbol_id      = session()->get('arbol_id');        
+
+        $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')                
+                           ->orderBy('ENTIDADFEDERATIVA_ID','asc')
+                           ->get();
+        $regmunicipio = regMunicipioModel::join('JP_CAT_ENTIDADES_FED',
+                  'JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_ID', '=', 'JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
+                        ->select('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',
+                            'JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_DESC','JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID',
+                            'JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
+                        ->wherein('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','DESC')
+                        ->orderBy('JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE','DESC')
+                        ->get();
+        $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
+                        ->orderBy('RUBRO_ID','asc')
+                        ->get();     
+        $regvigencia  = regVigenciaModel::select('ANIO_ID', 'ANIO_DESC')->get();
+        $reginmuebles = regInmuebleedoModel::select('INM_ID','INM_DESC')->get();
+        $regperiodos  = regPeriodosaniosModel::select('PERIODO_ID', 'PERIODO_DESC')->get();         
+        $regmeses     = regMesesModel::select('MES_ID','MES_DESC')->get();      
+        $regdias      = regDiasModel::select('DIA_ID','DIA_DESC')->get();         
+        $regiap = regIapModel::select('IAP_ID', 'IAP_DESC', 'IAP_DOM1','IAP_DOM2','IAP_DOM3','MUNICIPIO_ID',
+                  'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS',
+                  'IAP_FECCONS2','IAP_TELEFONO',
+                  'IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC',
+                  'PERIODO_ID1','MES_ID1','DIA_ID1','PERIODO_ID2','MES_ID2','DIA_ID2',                  
+                  'IAP_OBS1','IAP_OBS2','IAP_STATUS','IAP_FECCERTIFIC','IAP_GEOREF_LATITUD', 'IAP_GEOREF_LONGITUD', 
+                  'ANIO_ID','IAP_FVP','IAP_FVP2','INM_ID','IAP_FOTO1','IAP_FOTO2','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+                  ->where('IAP_ID',$id)
+                  ->first();
+        if($regiap->count() <= 0){
+            toastr()->error('No existe IAP.','Lo siento!',['positionClass' => 'toast-bottom-right']);
+            return redirect()->route('nuevaIap');
+        }
+        return view('sicinar.iaps.editarIap5',compact('nombre','usuario','regiap','regentidades','regmunicipio','regrubro','regvigencia','reginmuebles','regperiodos','regmeses','regdias'));
+
+    }
+
+    public function actionActualizarIap5(iaps5Request $request, $id){
+        $nombre        = session()->get('userlog');
+        $pass          = session()->get('passlog');
+        if($nombre == NULL AND $pass == NULL){
+            return view('sicinar.login.expirada');
+        }
+        $usuario       = session()->get('usuario');
+        $rango         = session()->get('rango');
+        $ip            = session()->get('ip');
+        $arbol_id      = session()->get('arbol_id');        
+
+        // **************** actualizar ******************************
+        $regiap = regIapModel::where('IAP_ID',$id);
+        if($regiap->count() <= 0)
+            toastr()->error('No existe IAP.','¡Por favor volver a intentar!',['positionClass' => 'toast-bottom-right']);
+        else{        
+            /****************** Actualizar *********************************/
+            $regiap = regIapModel::where('IAP_ID',$id)        
+                      ->update([                
+                                'IAP_DOM2'      => substr(trim(strtoupper($request->iap_dom2)),0,149),
+                                'IAP_DOM3'      => substr(trim(strtoupper($request->iap_dom3)),0,149),
+                                'IAP_RFC'       => substr(trim(strtoupper($request->iap_rfc)),0,17),
+                                'IAP_TELEFONO'  => substr(trim(strtoupper($request->iap_telefono)),0,59),
+                                'IAP_EMAIL'     => substr(trim(strtolower($request->iap_email)),0,149),
+                                'IAP_SWEB'      => substr(trim(strtolower($request->iap_sweb)),0,99),
+                                'IAP_PRES'      => substr(trim(strtoupper($request->iap_pres)),0,79),
+                                'IAP_REPLEGAL'  => substr(trim(strtoupper($request->iap_replegal)),0,149),
+                                'IAP_SRIO'      => substr(trim(strtoupper($request->iap_srio)),0,79),
+                                'IAP_TESORERO'  => substr(trim(strtoupper($request->iap_tesorero)),0,79),
+                                'IAP_GEOREF_LATITUD' => $request->iap_georef_latitud,
+                                'IAP_GEOREF_LONGITUD'=> $request->iap_georef_longitud,
+                                'IP_M'          => $ip,
+                                'LOGIN_M'       => $nombre,
+                                'FECHA_M'       => date('Y/m/d')    //date('d/m/Y')                                
+                                ]);
+            toastr()->success('IAP actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+
+            /************ Bitacora inicia *************************************/ 
+            setlocale(LC_TIME, "spanish");        
+            $xip          = session()->get('ip');
+            $xperiodo_id  = (int)date('Y');
+            $xprograma_id = 1;
+            $xmes_id      = (int)date('m');
+            $xproceso_id  =         3;
+            $xfuncion_id  =      3001;
+            $xtrx_id      =       146;    //Actualizar
+            $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 
+                           'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
+                           ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 
+                                    'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 
+                                    'FOLIO' => $id])
+                           ->get();
+            if($regbitacora->count() <= 0){              // Alta
+                $nuevoregBitacora = new regBitacoraModel();              
+                $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
+                $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
+                $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
+                $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
+                $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
+                $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
+                $nuevoregBitacora->FOLIO      = $id;             // Folio    
+                $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
+                $nuevoregBitacora->IP         = $ip;             // IP
+                $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
+
+                $nuevoregBitacora->save();
+                if($nuevoregBitacora->save() == true)
+                    toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+                else
+                    toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
+            }else{                   
+                //*********** Obtine el no. de veces *****************************
+                $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+                $xno_veces = $xno_veces+1;                        
+                //*********** Termina de obtener el no de veces *****************************         
+                $regbitacora= regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
+                              ->where(['PERIODO_ID' => $xperiodo_id,'PROGRAMA_ID' => $xprograma_id,'MES_ID' => $xmes_id, 
+                                       'PROCESO_ID' => $xproceso_id,'FUNCION_ID' => $xfuncion_id,'TRX_ID' => $xtrx_id, 
+                                       'FOLIO' => $id])
+                              ->update([
+                                         'NO_VECES'=> $regbitacora->NO_VECES = $xno_veces,
+                                         'IP_M'    => $regbitacora->IP       = $ip,
+                                         'LOGIN_M' => $regbitacora->LOGIN_M  = $nombre,
+                                         'FECHA_M' => $regbitacora->FECHA_M  = date('Y/m/d')  //date('d/m/Y')
+                                        ]);
+                toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            }   /************ Bitacora termina *************************************/                     
+        }   /***************** Actualizar IAP **************************************/
+
+        return redirect()->route('verIap5');
+
+    }
+
 
     public function actionBorrarIap($id){
         //dd($request->all());
@@ -507,72 +782,77 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
         $ip           = session()->get('ip');
-        //echo 'Ya entre aboorar registro..........';
-        /************ Bitacora inicia *************************************/ 
-        setlocale(LC_TIME, "spanish");        
-        $xip          = session()->get('ip');
-        $xperiodo_id  = (int)date('Y');
-        $xprograma_id = 1;
-        $xmes_id      = (int)date('m');
-        $xproceso_id  =         9;
-        $xfuncion_id  =      9001;
-        $xtrx_id      =       147;     // Baja de IAP
+        $arbol_id     = session()->get('arbol_id');        
 
-        $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
-                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
-                        ->get();
-        if($regbitacora->count() <= 0){              // Alta
-            $nuevoregBitacora = new regBitacoraModel();              
-            $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
-            $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
-            $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
-            $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
-            $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
-            $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
-            $nuevoregBitacora->FOLIO      = $id;             // Folio    
-            $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
-            $nuevoregBitacora->IP         = $ip;             // IP
-            $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
-
-            $nuevoregBitacora->save();
-            if($nuevoregBitacora->save() == true)
-               toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-            else
-               toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
-        }else{                   
-            //*********** Obtine el no. de veces *****************************
-            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
-                        ->max('NO_VECES');
-            $xno_veces = $xno_veces+1;                        
-            //*********** Termina de obtener el no de veces *****************************         
-
-            $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
-                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
-            ->update([
-                'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
-                'IP_M' => $regbitacora->IP           = $ip,
-                'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
-                'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
-            ]);
-            toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-        }
-        /************ Bitacora termina *************************************/     
         /************ Elimina la IAP **************************************/
-        $regiap = regIapModel::select('IAP_ID','IAP_DESC','IAP_DOM1','IAP_DOM2','IAP_DOM3','IAP_COLONIA','MUNICIPIO_ID', 'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_TELEFONO','IAP_EMAIL','IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','GRUPO_ID','IAP_STATUS','IAP_FECCERTIFIC','IAP_GEOREF_LATITUD', 'IAP_GEOREF_LONGITUD', 'IAP_FOTO1', 'IAP_FOTO2', 'IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
-                              ->where('IAP_ID',$id);
+        $regiap = regIapModel::select('IAP_ID','IAP_DESC','IAP_DOM1','IAP_DOM2','IAP_DOM3','MUNICIPIO_ID', 
+            'ENTIDADFEDERATIVA_ID','RUBRO_ID','IAP_REGCONS','IAP_RFC','IAP_CP','IAP_FECCONS','IAP_FECCONS2',
+            'IAP_TELEFONO','IAP_EMAIL',
+            'IAP_SWEB','IAP_PRES','IAP_REPLEGAL','IAP_SRIO','IAP_TESORERO','IAP_OBJSOC','IAP_OBS1','IAP_OBS2',
+            'IAP_STATUS','IAP_FECCERTIFIC','IAP_GEOREF_LATITUD', 'IAP_GEOREF_LONGITUD','ANIO_ID','IAP_FVP','IAP_FVP2',
+            'INM_ID','IAP_FOTO1','IAP_FOTO2','IP','LOGIN','FECHA_M','IP_M','LOGIN_M')
+                   ->where('IAP_ID',$id);
         //                    ->find('RUBRO_ID',$id);
         if($regiap->count() <= 0)
             toastr()->error('No existe IAP.','¡Por favor volver a intentar!',['positionClass' => 'toast-bottom-right']);
         else{        
             $regiap->delete();
-            toastr()->success('IAP ha sido eliminado.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-        }
-        /************* Termina de eliminar  la IAP **********************************/
+            toastr()->success('IAP eliminada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+
+            //echo 'Ya entre a borrar registro..........';
+            /************ Bitacora inicia *************************************/ 
+            setlocale(LC_TIME, "spanish");        
+            $xip          = session()->get('ip');
+            $xperiodo_id  = (int)date('Y');
+            $xprograma_id = 1;
+            $xmes_id      = (int)date('m');
+            $xproceso_id  =         3;
+            $xfuncion_id  =      3001;
+            $xtrx_id      =       147;     // Baja de IAP
+
+            $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
+                           ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                           ->get();
+            if($regbitacora->count() <= 0){              // Alta
+                $nuevoregBitacora = new regBitacoraModel();              
+                $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
+                $nuevoregBitacora->PROGRAMA_ID= $xprograma_id;   // Proyecto JAPEM 
+                $nuevoregBitacora->MES_ID     = $xmes_id;        // Mes de transaccion
+                $nuevoregBitacora->PROCESO_ID = $xproceso_id;    // Proceso de apoyo
+                $nuevoregBitacora->FUNCION_ID = $xfuncion_id;    // Funcion del modelado de procesos 
+                $nuevoregBitacora->TRX_ID     = $xtrx_id;        // Actividad del modelado de procesos
+                $nuevoregBitacora->FOLIO      = $id;             // Folio    
+                $nuevoregBitacora->NO_VECES   = 1;               // Numero de veces            
+                $nuevoregBitacora->IP         = $ip;             // IP
+                $nuevoregBitacora->LOGIN      = $nombre;         // Usuario 
+
+                $nuevoregBitacora->save();
+                if($nuevoregBitacora->save() == true)
+                    toastr()->success('Bitacora dada de alta correctamente.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+                else
+                    toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
+            }else{                   
+                //*********** Obtine el no. de veces *****************************
+                $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                        ->max('NO_VECES');
+                $xno_veces = $xno_veces+1;                        
+                //*********** Termina de obtener el no de veces *****************************         
+                $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
+                               ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 
+                                        'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 
+                                        'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+                               ->update([
+                                         'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
+                                         'IP_M'     => $regbitacora->IP           = $ip,
+                                         'LOGIN_M'  => $regbitacora->LOGIN_M   = $nombre,
+                                         'FECHA_M'  => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
+                                        ]);
+                toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
+            }   /************ Bitacora termina *************************************/                 
+        }       /************* Termina de eliminar  la IAP **********************************/
+        
         return redirect()->route('verIap');
     }    
 
@@ -584,11 +864,9 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
         $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');        
         
         /************ Bitacora inicia *************************************/ 
         setlocale(LC_TIME, "spanish");        
@@ -596,8 +874,8 @@ class iapsController extends Controller
         $xperiodo_id  = (int)date('Y');
         $xprograma_id = 1;
         $xmes_id      = (int)date('m');
-        $xproceso_id  =         9;
-        $xfuncion_id  =      9001;
+        $xproceso_id  =         3;
+        $xfuncion_id  =      3001;
         $xtrx_id      =       148;            // Exportar a formato Excel
         $id           =         0;
 
@@ -655,11 +933,9 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario       = session()->get('usuario');
-        $estructura    = session()->get('estructura');
-        $id_estruc     = session()->get('id_estructura');
-        $id_estructura = rtrim($id_estruc," ");
         $rango         = session()->get('rango');
         $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');        
 
         /************ Bitacora inicia *************************************/ 
         setlocale(LC_TIME, "spanish");        
@@ -667,14 +943,17 @@ class iapsController extends Controller
         $xperiodo_id  = (int)date('Y');
         $xprograma_id = 1;
         $xmes_id      = (int)date('m');
-        $xproceso_id  =         9;
-        $xfuncion_id  =      9001;
-        $xtrx_id      =       149;       //Exportar a formato PDF
+        $xproceso_id  =         3;
+        $xfuncion_id  =      3001;
+        $xtrx_id      =       143;       //Exportar a formato PDF
         $id           =         0;
 
-        $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
-                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
-                        ->get();
+        $regbitacora = regBitacoraModel::select('PERIODO_ID', 'PROGRAMA_ID', 'MES_ID', 'PROCESO_ID', 'FUNCION_ID', 
+                       'TRX_ID', 'FOLIO', 'NO_VECES', 'FECHA_REG', 'IP', 'LOGIN', 'FECHA_M', 'IP_M', 'LOGIN_M')
+                       ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 
+                                'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 
+                                'FOLIO' => $id])
+                       ->get();
         if($regbitacora->count() <= 0){              // Alta
             $nuevoregBitacora = new regBitacoraModel();              
             $nuevoregBitacora->PERIODO_ID = $xperiodo_id;    // Año de transaccion 
@@ -695,50 +974,36 @@ class iapsController extends Controller
                toastr()->error('Error inesperado al dar de alta la bitacora. Por favor volver a interlo.','Ups!',['positionClass' => 'toast-bottom-right']);
         }else{                   
             //*********** Obtine el no. de veces *****************************
-            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
+            $xno_veces = regBitacoraModel::where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 
+                         'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 
+                         'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
                         ->max('NO_VECES');
             $xno_veces = $xno_veces+1;                        
             //*********** Termina de obtener el no de veces *****************************         
-
             $regbitacora = regBitacoraModel::select('NO_VECES','IP_M','LOGIN_M','FECHA_M')
-                        ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 'FOLIO' => $id])
-            ->update([
-                'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
-                'IP_M' => $regbitacora->IP           = $ip,
-                'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
-                'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
-            ]);
+                           ->where(['PERIODO_ID' => $xperiodo_id, 'PROGRAMA_ID' => $xprograma_id, 'MES_ID' => $xmes_id, 
+                                    'PROCESO_ID' => $xproceso_id, 'FUNCION_ID' => $xfuncion_id, 'TRX_ID' => $xtrx_id, 
+                                    'FOLIO' => $id])
+                           ->update([
+                                     'NO_VECES' => $regbitacora->NO_VECES = $xno_veces,
+                                     'IP_M' => $regbitacora->IP           = $ip,
+                                     'LOGIN_M' => $regbitacora->LOGIN_M   = $nombre,
+                                     'FECHA_M' => $regbitacora->FECHA_M   = date('Y/m/d')  //date('d/m/Y')
+                                    ]);
             toastr()->success('Bitacora actualizada.','¡Ok!',['positionClass' => 'toast-bottom-right']);
-        }
-        /************ Bitacora termina *************************************/ 
+        }   /************ Bitacora termina *************************************/ 
 
         $regentidades = regEntidadesModel::select('ENTIDADFEDERATIVA_ID','ENTIDADFEDERATIVA_DESC')     
                                            ->get();
         $regmunicipio = regMunicipioModel::select('ENTIDADFEDERATIVAID', 'MUNICIPIOID', 'MUNICIPIONOMBRE')
-                                         ->wherein('ENTIDADFEDERATIVAID',[9,15,22])
-                                         ->get();                           
+                                           ->wherein('ENTIDADFEDERATIVAID',[9,15,22])
+                                           ->get();                           
         $regrubro     = regRubroModel::select('RUBRO_ID','RUBRO_DESC')
-                                     ->get();                         
-        $regiap = regIapModel::select('IAP_ID','IAP_DESC','IAP_DOM1','IAP_DOM2','IAP_DOM3', 'IAP_COLONIA','IAP_TELEFONO',
+                                       ->get();                         
+        $regiap       = regIapModel::select('IAP_ID','IAP_DESC','IAP_DOM1','IAP_DOM2','IAP_DOM3', 'IAP_TELEFONO',
                                       'IAP_STATUS', 'IAP_FECREG')
-                                ->orderBy('IAP_ID','ASC')
-                                ->get();
-        //$regiap = regIapModel::join('CAT_MUNICIPIOS_SEDESEM','CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','=','JP_IAPS.MUNICIPIO_ID')
-        //                      ->wherein('CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID',[9,15,22])
-        //                ->join('CAT_ENTIDADES_FEDERATIVAS','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID', '=', 
-        //                                                                 'CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID')
-        //              ->join('JP_CAT_RUBROS'         ,'JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
-        //              ->select('JP_IAPS.IAP_ID', 'JP_IAPS.IAP_DESC',    'JP_IAPS.IAP_CALLE', 'JP_IAPS.IAP_NUM',
-        //                  'JP_IAPS.IAP_COLONIA', 
-        //                  'JP_IAPS.ENTIDADFEDERATIVA_ID','CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC',
-        //                  'JP_IAPS.MUNICIPIO_ID','CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE',         
-        //                  'JP_IAPS.RUBRO_ID',    'JP_CAT_RUBROS.RUBRO_DESC', 'JP_IAPS.IAP_REGCONS', 'JP_IAPS.IAP_RFC',    
-        //                  'JP_IAPS.IAP_CP',      'JP_IAPS.IAP_FECCONS',      'JP_IAPS.IAP_TELEFONO','JP_IAPS.IAP_EMAIL',   
-        //                  'JP_IAPS.IAP_SWEB',    'JP_IAPS.IAP_PRES',         'JP_IAPS.IAP_REPLEGAL','JP_IAPS.IAP_SRIO',    
-        //                  'JP_IAPS.IAP_TESORERO','JP_IAPS.IAP_OBJSOC',       'JP_IAPS.IAP_STATUS',  
-        //                  'JP_IAPS.IAP_FECCERTIFIC','JP_IAPS.IAP_FECREG')
-        //                  ->orderBy('JP_IAPS.IAP_ID','ASC')
-        //                  ->get();                                 
+                                     ->orderBy('IAP_ID','ASC')
+                                     ->get();                               
         if($regiap->count() <= 0){
             toastr()->error('No existen registros en el catalogo de IAPS.','Uppss!',['positionClass' => 'toast-bottom-right']);
             return redirect()->route('verIap');
@@ -763,19 +1028,17 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
-        $ip           = session()->get('ip');        
+        $ip           = session()->get('ip'); 
+        $arbol_id     = session()->get('arbol_id');               
 
-        $regtotxedo=regIapModel::join('CAT_ENTIDADES_FEDERATIVAS',[['CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID','=','JP_IAPS.ENTIDADFEDERATIVA_ID'],['JP_IAPS.IAP_ID','<>',0]])
+        $regtotxedo=regIapModel::join('JP_CAT_ENTIDADES_FED',[['JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_ID','=','JP_IAPS.ENTIDADFEDERATIVA_ID'],['JP_IAPS.IAP_ID','<>',0]])
                          ->selectRaw('COUNT(*) AS TOTALXEDO')
                                ->get();
 
-        $regiap=regIapModel::join('CAT_ENTIDADES_FEDERATIVAS',[['CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_ID','=','JP_IAPS.ENTIDADFEDERATIVA_ID'],['JP_IAPS.IAP_ID','<>',0]])
-                      ->selectRaw('JP_IAPS.ENTIDADFEDERATIVA_ID, CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC AS ESTADO, COUNT(*) AS TOTAL')
-                        ->groupBy('JP_IAPS.ENTIDADFEDERATIVA_ID', 'CAT_ENTIDADES_FEDERATIVAS.ENTIDADFEDERATIVA_DESC')
+        $regiap=regIapModel::join('JP_CAT_ENTIDADES_FED',[['JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_ID','=','JP_IAPS.ENTIDADFEDERATIVA_ID'],['JP_IAPS.IAP_ID','<>',0]])
+                      ->selectRaw('JP_IAPS.ENTIDADFEDERATIVA_ID, JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_DESC AS ESTADO, COUNT(*) AS TOTAL')
+                        ->groupBy('JP_IAPS.ENTIDADFEDERATIVA_ID', 'JP_CAT_ENTIDADES_FED.ENTIDADFEDERATIVA_DESC')
                         ->orderBy('JP_IAPS.ENTIDADFEDERATIVA_ID','asc')
                         ->get();
         //$procesos = procesosModel::join('SCI_TIPO_PROCESO','SCI_PROCESOS.CVE_TIPO_PROC','=','SCI_TIPO_PROCESO.CVE_TIPO_PROC')
@@ -783,7 +1046,7 @@ class iapsController extends Controller
         //    ->groupBy('SCI_TIPO_PROCESO.DESC_TIPO_PROC')
         //    ->get();
         //dd($procesos);
-        return view('sicinar.numeralia.iapsxedo',compact('regiap','regtotxedo','nombre','usuario','estructura','id_estructura','rango'));
+        return view('sicinar.numeralia.iapxedo',compact('regiap','regtotxedo','nombre','usuario','rango'));
     }
 
 
@@ -795,11 +1058,10 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
-        $ip           = session()->get('ip');        
+        $ip           = session()->get('ip'); 
+        $arbol_id     = session()->get('arbol_id');
+
         // http://www.chartjs.org/docs/#bar-chart
         $regbitatxmes=regBitacoraModel::join('JP_CAT_PROCESOS','JP_CAT_PROCESOS.PROCESO_ID' ,'=','JP_BITACORA.PROCESO_ID')
                                    ->join('JP_CAT_FUNCIONES','JP_CAT_FUNCIONES.FUNCION_ID','=','JP_BITACORA.FUNCION_ID')
@@ -855,7 +1117,7 @@ class iapsController extends Controller
                               'JP_BITACORA.TRX_ID', 'JP_CAT_TRX.TRX_DESC','asc')
                     ->get();
         //dd($procesos);
-        return view('sicinar.numeralia.bitacora',compact('regbitatxmes','regbitacora','regbitatot','nombre','usuario','estructura','id_estructura','rango'));
+        return view('sicinar.numeralia.bitacora',compact('regbitatxmes','regbitacora','regbitatot','nombre','usuario','rango'));
     }
 
     // Gráfica de IAP por municipio
@@ -866,29 +1128,22 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
-        $ip           = session()->get('ip');        
+        $ip           = session()->get('ip');  
+        $arbol_id     = session()->get('arbol_id');              
 
-        $regtotxmpio=regIapModel::join('CAT_MUNICIPIOS_SEDESEM',[['CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','=',15],
-                                                            ['CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','=','JP_IAPS.MUNICIPIO_ID'],['JP_IAPS.IAP_ID','<>',0]])
+        $regtotxmpio=regIapModel::join('JP_CAT_MUNICIPIOS_SEDESEM',[['JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','=',15],
+                                                            ['JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','=','JP_IAPS.MUNICIPIO_ID'],['JP_IAPS.IAP_ID','<>',0]])
                          ->selectRaw('COUNT(*) AS TOTALXMPIO')
                                ->get();
-
-        $regiap=regIapModel::join('CAT_MUNICIPIOS_SEDESEM',[['CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','=',15],
-                                                            ['CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','=','JP_IAPS.MUNICIPIO_ID'],['JP_IAPS.IAP_ID','<>',0]])
-                      ->selectRaw('JP_IAPS.MUNICIPIO_ID, CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE AS MUNICIPIO,COUNT(*) AS TOTAL')
-                        ->groupBy('JP_IAPS.MUNICIPIO_ID', 'CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
+        $regiap=regIapModel::join('JP_CAT_MUNICIPIOS_SEDESEM',[['JP_CAT_MUNICIPIOS_SEDESEM.ENTIDADFEDERATIVAID','=',15],
+                                                            ['JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIOID','=','JP_IAPS.MUNICIPIO_ID'],['JP_IAPS.IAP_ID','<>',0]])
+                      ->selectRaw('JP_IAPS.MUNICIPIO_ID, JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE AS MUNICIPIO,COUNT(*) AS TOTAL')
+                        ->groupBy('JP_IAPS.MUNICIPIO_ID', 'JP_CAT_MUNICIPIOS_SEDESEM.MUNICIPIONOMBRE')
                         ->orderBy('JP_IAPS.MUNICIPIO_ID','asc')
                         ->get();
-        //$procesos = procesosModel::join('SCI_TIPO_PROCESO','SCI_PROCESOS.CVE_TIPO_PROC','=','SCI_TIPO_PROCESO.CVE_TIPO_PROC')
-        //    ->selectRaw('SCI_TIPO_PROCESO.DESC_TIPO_PROC AS TIPO, COUNT(SCI_PROCESOS.CVE_TIPO_PROC) AS TOTAL')
-        //    ->groupBy('SCI_TIPO_PROCESO.DESC_TIPO_PROC')
-        //    ->get();
         //dd($procesos);
-        return view('sicinar.numeralia.iapsxmpio',compact('regiap','regtotxmpio','nombre','usuario','estructura','id_estructura','rango'));
+        return view('sicinar.numeralia.iapxmpio',compact('regiap','regtotxmpio','nombre','usuario','rango'));
     }
 
     // Gráfica de IAP por Rubro social
@@ -899,16 +1154,13 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
-        $ip           = session()->get('ip');        
+        $ip           = session()->get('ip'); 
+        $arbol_id     = session()->get('arbol_id');               
 
         $regtotxrubro=regIapModel::join('JP_CAT_RUBROS','JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
                       ->selectRaw('COUNT(*) AS TOTALXRUBRO')
                             ->get();
-
         $regiap=regIapModel::join('JP_CAT_RUBROS','JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
                       ->selectRaw('JP_IAPS.RUBRO_ID,  JP_CAT_RUBROS.RUBRO_DESC AS RUBRO, COUNT(*) AS TOTAL')
                         ->groupBy('JP_IAPS.RUBRO_ID','JP_CAT_RUBROS.RUBRO_DESC')
@@ -919,7 +1171,7 @@ class iapsController extends Controller
         //    ->groupBy('SCI_TIPO_PROCESO.DESC_TIPO_PROC')
         //    ->get();
         //dd($procesos);
-        return view('sicinar.numeralia.iapsxrubro',compact('regiap','regtotxrubro','nombre','usuario','estructura','id_estructura','rango'));
+        return view('sicinar.numeralia.iapxrubro',compact('regiap','regtotxrubro','nombre','usuario','rango'));
     }
 
     // Gráfica de IAP por Rubro social
@@ -930,16 +1182,13 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
-        $ip           = session()->get('ip');        
+        $ip           = session()->get('ip'); 
+        $arbol_id     = session()->get('arbol_id');               
 
         $regtotxrubro=regIapModel::join('JP_CAT_RUBROS','JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
                       ->selectRaw('COUNT(*) AS TOTALXRUBRO')
                             ->get();
-
         $regiap=regIapModel::join('JP_CAT_RUBROS','JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
                       ->selectRaw('JP_IAPS.RUBRO_ID,  JP_CAT_RUBROS.RUBRO_DESC AS RUBRO, COUNT(*) AS TOTAL')
                         ->groupBy('JP_IAPS.RUBRO_ID','JP_CAT_RUBROS.RUBRO_DESC')
@@ -950,7 +1199,7 @@ class iapsController extends Controller
         //    ->groupBy('SCI_TIPO_PROCESO.DESC_TIPO_PROC')
         //    ->get();
         //dd($procesos);
-        return view('sicinar.numeralia.graficadeprueba',compact('regiap','regtotxrubro','nombre','usuario','estructura','id_estructura','rango'));
+        return view('sicinar.numeralia.graficadeprueba',compact('regiap','regtotxrubro','nombre','usuario','rango'));
     }
 
     // Mapas
@@ -961,11 +1210,9 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
-        $ip           = session()->get('ip');        
+        $ip           = session()->get('ip'); 
+        $arbol_id     = session()->get('arbol_id');               
 
         $regtotxrubro=regIapModel::join('JP_CAT_RUBROS','JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
                       ->selectRaw('COUNT(*) AS TOTALXRUBRO')
@@ -981,7 +1228,7 @@ class iapsController extends Controller
         //    ->groupBy('SCI_TIPO_PROCESO.DESC_TIPO_PROC')
         //    ->get();
         //dd($procesos);
-        return view('sicinar.numeralia.mapasdeprueba',compact('regiap','regtotxrubro','nombre','usuario','estructura','id_estructura','rango'));
+        return view('sicinar.numeralia.mapasdeprueba',compact('regiap','regtotxrubro','nombre','usuario','rango'));
     }
 
     // Mapas
@@ -992,11 +1239,9 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
-        $ip           = session()->get('ip');        
+        $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');                
 
         $regtotxrubro=regIapModel::join('JP_CAT_RUBROS','JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
                       ->selectRaw('COUNT(*) AS TOTALXRUBRO')
@@ -1012,7 +1257,7 @@ class iapsController extends Controller
         //    ->groupBy('SCI_TIPO_PROCESO.DESC_TIPO_PROC')
         //    ->get();
         //dd($procesos);
-        return view('sicinar.numeralia.mapasdeprueba2',compact('regiap','regtotxrubro','nombre','usuario','estructura','id_estructura','rango'));
+        return view('sicinar.numeralia.mapasdeprueba2',compact('regiap','regtotxrubro','nombre','usuario','rango'));
     }
 
     // Mapas
@@ -1023,27 +1268,20 @@ class iapsController extends Controller
             return view('sicinar.login.expirada');
         }
         $usuario      = session()->get('usuario');
-        $estructura   = session()->get('estructura');
-        $id_estruc    = session()->get('id_estructura');
-        $id_estructura= rtrim($id_estruc," ");
         $rango        = session()->get('rango');
-        $ip           = session()->get('ip');        
+        $ip           = session()->get('ip');
+        $arbol_id     = session()->get('arbol_id');                
 
         $regtotxrubro=regIapModel::join('JP_CAT_RUBROS','JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
                       ->selectRaw('COUNT(*) AS TOTALXRUBRO')
                             ->get();
-
         $regiap=regIapModel::join('JP_CAT_RUBROS','JP_CAT_RUBROS.RUBRO_ID','=','JP_IAPS.RUBRO_ID')
                       ->selectRaw('JP_IAPS.RUBRO_ID,  JP_CAT_RUBROS.RUBRO_DESC AS RUBRO, COUNT(*) AS TOTAL')
                         ->groupBy('JP_IAPS.RUBRO_ID','JP_CAT_RUBROS.RUBRO_DESC')
                         ->orderBy('JP_IAPS.RUBRO_ID','asc')
                         ->get();
-        //$procesos = procesosModel::join('SCI_TIPO_PROCESO','SCI_PROCESOS.CVE_TIPO_PROC','=','SCI_TIPO_PROCESO.CVE_TIPO_PROC')
-        //    ->selectRaw('SCI_TIPO_PROCESO.DESC_TIPO_PROC AS TIPO, COUNT(SCI_PROCESOS.CVE_TIPO_PROC) AS TOTAL')
-        //    ->groupBy('SCI_TIPO_PROCESO.DESC_TIPO_PROC')
-        //    ->get();
         //dd($procesos);
-        return view('sicinar.numeralia.mapasdeprueba3',compact('regiap','regtotxrubro','nombre','usuario','estructura','id_estructura','rango'));
+        return view('sicinar.numeralia.mapasdeprueba3',compact('regiap','regtotxrubro','nombre','usuario','rango'));
     }
 
 }
